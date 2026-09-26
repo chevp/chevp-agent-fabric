@@ -1,0 +1,18 @@
+[package]
+name = "nexus-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Agent Nexus MCP server: a hand-rolled JSON-RPC/stdio MCP transport over the domain services and the tool registry."
+
+[[bin]]
+name = "agent-nexus"
+path = "src/main.rs"
+
+[dependencies]
+nexus-domain = { path = "../nexus-domain" }
+nexus-tools = { path = "../nexus-tools" }
+nexus-tool-graph-insights = { path = "../nexus-tool-graph-insights" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

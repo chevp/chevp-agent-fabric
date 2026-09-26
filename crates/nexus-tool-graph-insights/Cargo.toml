@@ -1,0 +1,12 @@
+[package]
+name = "nexus-tool-graph-insights"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Example concrete tool crate: a graph_insights MCP tool that runs a simple relation-count analysis over a project's semantic graph."
+
+[dependencies]
+nexus-domain = { path = "../nexus-domain" }
+nexus-tools = { path = "../nexus-tools" }
+serde.workspace = true
+serde_json.workspace = true

@@ -1,102 +1,91 @@
 # Agent Nexus
 
-Agent Nexus is a production-oriented Node.js/TypeScript **Control Plane** — a
-central intelligence and context layer for multiple AI clients and agents
-(Figma Make, GitHub Copilot, IDE agents, and future autonomous agents). It
-exposes its capabilities through the **Model Context Protocol (MCP)**, using
-a Git repository as the initial persistent source of truth.
+Agent Nexus is a Rust **Control Plane** — a central intelligence and context
+layer for multiple AI clients and agents (Figma Make, GitHub Copilot, IDE
+agents, and future autonomous agents). It exposes its capabilities through
+the **Model Context Protocol (MCP)** over stdio, using a Git repository as
+the persistent source of truth.
 
-Agent Nexus is **not** a monolithic autonomous agent. It does not write code,
-design UIs, or make product decisions. It resolves and hands out the minimal
-relevant context — project knowledge, skills, behavior specs, graph
+Agent Nexus is **not** a monolithic autonomous agent. It does not write
+code, design UIs, or make product decisions. It resolves and hands out the
+minimal relevant context — project knowledge, skills, behavior specs, graph
 relationships, and policies — so that specialized agents can do their job
 consistently.
 
----
+## Design stance (read this before adding anything)
+
+- **Filesystem/Git is the storage, full stop.** There is no `trait
+  ProjectStore` / `trait GraphStore` abstraction pretending a Postgres or
+  Neo4j backend might show up later. If that ever needs to change, it's a
+  rewrite of the concrete types in `nexus-domain`, not a trait swap. Keeping
+  that abstraction out means one less layer of indirection to read through
+  for a system that, in practice, only ever has one implementation.
+- **The only extension point is the `Tool` trait.** Need a concrete
+  capability — run an analysis, call an external system, generate a report?
+  Implement `nexus_tools::Tool` in your own crate and register it. That's
+  it. There is no generic "capability registry" standing in for
+  hypothetical integrations that don't exist yet.
 
 ## 1. Architecture
 
 ```
-                         ┌────────────────────────────┐
-                         │        MCP Clients          │
-                         │  Figma Make · Copilot ·      │
-                         │  IDE Agents · Future Agents  │
-                         └──────────────┬───────────────┘
-                                        │  MCP (stdio / HTTP)
-                         ┌──────────────▼───────────────┐
-                         │        MCP Transport          │
-                         │  src/server/mcp-server.ts      │
-                         │  src/server/transport.ts       │
-                         └──────────────┬───────────────┘
-                                        │  calls into (no business logic here)
-                         ┌──────────────▼───────────────┐
-                         │     Application Services       │
-                         │   src/app/nexus-services.ts     │
-                         └──────────────┬───────────────┘
-                                        │
-        ┌──────────────┬───────────────┼───────────────┬──────────────┐
-        ▼              ▼               ▼               ▼              ▼
-   ┌─────────┐   ┌───────────┐   ┌───────────┐   ┌───────────┐  ┌───────────┐
-   │ Context │   │  Skills   │   │ Behavior  │   │   Graph   │  │ Policies  │
-   │Resolver │   │ Registry/ │   │  Store/   │   │  Store/   │  │  Engine   │
-   │         │   │ Resolver  │   │ Resolver  │   │  Query/   │  │           │
-   │         │   │           │   │           │   │ Resolver  │  │           │
-   └────┬────┘   └─────┬─────┘   └─────┬─────┘   └─────┬─────┘  └─────┬─────┘
-        │              │               │               │              │
-        └──────────────┴───────┬───────┴───────────────┴──────────────┘
-                                ▼
-                     ┌────────────────────┐
-                     │   Domain Model      │
-                     │  src/shared/types    │
-                     └──────────┬──────────┘
-                                ▼
-                     ┌────────────────────┐
-                     │       Stores        │
-                     │ ProjectStore ·       │
-                     │ SkillStore ·         │
-                     │ BehaviorStore ·      │
-                     │ GraphStore ·         │
-                     │ PolicyStore          │
-                     │ (interfaces)         │
-                     └──────────┬──────────┘
-                                ▼
-                     ┌────────────────────┐
-                     │   Git / Filesystem   │
-                     │  projects/, global/  │
-                     └────────────────────┘
+                    ┌────────────────────────────┐
+                    │        MCP Clients          │
+                    │  Figma Make · Copilot ·      │
+                    │  IDE Agents · Future Agents  │
+                    └──────────────┬───────────────┘
+                                   │  JSON-RPC 2.0 over stdio (newline-delimited)
+                    ┌──────────────▼───────────────┐
+                    │   crates/nexus-server          │
+                    │   stdio.rs → rpc.rs             │
+                    │   (hand-rolled MCP transport;    │
+                    │    no business logic here)        │
+                    └──────────────┬───────────────┘
+                                   │
+              ┌────────────────────┼─────────────────────┐
+              ▼                                            ▼
+   ┌────────────────────┐                     ┌─────────────────────────┐
+   │  domain_tools.rs     │                     │      ToolRegistry        │
+   │  (fixed read API:     │                     │  crates/nexus-tools       │
+   │  projects, skills,     │                     │                            │
+   │  behavior, graph,       │                     │  Tool trait — the ONLY      │
+   │  policies, context)      │                     │  extension point              │
+   └──────────┬─────────┘                     └─────────────┬──────────────┘
+              │                                               │
+              ▼                                               ▼
+   ┌─────────────────────────────────────┐     ┌───────────────────────────────┐
+   │        crates/nexus-domain             │     │ crates/nexus-tool-graph-insights │
+   │  Project/Skill/Behavior/Graph/Policy    │◄────│ (example concrete tool crate:      │
+   │  stores + the Context Resolver           │     │  runs a relation-count analysis)    │
+   │  — filesystem/Git-backed, concrete         │     └───────────────────────────────┘
+   └──────────────────┬──────────────────┘
+                       ▼
+              ┌────────────────────┐
+              │   Git / Filesystem   │
+              │  projects/, global/  │
+              └────────────────────┘
 ```
 
-Layers are strictly one-directional: **MCP Transport → Application Services
-→ Domain Model → Stores → Git/Filesystem**. No MCP tool handler contains
-business logic — every handler parses its input and calls a method on
-`NexusServices`.
-
-Every store is defined as a TypeScript interface (`ProjectStore`,
-`SkillStore`, `BehaviorStore`, `GraphStore`, `PolicyStore`). V1 ships exactly
-one implementation of each, backed by the filesystem/Git (`Fs*Store`). A
-future database-backed implementation (Postgres, Neo4j, a vector store, ...)
-can be dropped in without touching the Context Resolver, the MCP server, or
-any other domain/application code — see [§13](#13-future-migration-path).
+Every crate depends only downward. `nexus-domain` knows nothing about MCP or
+tools. `nexus-tools` knows the domain (read-only) but nothing about the
+transport. `nexus-server` wires domain + tool registry to the wire protocol
+and contains no domain logic of its own — `rpc.rs` and `domain_tools.rs`
+only parse/dispatch.
 
 ## 2. Repository structure
 
 ```
-agent-nexus/
-├── src/
-│   ├── app/               # Application services (composition root; MCP calls this)
-│   ├── server/             # MCP server + transports (stdio, debug HTTP)
-│   ├── projects/           # Project loading/registry
-│   ├── skills/             # Skill loading, registry, resolution
-│   ├── context/            # Context docs loader + the Context Resolver
-│   ├── graph/              # Semantic Content Graph store/query/resolver
-│   ├── behavior/           # Behavior specification store/resolver
-│   ├── policies/           # Policy engine + permission checks
-│   ├── capabilities/       # External system/tool abstraction
-│   ├── workflow/           # Level-4 workflow interfaces (types only, unused in V1)
-│   └── shared/             # Domain types, zod schemas, errors, fs helpers
+agent-nexus/ (workspace root)
+├── Cargo.toml                        # workspace manifest
+├── crates/
+│   ├── nexus-domain/                 # projects, skills, behavior, graph, policies, context resolver
+│   │   └── src/{types,errors,fs_util,project,skill,behavior,graph,policy,context}.rs
+│   ├── nexus-tools/                  # the Tool trait + ToolRegistry (the extension point)
+│   ├── nexus-tool-graph-insights/    # example concrete tool crate (a graph analysis)
+│   └── nexus-server/                 # binary: domain_tools.rs, rpc.rs, stdio.rs, app.rs, main.rs
 │
 ├── projects/
-│   └── acme-app/           # Example project (see below)
+│   └── acme-app/                     # example project
 │       ├── project.yaml
 │       ├── context/
 │       ├── skills/
@@ -105,20 +94,17 @@ agent-nexus/
 │       └── policies/
 │
 ├── global/
-│   ├── skills/             # Skills shared by every project
-│   └── policies/           # Default policies shared by every project
+│   ├── skills/                       # skills shared by every project
+│   └── policies/                     # default policies shared by every project
 │
-├── schemas/                # JSON Schema mirrors of the zod validators
-├── tests/                  # Vitest suite (unit + end-to-end)
-├── package.json
-├── tsconfig.json
+├── schemas/                          # JSON Schema mirrors of the domain types (language-agnostic docs)
 └── README.md
 ```
 
 ## 3. Project model
 
 A **Project** is the bounded workspace and source of truth for a body of
-work. It is declared by a `project.yaml` at the root of its directory:
+work, declared by `project.yaml` at the root of its directory:
 
 ```yaml
 id: acme-app
@@ -127,14 +113,13 @@ version: 1
 description: Example e-commerce application...
 ```
 
-The directory name must match `id`. Project-specific skills, behavior specs,
-graph data, and policies live under that same directory
-(`projects/acme-app/...`); anything reusable across projects lives under
-`global/...`.
+The directory name must match `id`. `ProjectStore` (`crates/nexus-domain/src/project.rs`)
+discovers any directory under `projects/` that has a `project.yaml` — no
+registration step.
 
 ## 4. Skill model
 
-A **Skill** is a Markdown file with machine-readable YAML frontmatter:
+A **Skill** is a Markdown file with `---`-delimited YAML frontmatter:
 
 ```markdown
 ---
@@ -154,20 +139,18 @@ dependsOn: [accessibility]
 - `scope` must match where the file lives (`global/skills/...` vs.
   `projects/<id>/skills/...`); a mismatch is a validation error.
 - A project skill **overrides** a global skill declared under the same
-  `id` (`SkillRegistry.listSkills`).
-- `dependsOn` is resolved transitively (`resolveSkills`): asking for
-  `checkout-ux` also returns `accessibility`.
-- `resolveSkills({ task })` additionally matches skills by simple keyword
-  overlap between the task text and a skill's id/name/description/tags —
-  this is what lets the Context Resolver find skills without the caller
-  knowing their ids up front.
+  `id` (`SkillStore::list_skills`).
+- `dependsOn` is resolved transitively (`skill::resolve_skills`).
+- `resolve_skills(..., task, ...)` additionally matches skills by simple
+  keyword overlap between the task text and a skill's id/name/description/
+  tags — this is what lets the Context Resolver find skills without the
+  caller knowing their ids up front.
 
 ## 5. Behavior model
 
-A **Behavior Specification** is a structured (YAML), technology-agnostic
-state machine — not Markdown — so the same spec can be consumed by a design
-tool, a frontend agent, a backend agent, a test-generation agent, or a QA
-agent:
+A **Behavior Specification** is structured YAML — not Markdown — so the
+same spec can be consumed by a design tool, a frontend agent, a backend
+agent, a test-generation agent, or a QA agent:
 
 ```yaml
 id: checkout-button
@@ -186,7 +169,8 @@ rules:
 ```
 
 Every transition's `from`/`to` must reference a declared state; this is
-validated on load (`FsBehaviorStore`), not deferred to the consumer.
+validated on load (`BehaviorStore::list_behaviors`), not deferred to the
+consumer.
 
 ## 6. Semantic Content Graph
 
@@ -211,20 +195,21 @@ Supported relation kinds: `implements`, `depends-on`, `uses`, `defined-by`,
 `governed-by`, `represented-by`, `implemented-by`, `validated-by`,
 `related-to`.
 
-`GraphStore` is a clean abstraction (`getEntity`, `listEntities`,
-`listRelations`) with query helpers on top (`graph-query.ts`):
-`getRelatedEntities` (bounded BFS), `findPath` (shortest path by hop count),
-`searchGraph` (substring search). This is deliberately not a graph database —
-a real one (Neo4j, etc.) can implement `GraphStore` later.
+`GraphStore` (`crates/nexus-domain/src/graph.rs`) exposes `list_entities`,
+`list_relations`, `get_entity`; query helpers on top: `get_related_entities`
+(bounded BFS), `find_path` (shortest path by hop count), `search_graph`
+(substring search). This is a plain in-memory traversal over parsed YAML,
+not a graph database — see the design stance above for why there's no
+`Neo4jGraphStore`-shaped abstraction waiting for one.
 
 ## 7. Context resolution
 
-The **Context Resolver** (`src/context/context-resolver.ts`) is the core of
-the Control Plane. Given a `{ projectId, task, client, requestedEntities? }`
-request, it:
+`context::resolve_context` (`crates/nexus-domain/src/context.rs`) is the
+core of the Control Plane. Given `{ projectId, task, client, requestedEntities? }`,
+it:
 
 1. Loads the project and checks the client has `read:project`.
-2. Resolves the relevant graph entities (`requestedEntities`, or a keyword
+2. Resolves relevant graph entities (`requestedEntities`, or a keyword
    search over the task text) and expands one hop.
 3. Resolves skills relevant to the task, plus any skill that
    `governs`/`implements` a resolved entity, plus their `dependsOn` closure.
@@ -249,13 +234,18 @@ Acme App checkout-ux, checkout-    checkout-button,
    Policies: whatever the requesting client is granted
          │
          ▼
-   Resolved Context (returned via resolve_context)
+   Resolved Context (returned via the resolve_context MCP tool)
 ```
 
 ## 8. MCP interface
 
-Read tools (V1 ships read-only; see [§9](#9-permission-model) for how writes
-will be gated once added):
+Agent Nexus speaks MCP's JSON-RPC 2.0 methods directly over stdio
+(newline-delimited messages) — `crates/nexus-server/src/stdio.rs` reads
+lines, `rpc.rs` dispatches `initialize`, `tools/list`, `tools/call`, `ping`.
+There is no MCP SDK dependency; the protocol surface used here is small
+enough to own.
+
+Fixed read tools (`domain_tools.rs`, always present):
 
 | Tool | Description |
 | --- | --- |
@@ -273,18 +263,47 @@ will be gated once added):
 | `check_permission` | Checks whether a client holds a permission. |
 | `resolve_context` | Resolves the minimal relevant context for a task. |
 
-Every tool: parses its (zod-validated) input, calls exactly one
-`NexusServices` method, and returns JSON in the tool's text content; domain
-errors (`NotFoundError`, `PermissionDeniedError`, ...) are returned as
-`isError: true` tool results instead of crashing the server.
+Plus every tool registered in `ToolRegistry` — in this repo, exactly one:
 
-Planned write operations (**not implemented in V1**, gated by the Policy
-Engine when they land): `create_entity`, `update_behavior`, `create_skill`,
-`link_entities`, `record_decision`.
+| Tool | Description |
+| --- | --- |
+| `graph_insights` | Example concrete tool: ranks a project's graph entities by relation count. |
 
-## 9. Permission model
+`tools/list` returns both sets, indistinguishable to the client. Domain
+errors and tool errors alike come back as `{ content: [...], isError: true }`
+— they never crash the process or the JSON-RPC connection.
 
-Policies are plain files (`client.yaml`) under `global/policies/` and
+## 9. Adding a concrete tool (the extension point)
+
+This is the one designed extension seam. To add "a tool MCP calls to run an
+analysis":
+
+1. `cargo new --lib crates/nexus-tool-<name>` and add it as a workspace
+   member.
+2. Implement `nexus_tools::Tool`:
+
+   ```rust
+   pub struct MyTool;
+   impl Tool for MyTool {
+       fn name(&self) -> &str { "my_tool" }
+       fn description(&self) -> &str { "..." }
+       fn input_schema(&self) -> Value { json!({ "type": "object", ... }) }
+       fn call(&self, ctx: &ToolContext<'_>, input: Value) -> Result<Value, ToolError> {
+           // read via ctx.domain.{projects,skills,behaviors,graph,policies}
+           // and return whatever analysis result makes sense as JSON.
+       }
+   }
+   ```
+3. In `crates/nexus-server/src/app.rs::build_tool_registry`, add
+   `registry.register(Box::new(nexus_tool_my_name::MyTool));` and add the
+   crate as a dependency of `nexus-server`.
+
+Nothing else changes: no transport code, no domain code. See
+`crates/nexus-tool-graph-insights` for a complete, working example.
+
+## 10. Permission model
+
+Policies are plain files (`<client>.yaml`) under `global/policies/` and
 `projects/<id>/policies/`:
 
 ```yaml
@@ -297,99 +316,59 @@ permissions:
   - write:code-reference
 ```
 
-`PolicyEngine` (`src/policies/policy-engine.ts`) is independent of MCP — it
-is a plain domain service. For a given `(client, project)`, project-scoped
-rules for that client **replace** its global rules (they don't merge); a
-client with no project-specific rule falls back to its global rule. Clients
-(`copilot`, `figma-make`, an IDE agent, ...) are never hard-coded into the
-domain model — they are just ids that happen to appear in policy files.
+`PolicyEngine` (`crates/nexus-domain/src/policy.rs`) is independent of MCP
+— a plain domain service. For a given `(client, project)`, project-scoped
+rules for that client **replace** (not merge with) its global rules; a
+client with no project-specific rule falls back to its global rule.
+Clients (`copilot`, `figma-make`, an IDE agent, ...) are never hard-coded
+into the domain model — they are just ids that happen to appear in policy
+files.
 
-## 10. How to add a new project
+## 11. How to add a new project
 
-1. `mkdir -p projects/<id>/{context,skills,behavior,graph/entities,graph/relations,policies}`
-2. Add `projects/<id>/project.yaml` with `id`, `name`, `version`.
-3. Add any project-specific skills/behavior/graph/policies as needed — a
-   project with none of these is valid; it will simply resolve empty
-   context beyond global skills/policies.
-4. Commit. There is no registration step: `FsProjectStore` discovers any
-   directory under `projects/` that has a `project.yaml`.
+```bash
+mkdir -p projects/<id>/{context,skills,behavior,graph/entities,graph/relations,policies}
+```
 
-## 11. How to add a new skill
+Add `projects/<id>/project.yaml` with `id`, `name`, `version`. Everything
+else is optional; a project with none of skills/behavior/graph/policies is
+valid and simply resolves to global skills/policies only.
 
-1. Decide the scope: reusable across projects → `global/skills/<id>/skill.md`;
-   project-specific → `projects/<id>/skills/<id>/skill.md`.
-2. Write the frontmatter (`id`, `name`, `version`, `scope`, `description`,
-   optional `tags`/`dependsOn`) matching that location — a mismatch fails
-   validation.
+## 12. How to add a new skill
+
+1. Decide scope: reusable → `global/skills/<id>/skill.md`; project-specific
+   → `projects/<id>/skills/<id>/skill.md`.
+2. Write frontmatter (`id`, `name`, `version`, `scope`, `description`,
+   optional `tags`/`dependsOn`) matching that location.
 3. Write the instructions as the Markdown body.
-4. If the skill should override a same-named global skill for one project,
-   just give it the same `id` under that project's `skills/` directory.
+4. To override a global skill for one project, give it the same `id` under
+   that project's `skills/` directory.
 
-## 12. How to connect an MCP client
-
-```bash
-npm install
-npm run build
-node dist/index.js         # stdio MCP server (default)
-```
-
-Point any MCP-compatible client (Claude, an IDE agent, a custom harness) at
-this process over stdio. For local debugging without an MCP client, a
-minimal HTTP surface is available:
+## 13. How to connect an MCP client
 
 ```bash
-AGENT_NEXUS_TRANSPORT=http PORT=3333 node dist/index.js
-curl localhost:3333/projects
-curl -X POST localhost:3333/resolve-context \
-  -H 'content-type: application/json' \
-  -d '{"projectId":"acme-app","task":"Implement the checkout button","client":{"id":"copilot","type":"coding-agent"}}'
+cargo build --release
+AGENT_NEXUS_ROOT=/path/to/this/repo ./target/release/agent-nexus
 ```
 
-The HTTP surface is a debugging convenience, not a second implementation of
-MCP negotiation — it calls the exact same `NexusServices` methods as the MCP
-tools.
-
-## 13. Future migration path
-
-Every store is behind an interface (`ProjectStore`, `SkillStore`,
-`BehaviorStore`, `GraphStore`, `PolicyStore`) that only the `Fs*` classes in
-`src/app/nexus-services.ts` know about. Introducing a database means:
-
-1. Implement the interface against the new backend (e.g. `PostgresProjectStore`,
-   `Neo4jGraphStore`).
-2. Swap the construction in `NexusServices` (or make it configurable).
-3. Nothing in `src/context`, `src/server`, or any resolver changes, because
-   they only depend on the interfaces, never on "files" or "YAML".
-
-Git-backed storage stays valuable even after a database is introduced — it's
-the review/version/rollback/collaboration layer for the *declarative*
-project data (skills, behavior specs, graph fixtures) that a database would
-otherwise need to reinvent.
-
-## 14. Future work: Level-4 workflows
-
-`src/workflow/types.ts` declares (but does not implement) `Workflow`,
-`WorkflowState`, `Task`, `TaskExecution`, `AgentRun`, `Artifact`, `Decision`,
-and `Verification`. Nothing else in the codebase depends on them today. They
-exist so that a future orchestration layer — e.g.
-
-```
-UX Definition -> Behavior Specification -> Figma -> Implementation
-  -> Tests -> Verification -> Human Approval
-```
-
-— has a stable shape to grow into, without V1 committing to a workflow
-engine, a scheduler, or multi-agent planning.
-
-## 15. Development
+`AGENT_NEXUS_ROOT` defaults to the current working directory if unset, so
+running the binary from the repo root also works. Point any MCP client that
+speaks JSON-RPC 2.0 over stdio at this process. Quick manual check:
 
 ```bash
-npm install
-npm run dev          # run the MCP server over stdio via tsx
-npm test             # vitest — unit + end-to-end tests
-npm run lint
-npm run format:check
-npm run build         # tsc -> dist/
+printf '%s\n%s\n' \
+  '{"jsonrpc":"2.0","id":1,"method":"initialize"}' \
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' \
+  | ./target/release/agent-nexus
+```
+
+## 14. Development
+
+```bash
+cargo build --workspace
+cargo test --workspace
+cargo clippy --workspace --all-targets
+cargo fmt --all
 ```
 
 ### Example project
@@ -401,7 +380,8 @@ entities (`checkout-button`, `payment-flow`, `checkout-summary`) tied
 together by `governed-by`/`uses`/`related-to`/`depends-on` relations, and
 `copilot`/`figma-make` policies.
 
-`tests/e2e.test.ts` walks the full scenario from the architecture doc —
-*"Create the checkout flow according to our current UX rules"* — through
-`resolve_context` over an in-memory MCP transport, then double-checks the
-resulting permission grant via `check_permission`.
+Tests live next to the code they cover (`#[cfg(test)] mod tests` in each
+domain module) plus `crates/nexus-server/src/rpc.rs`, which walks the exact
+scenario from the architecture doc — *"Create the checkout flow according
+to our current UX rules"* — through the real JSON-RPC dispatcher, including
+a call to the registered `graph_insights` tool.
