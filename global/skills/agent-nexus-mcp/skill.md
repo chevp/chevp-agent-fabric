@@ -3,7 +3,7 @@ id: agent-nexus-mcp
 name: Agent Nexus MCP Server
 version: 1.0.0
 scope: global
-description: How to install, connect, and update the Agent Nexus MCP server in a project
+description: How to install, connect to, and update an Agent Nexus MCP server
 tags:
   - mcp
   - tooling
