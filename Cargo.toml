@@ -4,6 +4,7 @@ members = [
     "crates/nexus-domain",
     "crates/nexus-tools",
     "crates/nexus-tool-graph-insights",
+    "crates/nexus-tool-game-studio",
     "crates/nexus-server",
 ]
 

@@ -1,0 +1,130 @@
+# Studio org: directors decide what should happen, agents do it.
+# Work is assigned downward only (a member may assign to itself or anyone
+# below it; humans may assign to anyone). An agent claims jobs assigned to
+# itself, or to its lead when the job type is in its `handles` list.
+# `budget` is a per-job cap for jobs assigned to that member.
+humans: [human]
+
+members:
+  - id: research-director
+    role: director
+    objective: Find techniques the pipelines do not use yet; benchmark them; propose pipeline mutations.
+    handles: [research_technique, benchmark_pipeline]
+
+  - id: game-director
+    role: director
+    reportsTo: research-director
+    objective: Turn the game vision and open problems into prioritized jobs; accept or reject world versions.
+
+  # --- world ---------------------------------------------------------------
+  - id: world-director
+    role: director
+    reportsTo: game-director
+    objective: Regions, biomes, roads, POIs and landmarks that form a coherent world.
+  - id: map-agent
+    role: agent
+    reportsTo: world-director
+    handles: [layout_region, build_road_network]
+    tools: [engine.world_layout]
+  - id: biome-agent
+    role: agent
+    reportsTo: world-director
+    handles: [distribute_biomes]
+  - id: poi-agent
+    role: agent
+    reportsTo: world-director
+    handles: [build_poi, place_landmark]
+    tools: [blender.create_poi, blender.assemble_scene]
+    budget: { gpu_minutes: 60, renders: 500 }
+
+  # --- art -----------------------------------------------------------------
+  - id: art-director
+    role: director
+    reportsTo: game-director
+    objective: Readable, diverse, performant visuals for an orthographic 2.5D camera.
+
+  - id: form-evolution-director
+    role: director
+    reportsTo: art-director
+    objective: Evolve asset families (mutation, radical forms, hybrids) and keep the full genealogy.
+    budget: { gpu_minutes: 120, renders: 2000 }
+  - id: mutation-agent
+    role: agent
+    reportsTo: form-evolution-director
+    handles: [mutate_asset, evolve_asset_family]
+    tools: [blender.generate_rock_family, blender.apply_modifier, blender.validate_mesh]
+    budget: { gpu_minutes: 60, renders: 1000 }
+  - id: radical-form-agent
+    role: agent
+    reportsTo: form-evolution-director
+    handles: [mutate_asset, radical_mutation]
+    tools: [blender.create_geometry_nodes, blender.run_simulation]
+    budget: { gpu_minutes: 60, renders: 1000 }
+  - id: selection-agent
+    role: agent
+    reportsTo: form-evolution-director
+    handles: [select_elites, cluster_candidates]
+    constraints: [silhouette diversity above threshold, billboard compatible]
+
+  - id: asset-director
+    role: director
+    reportsTo: art-director
+    objective: Reduce thousands of candidates to few production assets (founders, elites, radicals, production, retired).
+  - id: asset-curator
+    role: agent
+    reportsTo: asset-director
+    handles: [curate_assets, retire_asset]
+
+  - id: billboard-director
+    role: director
+    reportsTo: art-director
+    objective: Choose billboard / cross / multi-plane / 3D per asset by visual error vs. cost at game camera.
+  - id: ortho-render-agent
+    role: agent
+    reportsTo: billboard-director
+    handles: [render_orthographic, create_billboard]
+    tools: [blender.render_orthographic, blender.export_billboard]
+    budget: { gpu_minutes: 30, renders: 800 }
+  - id: atlas-agent
+    role: agent
+    reportsTo: billboard-director
+    handles: [build_atlas]
+  - id: billboard-qa-agent
+    role: agent
+    reportsTo: billboard-director
+    handles: [billboard_qa]
+
+  # --- gameplay ------------------------------------------------------------
+  - id: gameplay-director
+    role: director
+    reportsTo: game-director
+    objective: Encounters, loot, pacing and navigation that make scenes play well.
+  - id: encounter-agent
+    role: agent
+    reportsTo: gameplay-director
+    handles: [place_encounters]
+  - id: loot-agent
+    role: agent
+    reportsTo: gameplay-director
+    handles: [place_loot, balance_loot]
+  - id: pacing-agent
+    role: agent
+    reportsTo: gameplay-director
+    handles: [pace_scene]
+
+  # --- playtest ------------------------------------------------------------
+  - id: playtest-director
+    role: director
+    reportsTo: game-director
+    objective: Play every candidate scene automatically and turn the run into metrics.
+  - id: bot-player
+    role: agent
+    reportsTo: playtest-director
+    handles: [playtest_scene]
+    tools: [engine.load_level, engine.run_bot]
+    budget: { gpu_minutes: 20 }
+  - id: performance-tester
+    role: agent
+    reportsTo: playtest-director
+    handles: [measure_performance]
+    tools: [engine.profile]

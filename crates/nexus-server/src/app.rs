@@ -22,5 +22,8 @@ impl McpApp {
 fn build_tool_registry() -> ToolRegistry {
     let mut registry = ToolRegistry::new();
     registry.register(Box::new(nexus_tool_graph_insights::GraphInsightsTool));
+    nexus_tool_game_studio::tools()
+        .into_iter()
+        .for_each(|tool| registry.register(tool));
     registry
 }
