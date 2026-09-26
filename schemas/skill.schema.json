@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agent-nexus/schemas/skill.schema.json",
+  "title": "SkillFrontmatter",
+  "description": "Machine-readable frontmatter of a Markdown skill file (schemas/skill.schema.json). The Markdown body below the frontmatter carries the agent instructions and is not part of this schema.",
+  "type": "object",
+  "required": ["id", "name", "version", "scope", "description"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "scope": { "type": "string", "enum": ["global", "project"] },
+    "description": { "type": "string", "minLength": 1 },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "dependsOn": { "type": "array", "items": { "type": "string" } }
+  }
+}

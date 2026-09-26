@@ -1,0 +1,6 @@
+client: ide-agent
+permissions:
+  - read:project
+  - read:skills
+  - read:behavior
+  - read:graph

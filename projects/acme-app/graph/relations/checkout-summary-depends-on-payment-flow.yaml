@@ -1,0 +1,3 @@
+from: checkout-summary
+relation: depends-on
+to: payment-flow

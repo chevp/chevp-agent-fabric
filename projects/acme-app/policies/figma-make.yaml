@@ -1,0 +1,6 @@
+client: figma-make
+permissions:
+  - read:project
+  - read:skills
+  - read:behavior
+  - read:design-system

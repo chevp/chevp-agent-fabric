@@ -1,0 +1,38 @@
+id: checkout-button
+type: ui-behavior
+version: 1
+
+states:
+  - idle
+  - loading
+  - disabled
+  - success
+  - error
+
+transitions:
+  - from: idle
+    event: submit
+    to: loading
+
+  - from: loading
+    event: success
+    to: success
+
+  - from: loading
+    event: failure
+    to: error
+
+  - from: error
+    event: submit
+    to: loading
+
+  - from: success
+    event: reset
+    to: idle
+
+rules:
+  - id: prevent-double-submit
+    description: User cannot submit twice while loading
+
+  - id: preserve-input
+    description: User input must remain available after an error

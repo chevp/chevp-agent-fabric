@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agent-nexus/schemas/entity.schema.json",
+  "title": "GraphEntity",
+  "type": "object",
+  "required": ["id", "type", "name"],
+  "additionalProperties": true,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "type": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 }
+  }
+}

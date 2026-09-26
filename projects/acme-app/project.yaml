@@ -1,0 +1,7 @@
+id: acme-app
+name: Acme App
+version: 1
+description: >
+  Example e-commerce application used to demonstrate Agent Nexus: a checkout
+  flow with a UX skill, a behavior specification for the checkout button, and
+  a small semantic graph tying them together.

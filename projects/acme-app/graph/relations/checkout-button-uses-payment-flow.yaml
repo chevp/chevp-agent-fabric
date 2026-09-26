@@ -1,0 +1,3 @@
+from: checkout-button
+relation: uses
+to: payment-flow

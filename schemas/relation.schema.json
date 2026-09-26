@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agent-nexus/schemas/relation.schema.json",
+  "title": "GraphRelation",
+  "type": "object",
+  "required": ["from", "relation", "to"],
+  "additionalProperties": false,
+  "properties": {
+    "from": { "type": "string", "minLength": 1 },
+    "relation": {
+      "type": "string",
+      "enum": [
+        "implements",
+        "depends-on",
+        "uses",
+        "defined-by",
+        "governed-by",
+        "represented-by",
+        "implemented-by",
+        "validated-by",
+        "related-to"
+      ]
+    },
+    "to": { "type": "string", "minLength": 1 }
+  }
+}

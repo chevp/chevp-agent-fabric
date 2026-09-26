@@ -1,0 +1,7 @@
+client: copilot
+permissions:
+  - read:project
+  - read:skills
+  - read:behavior
+  - read:graph
+  - write:code-reference

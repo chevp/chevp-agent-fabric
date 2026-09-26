@@ -1,0 +1,4 @@
+id: payment-flow
+type: flow
+name: Payment Flow
+description: End-to-end process that charges the customer and confirms the order.

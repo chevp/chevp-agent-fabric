@@ -1,0 +1,4 @@
+id: checkout-button
+type: component
+name: Checkout Button
+description: Primary call-to-action that submits the current cart for payment.

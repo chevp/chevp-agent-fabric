@@ -1,0 +1,4 @@
+id: checkout-summary
+type: component
+name: Checkout Summary
+description: Displays the outcome of a checkout attempt (success or error) to the customer.

@@ -1,0 +1,3 @@
+from: checkout-summary
+relation: related-to
+to: checkout-button
