@@ -344,16 +344,46 @@ valid and simply resolves to global skills/policies only.
 4. To override a global skill for one project, give it the same `id` under
    that project's `skills/` directory.
 
-## 13. How to connect an MCP client
+## 13. Installing the MCP server in a project
+
+Agent Nexus ships as a single compiled binary (`agent-nexus`) — there is no
+npm package, so installation is either "build from source" or "download the
+release binary". Releases are cut by pushing a `vX.Y.Z` tag, which triggers
+[`.github/workflows/release.yml`](.github/workflows/release.yml) and
+publishes a GitHub Release with prebuilt binaries for Linux, macOS
+(x86_64 + aarch64) and Windows.
+
+**Option A — download a release binary**
 
 ```bash
-cargo build --release
-AGENT_NEXUS_ROOT=/path/to/this/repo ./target/release/agent-nexus
+# Pick the asset for your platform from the latest release:
+# https://github.com/chevp/chevp-agent-fabric/releases/latest
+curl -L -o agent-nexus \
+  https://github.com/chevp/chevp-agent-fabric/releases/latest/download/agent-nexus-linux-x86_64
+chmod +x agent-nexus
 ```
 
-`AGENT_NEXUS_ROOT` defaults to the current working directory if unset, so
-running the binary from the repo root also works. Point any MCP client that
-speaks JSON-RPC 2.0 over stdio at this process. Quick manual check:
+**Option B — build from source**
+
+```bash
+git clone https://github.com/chevp/chevp-agent-fabric.git
+cd chevp-agent-fabric
+cargo build --release
+# binary at ./target/release/agent-nexus
+```
+
+**Register it with an MCP client** (Claude Code example):
+
+```bash
+claude mcp add agent-nexus \
+  --env AGENT_NEXUS_ROOT=/path/to/your/project \
+  -- /path/to/agent-nexus
+```
+
+`AGENT_NEXUS_ROOT` points at the Git repository that acts as the Control
+Plane's source of truth (projects/, global/) and defaults to the process's
+current working directory if unset. Any MCP client that speaks JSON-RPC 2.0
+over stdio can be pointed at the binary the same way. Quick manual check:
 
 ```bash
 printf '%s\n%s\n' \
@@ -361,6 +391,35 @@ printf '%s\n%s\n' \
   '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' \
   | ./target/release/agent-nexus
 ```
+
+### Updating
+
+There is no self-updating daemon — Agent Nexus is a local stdio process, not
+a long-running service, so "updating" means picking up a newer released
+binary and restarting the MCP client's connection to it:
+
+1. Watch [Releases](https://github.com/chevp/chevp-agent-fabric/releases)
+   (or `git tag --list 'v*'`) for a newer version than the one reported by
+   the running server's `initialize` response (`serverInfo.version`, which
+   is `env!("CARGO_PKG_VERSION")` — always in sync with the tag it was built
+   from).
+2. Replace the binary in place — re-run the curl download for the new
+   release asset (Option A), or `git pull && cargo build --release` at the
+   new tag (Option B). The binary path stays the same, so no MCP client
+   config change is needed.
+3. Restart the MCP client (or just the `agent-nexus` process) so it
+   reconnects to the new binary.
+
+A new version is cut by a maintainer pushing a tag:
+
+```bash
+git tag vX.Y.Z
+git push origin vX.Y.Z
+```
+
+`release.yml` then builds and publishes the binaries automatically; nothing
+else needs to change (the version comes from the tag name, not from a
+checked-in file).
 
 ## 14. Development
 
