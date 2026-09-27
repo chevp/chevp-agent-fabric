@@ -29,40 +29,40 @@ consistently.
 ## 1. Architecture
 
 ```
-                    ┌────────────────────────────┐
-                    │        MCP Clients          │
+                    ┌──────────────────────────────┐
+                    │        MCP Clients           │
                     │  Figma Make · Copilot ·      │
                     │  IDE Agents · Future Agents  │
                     └──────────────┬───────────────┘
-                                   │  JSON-RPC 2.0 over stdio (newline-delimited)
+                                   │  JSON-RPC 2.0 over stdio
                     ┌──────────────▼───────────────┐
-                    │   crates/nexus-server          │
-                    │   stdio.rs → rpc.rs             │
-                    │   (hand-rolled MCP transport;    │
-                    │    no business logic here)        │
+                    │   crates/nexus-server        │
+                    │   stdio.rs → rpc.rs          │
+                    │   (hand-rolled MCP transport;│
+                    │    no business logic here)   │
                     └──────────────┬───────────────┘
                                    │
-              ┌────────────────────┼─────────────────────┐
+              ┌────────────────────┼───────────────────────┐
               ▼                                            ▼
    ┌────────────────────┐                     ┌─────────────────────────┐
-   │  domain_tools.rs     │                     │      ToolRegistry        │
-   │  (fixed read API:     │                     │  crates/nexus-tools       │
-   │  projects, skills,     │                     │                            │
-   │  behavior, graph,       │                     │  Tool trait — the ONLY      │
-   │  policies, context)      │                     │  extension point              │
-   └──────────┬─────────┘                     └─────────────┬──────────────┘
-              │                                               │
-              ▼                                               ▼
-   ┌─────────────────────────────────────┐     ┌───────────────────────────────┐
-   │        crates/nexus-domain             │     │ crates/nexus-tool-graph-insights │
-   │  Project/Skill/Behavior/Graph/Policy    │◄────│ (example concrete tool crate:      │
-   │  stores + the Context Resolver           │     │  runs a relation-count analysis)    │
-   │  — filesystem/Git-backed, concrete         │     └───────────────────────────────┘
+   │  domain_tools.rs   │                     │      ToolRegistry       │
+   │  (fixed read API:  │                     │  crates/nexus-tools     │
+   │  projects, skills, │                     │                         │
+   │  behavior, graph,  │                     │  Tool trait — the ONLY  │
+   │  policies, context)│                     │  extension point        │
+   └──────────┬─────────┘                     └─────────────┬───────────┘
+              │                                             │
+              ▼                                             ▼
+   ┌─────────────────────────────────────┐     ┌──────────────────────────────────┐
+   │        crates/nexus-domain          │     │ crates/nexus-tool-graph-insights │
+   │  Project/Skill/Behavior/Graph/Policy│◄────│ (example concrete tool crate:    │
+   │  stores + the Context Resolver      │     │  runs a relation-count analysis) │
+   │  — filesystem/Git-backed, concrete  │     └──────────────────────────────────┘
    └──────────────────┬──────────────────┘
-                       ▼
+                      ▼
               ┌────────────────────┐
-              │   Git / Filesystem   │
-              │  projects/, global/  │
+              │   Git / Filesystem │
+              │  projects/, global/│
               └────────────────────┘
 ```
 

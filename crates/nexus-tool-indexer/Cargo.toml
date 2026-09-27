@@ -1,0 +1,16 @@
+[package]
+name = "nexus-tool-indexer"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "index_project: scans a project's real source tree (icc-frost-lib labs, moana kits, .claude/skills) and writes matching graph entities/relations and imported skill files under its Nexus directory."
+
+[dependencies]
+nexus-domain = { path = "../nexus-domain" }
+nexus-tools = { path = "../nexus-tools" }
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+
+[dev-dependencies]
+tempfile = "3"

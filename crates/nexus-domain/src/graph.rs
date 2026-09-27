@@ -1,6 +1,6 @@
 use crate::errors::{NexusError, NexusResult};
 use crate::fs_util::list_files_recursive;
-use crate::types::{GraphEntity, GraphRelation, RelationKind};
+use crate::types::{Confidence, Evidence, GraphEntity, GraphRelation, Provenance, RelationKind};
 use serde_json::Value;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::path::{Path, PathBuf};
@@ -18,6 +18,12 @@ fn load_entity_file(path: &Path, project_id: &str) -> NexusResult<GraphEntity> {
     let id = take_string(&mut object, "id", path)?;
     let kind = take_string(&mut object, "type", path)?;
     let name = take_string(&mut object, "name", path)?;
+    let artifact = object
+        .remove("artifact")
+        .and_then(|v| v.as_str().map(str::to_string));
+    let evidence = take_typed(&mut object, "evidence", path)?.unwrap_or_default();
+    let confidence = take_typed(&mut object, "confidence", path)?;
+    let provenance = take_typed(&mut object, "provenance", path)?.unwrap_or_default();
 
     Ok(GraphEntity {
         id,
@@ -26,7 +32,27 @@ fn load_entity_file(path: &Path, project_id: &str) -> NexusResult<GraphEntity> {
         attributes: object,
         project_id: project_id.to_string(),
         source_path: path.to_path_buf(),
+        artifact,
+        evidence,
+        confidence,
+        provenance,
     })
+}
+
+fn take_typed<T: serde::de::DeserializeOwned>(
+    object: &mut serde_json::Map<String, Value>,
+    key: &str,
+    path: &Path,
+) -> NexusResult<Option<T>> {
+    object
+        .remove(key)
+        .map(|v| {
+            serde_json::from_value(v).map_err(|err| NexusError::Validation {
+                message: format!("graph entity field \"{key}\" is invalid: {err}"),
+                path: path.to_path_buf(),
+            })
+        })
+        .transpose()
 }
 
 fn take_string(
@@ -48,6 +74,14 @@ struct RelationFile {
     from: String,
     relation: RelationKind,
     to: String,
+    #[serde(default)]
+    evidence: Evidence,
+    #[serde(default)]
+    confidence: Option<Confidence>,
+    #[serde(default)]
+    provenance: Vec<Provenance>,
+    #[serde(default)]
+    proposal: Option<String>,
 }
 
 fn load_relation_file(path: &Path, project_id: &str) -> NexusResult<GraphRelation> {
@@ -58,6 +92,10 @@ fn load_relation_file(path: &Path, project_id: &str) -> NexusResult<GraphRelatio
         to: data.to,
         project_id: project_id.to_string(),
         source_path: path.to_path_buf(),
+        evidence: data.evidence,
+        confidence: data.confidence,
+        provenance: data.provenance,
+        proposal: data.proposal,
     })
 }
 

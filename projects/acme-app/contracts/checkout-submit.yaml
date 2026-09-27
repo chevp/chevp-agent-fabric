@@ -1,0 +1,21 @@
+id: checkout-submit
+name: Checkout submit
+role: ux
+subject: checkout-button
+
+intent:
+  - submit checkout order
+
+requirements:
+  - prevent duplicate submission
+  - error is recoverable
+
+behaviors:
+  states:
+    - idle
+    - loading
+    - success
+    - error
+
+constraints:
+  - preserve user input on error

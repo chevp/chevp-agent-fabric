@@ -3,9 +3,13 @@ resolver = "2"
 members = [
     "crates/nexus-domain",
     "crates/nexus-tools",
+    "crates/nexus-semantic",
     "crates/nexus-tool-graph-insights",
     "crates/nexus-tool-game-studio",
+    "crates/nexus-tool-indexer",
+    "crates/nexus-tool-subserver",
     "crates/nexus-server",
+    "tooling/asset-factory-mcp",
 ]
 
 [workspace.package]
@@ -18,3 +22,4 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_yaml = "0.9"
 thiserror = "1"
+async-trait = "0.1"

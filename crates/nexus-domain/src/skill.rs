@@ -150,10 +150,13 @@ fn merge_with_project_overrides(global: Vec<Skill>, project: Vec<Skill>) -> Vec<
     merged.into_values().collect()
 }
 
+// Function words that would otherwise match nearly every skill description.
+const STOPWORDS: &[&str] = &["the", "and", "for", "with", "from", "into", "this", "that", "how"];
+
 fn tokenize(text: &str) -> HashSet<String> {
     text.to_lowercase()
         .split(|c: char| !c.is_ascii_alphanumeric())
-        .filter(|w| w.len() > 2)
+        .filter(|w| w.len() > 2 && !STOPWORDS.contains(w))
         .map(|w| w.to_string())
         .collect()
 }

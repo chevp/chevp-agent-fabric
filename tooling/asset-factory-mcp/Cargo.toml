@@ -1,0 +1,17 @@
+[package]
+name = "asset-factory-mcp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Asset-factory MCP sub-server: design spec -> multi-view references -> Hunyuan3D shape jobs per component -> Blender assembly -> PBR per material group -> validation -> comparison card. Plans and reviews jobs; image/Hunyuan/Blender execution is done by drivers that read its plans."
+
+[[bin]]
+name = "asset-factory-mcp"
+path = "src/main.rs"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+tempfile = "3"

@@ -3,6 +3,26 @@
 version = 4
 
 [[package]]
+name = "asset-factory-mcp"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
+name = "async-trait"
+version = "0.1.92"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "82f6aeea286b8eb4dd3431a1be1b59d290ace00f5bfd8e2a159bc2a05e2c1667"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.6",
+]
+
+[[package]]
 name = "bitflags"
 version = "2.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -99,12 +119,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "nexus-semantic"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "nexus-domain",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tempfile",
+ "thiserror",
+]
+
+[[package]]
 name = "nexus-server"
 version = "0.1.0"
 dependencies = [
  "nexus-domain",
  "nexus-tool-game-studio",
  "nexus-tool-graph-insights",
+ "nexus-tool-indexer",
+ "nexus-tool-subserver",
  "nexus-tools",
  "serde",
  "serde_json",
@@ -131,6 +166,28 @@ dependencies = [
  "nexus-tools",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "nexus-tool-indexer"
+version = "0.1.0"
+dependencies = [
+ "nexus-domain",
+ "nexus-tools",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tempfile",
+]
+
+[[package]]
+name = "nexus-tool-subserver"
+version = "0.1.0"
+dependencies = [
+ "nexus-tools",
+ "serde",
+ "serde_json",
+ "tempfile",
 ]
 
 [[package]]

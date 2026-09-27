@@ -14,6 +14,8 @@ nexus-domain = { path = "../nexus-domain" }
 nexus-tools = { path = "../nexus-tools" }
 nexus-tool-graph-insights = { path = "../nexus-tool-graph-insights" }
 nexus-tool-game-studio = { path = "../nexus-tool-game-studio" }
+nexus-tool-indexer = { path = "../nexus-tool-indexer" }
+nexus-tool-subserver = { path = "../nexus-tool-subserver" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

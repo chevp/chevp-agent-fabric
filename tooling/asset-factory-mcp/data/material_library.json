@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "materials": [
+    { "id": "M01", "name": "painted_white",   "base": "painted composite",      "color": [0.86, 0.84, 0.80], "roughness": 0.38, "metallic": 0.05, "note": "primary hull paint, warm white" },
+    { "id": "M02", "name": "painted_grey",    "base": "painted composite",      "color": [0.46, 0.47, 0.49], "roughness": 0.42, "metallic": 0.05, "note": "secondary panels" },
+    { "id": "M03", "name": "painted_dark",    "base": "painted composite",      "color": [0.12, 0.13, 0.14], "roughness": 0.46, "metallic": 0.05, "note": "accent / trim paint" },
+    { "id": "M04", "name": "bare_aluminum",   "base": "machined aluminum",      "color": [0.78, 0.79, 0.80], "roughness": 0.27, "metallic": 0.85, "note": "frames, struts" },
+    { "id": "M05", "name": "titanium",        "base": "heat-resistant alloy",   "color": [0.54, 0.52, 0.50], "roughness": 0.31, "metallic": 0.92, "note": "engine bodies, nozzles" },
+    { "id": "M06", "name": "ceramic",         "base": "dark ceramic",           "color": [0.16, 0.16, 0.17], "roughness": 0.72, "metallic": 0.0,  "note": "thermal tiles" },
+    { "id": "M07", "name": "thermal_blanket", "base": "multi-layer insulation", "color": [0.72, 0.62, 0.30], "roughness": 0.55, "metallic": 0.35, "note": "crinkled foil insulation" },
+    { "id": "M08", "name": "glass",           "base": "coated glass",           "color": [0.10, 0.14, 0.18], "roughness": 0.05, "metallic": 0.0,  "note": "canopies, sensor lenses", "transmission": 0.6 },
+    { "id": "M09", "name": "rubber",          "base": "rubber",                 "color": [0.05, 0.05, 0.05], "roughness": 0.85, "metallic": 0.0,  "note": "tyres, seals" },
+    { "id": "M10", "name": "engine_heat",     "base": "heat-tinted alloy",      "color": [0.40, 0.30, 0.34], "roughness": 0.33, "metallic": 0.90, "note": "exhaust rims with heat discoloration", "emission": 0.0 }
+  ]
+}
