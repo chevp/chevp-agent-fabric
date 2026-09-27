@@ -10,6 +10,8 @@ struct ProjectFile {
     name: String,
     version: u32,
     description: Option<String>,
+    #[serde(default)]
+    roles: Vec<String>,
 }
 
 fn load_project_file(project_dir: &Path) -> NexusResult<Project> {
@@ -21,6 +23,7 @@ fn load_project_file(project_dir: &Path) -> NexusResult<Project> {
         version: data.version,
         description: data.description,
         path: project_dir.to_path_buf(),
+        roles: data.roles,
     })
 }
 

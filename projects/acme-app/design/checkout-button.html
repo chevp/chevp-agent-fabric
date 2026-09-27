@@ -1,0 +1,13 @@
+<!-- Design spec: checkout button in its loading state. -->
+<form id="checkout-form" name="checkout">
+  <input name="card-number" required aria-describedby="card-hint">
+  <button
+    data-component="checkout-button"
+    data-states="idle loading success error"
+    data-state="loading"
+    type="submit"
+    disabled
+    aria-busy="true">
+    Place order
+  </button>
+</form>

@@ -29,40 +29,40 @@ consistently.
 ## 1. Architecture
 
 ```
-                    ┌────────────────────────────┐
-                    │        MCP Clients          │
+                    ┌──────────────────────────────┐
+                    │        MCP Clients           │
                     │  Figma Make · Copilot ·      │
                     │  IDE Agents · Future Agents  │
                     └──────────────┬───────────────┘
-                                   │  JSON-RPC 2.0 over stdio (newline-delimited)
+                                   │  JSON-RPC 2.0 over stdio
                     ┌──────────────▼───────────────┐
-                    │   crates/nexus-server          │
-                    │   stdio.rs → rpc.rs             │
-                    │   (hand-rolled MCP transport;    │
-                    │    no business logic here)        │
+                    │   crates/nexus-server        │
+                    │   stdio.rs → rpc.rs          │
+                    │   (hand-rolled MCP transport;│
+                    │    no business logic here)   │
                     └──────────────┬───────────────┘
                                    │
-              ┌────────────────────┼─────────────────────┐
+              ┌────────────────────┼───────────────────────┐
               ▼                                            ▼
    ┌────────────────────┐                     ┌─────────────────────────┐
-   │  domain_tools.rs     │                     │      ToolRegistry        │
-   │  (fixed read API:     │                     │  crates/nexus-tools       │
-   │  projects, skills,     │                     │                            │
-   │  behavior, graph,       │                     │  Tool trait — the ONLY      │
-   │  policies, context)      │                     │  extension point              │
-   └──────────┬─────────┘                     └─────────────┬──────────────┘
-              │                                               │
-              ▼                                               ▼
-   ┌─────────────────────────────────────┐     ┌───────────────────────────────┐
-   │        crates/nexus-domain             │     │ crates/nexus-tool-graph-insights │
-   │  Project/Skill/Behavior/Graph/Policy    │◄────│ (example concrete tool crate:      │
-   │  stores + the Context Resolver           │     │  runs a relation-count analysis)    │
-   │  — filesystem/Git-backed, concrete         │     └───────────────────────────────┘
+   │  domain_tools.rs   │                     │      ToolRegistry       │
+   │  (fixed read API:  │                     │  crates/nexus-tools     │
+   │  projects, skills, │                     │                         │
+   │  behavior, graph,  │                     │  Tool trait — the ONLY  │
+   │  policies, context)│                     │  extension point        │
+   └──────────┬─────────┘                     └─────────────┬───────────┘
+              │                                             │
+              ▼                                             ▼
+   ┌─────────────────────────────────────┐     ┌──────────────────────────────────┐
+   │        crates/nexus-domain          │     │ crates/nexus-tool-graph-insights │
+   │  Project/Skill/Behavior/Graph/Policy│◄────│ (example concrete tool crate:    │
+   │  stores + the Context Resolver      │     │  runs a relation-count analysis) │
+   │  — filesystem/Git-backed, concrete  │     └──────────────────────────────────┘
    └──────────────────┬──────────────────┘
-                       ▼
+                      ▼
               ┌────────────────────┐
-              │   Git / Filesystem   │
-              │  projects/, global/  │
+              │   Git / Filesystem │
+              │  projects/, global/│
               └────────────────────┘
 ```
 
@@ -263,11 +263,18 @@ Fixed read tools (`domain_tools.rs`, always present):
 | `check_permission` | Checks whether a client holds a permission. |
 | `resolve_context` | Resolves the minimal relevant context for a task. |
 
-Plus every tool registered in `ToolRegistry` — in this repo, exactly one:
+Plus every tool registered in `ToolRegistry`:
 
 | Tool | Description |
 | --- | --- |
 | `graph_insights` | Example concrete tool: ranks a project's graph entities by relation count. |
+| `studio_org` | Game studio org chart (directors → agents) with structural problems. |
+| `studio_state` | Director's view: vision, problems, job queue, ready jobs, spend, recent events. |
+| `studio_submit_job` | Puts a job on the bus; authority flows downward, budget within the assignee's cap. |
+| `studio_claim_job` | An agent pulls its highest-priority ready job (exclusive claim). |
+| `studio_complete_job` | Reports done/failed with result, spend (overruns flagged) and events. |
+| `studio_record_event` | Appends events (`asset_mutated`, ...) with parents/child to the log. |
+| `studio_lineage` | Walks the genealogy of an artifact back to founders or forward to leaves. |
 
 `tools/list` returns both sets, indistinguishable to the client. Domain
 errors and tool errors alike come back as `{ content: [...], isError: true }`
@@ -300,6 +307,35 @@ analysis":
 
 Nothing else changes: no transport code, no domain code. See
 `crates/nexus-tool-graph-insights` for a complete, working example.
+
+### Game studio tools (`crates/nexus-tool-game-studio`)
+
+A multi-agent game studio coordinated through files instead of chat. Agents
+are `goal + handled job types + tools + budget cap + authority` entries in
+an org chart; they never talk to each other directly, they read state, pull
+jobs and report results. Blender/engine/render execution stays in separate
+MCP servers the agents call — this crate is the bus they report back to.
+
+```
+projects/<id>/studio/
+├── org.yaml         # members: id, role (director|agent), reportsTo, handles, tools, budget
+├── vision.yaml      # vision, objectives, problems, facts
+├── jobs/JOB-*.json  # queued → claimed → done | failed   (written by the tools)
+└── events.jsonl     # append-only event log            (written by the tools)
+```
+
+The loop: the game director reads `studio_state` and turns problems into
+jobs (`studio_submit_job`, only downward in the org, budget within the
+assignee's per-job cap, `dependsOn` for ordering). Agents call
+`studio_claim_job` — they get jobs assigned to themselves, or to their lead
+when the type is in their `handles`. `studio_complete_job` records result,
+spend and events such as `{ event: asset_mutated, parent: rock_0042, child:
+rock_0042_17, operator: fracture_crystal, seed: 38192, scores: {...} }`, and
+`studio_lineage` answers "why does this rock exist?" from those events.
+
+Start a project from `crates/nexus-tool-game-studio/templates/{org,vision}.yaml`.
+This crate is the one place that writes files: it owns `studio/`, and
+`nexus-domain` stays read-only.
 
 ## 10. Permission model
 

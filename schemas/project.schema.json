@@ -9,6 +9,11 @@
     "id": { "type": "string", "minLength": 1 },
     "name": { "type": "string", "minLength": 1 },
     "version": { "type": "integer", "minimum": 1 },
-    "description": { "type": "string" }
+    "description": { "type": "string" },
+    "roles": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Semantic roles participating in the project (ux, engineering, qa, ...)."
+    }
   }
 }

@@ -1,0 +1,20 @@
+component: Button
+description: Primary action button of the Acme design system.
+variants:
+  - Primary
+  - Secondary
+states:
+  - Default
+  - Hover
+  - Pressed
+  - Disabled
+  - Loading
+tokens:
+  - color.primary
+  - spacing.medium
+  - typography.label
+interactions:
+  - click -> submit
+accessibility:
+  - Reachable and operable by keyboard alone
+  - Loading state is announced via aria-busy

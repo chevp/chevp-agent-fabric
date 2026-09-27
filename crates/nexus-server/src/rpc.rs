@@ -143,7 +143,11 @@ mod tests {
 
         assert!(names.contains(&"resolve_context"));
         assert!(names.contains(&"graph_insights"));
-        assert_eq!(names.len(), domain_tools::names().len() + 1);
+        assert!(names.contains(&"studio_claim_job"));
+        assert_eq!(
+            names.len(),
+            domain_tools::names().len() + 1 + nexus_tool_game_studio::tools().len()
+        );
     }
 
     #[test]

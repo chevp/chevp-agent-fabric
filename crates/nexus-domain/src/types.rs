@@ -20,6 +20,9 @@ pub struct Project {
     pub version: u32,
     pub description: Option<String>,
     pub path: PathBuf,
+    /// Semantic roles participating in the project (`ux`, `engineering`, ...).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub roles: Vec<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -96,6 +99,49 @@ pub struct BehaviorSpec {
     pub source_path: PathBuf,
 }
 
+/// How a statement is backed. Never upgraded without new evidence: an
+/// `Inferred` item stays `Inferred` even after a proposal is accepted.
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Default,
+)]
+#[serde(rename_all = "lowercase")]
+pub enum Evidence {
+    /// Stated literally in an authored source.
+    #[default]
+    Explicit,
+    /// Derived by a deterministic rule from one or more sources.
+    Inferred,
+    /// Weak signal, not yet corroborated.
+    Candidate,
+    Unknown,
+}
+
+/// Confidence in a statement, 0.0..=1.0, with the rule that produced it.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Confidence {
+    pub value: f32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+}
+
+/// Where a statement came from.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Provenance {
+    /// Repo-relative path or URI of the source.
+    pub source: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub line_start: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub line_end: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub commit: Option<String>,
+    /// Parser/extractor that produced the statement.
+    pub extraction: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub artifact: Option<String>,
+}
+
 /// A node in the Semantic Content Graph.
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -108,9 +154,17 @@ pub struct GraphEntity {
     pub attributes: Map<String, Value>,
     pub project_id: String,
     pub source_path: PathBuf,
+    /// Registered artifact this entity represents, if any.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub artifact: Option<String>,
+    pub evidence: Evidence,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confidence: Option<Confidence>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub provenance: Vec<Provenance>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum RelationKind {
     Implements,
@@ -122,6 +176,53 @@ pub enum RelationKind {
     ImplementedBy,
     ValidatedBy,
     RelatedTo,
+    TestedBy,
+    ChangedBy,
+    Contains,
+    HasVariant,
+    Documents,
+}
+
+impl RelationKind {
+    pub const ALL: [RelationKind; 14] = [
+        RelationKind::Implements,
+        RelationKind::DependsOn,
+        RelationKind::Uses,
+        RelationKind::DefinedBy,
+        RelationKind::GovernedBy,
+        RelationKind::RepresentedBy,
+        RelationKind::ImplementedBy,
+        RelationKind::ValidatedBy,
+        RelationKind::RelatedTo,
+        RelationKind::TestedBy,
+        RelationKind::ChangedBy,
+        RelationKind::Contains,
+        RelationKind::HasVariant,
+        RelationKind::Documents,
+    ];
+
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            RelationKind::Implements => "implements",
+            RelationKind::DependsOn => "depends-on",
+            RelationKind::Uses => "uses",
+            RelationKind::DefinedBy => "defined-by",
+            RelationKind::GovernedBy => "governed-by",
+            RelationKind::RepresentedBy => "represented-by",
+            RelationKind::ImplementedBy => "implemented-by",
+            RelationKind::ValidatedBy => "validated-by",
+            RelationKind::RelatedTo => "related-to",
+            RelationKind::TestedBy => "tested-by",
+            RelationKind::ChangedBy => "changed-by",
+            RelationKind::Contains => "contains",
+            RelationKind::HasVariant => "has-variant",
+            RelationKind::Documents => "documents",
+        }
+    }
+
+    pub fn parse(s: &str) -> Option<RelationKind> {
+        RelationKind::ALL.into_iter().find(|k| k.as_str() == s)
+    }
 }
 
 /// A directed edge in the Semantic Content Graph.
@@ -133,6 +234,14 @@ pub struct GraphRelation {
     pub to: String,
     pub project_id: String,
     pub source_path: PathBuf,
+    pub evidence: Evidence,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confidence: Option<Confidence>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub provenance: Vec<Provenance>,
+    /// Proposal through which this relation entered the canonical graph.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proposal: Option<String>,
 }
 
 /// A single client's permission grant, global or for one project.

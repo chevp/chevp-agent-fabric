@@ -68,6 +68,10 @@ impl PolicyEngine {
         Self { store }
     }
 
+    pub fn store(&self) -> &PolicyStore {
+        &self.store
+    }
+
     /// Project-scoped rules for a client replace (not merge with) its global
     /// rules; a client with no project-specific rule falls back to global.
     pub fn policies_for_client(

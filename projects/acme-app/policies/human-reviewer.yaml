@@ -1,0 +1,5 @@
+client: human-reviewer
+permissions:
+  - read:project
+  - read:graph
+  - review:proposals

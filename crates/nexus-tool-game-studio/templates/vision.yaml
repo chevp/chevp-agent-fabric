@@ -1,0 +1,19 @@
+vision: Survival / exploration game, 2.5D with an orthographic camera.
+
+objectives:
+  - { id: biome-diversity, description: Increase biome diversity, priority: 1 }
+  - { id: poi-readability, description: Improve POI readability, priority: 2 }
+  - { id: asset-redundancy, description: Reduce asset redundancy, priority: 3 }
+  - { id: performance, description: Improve frame time and draw calls, priority: 4 }
+
+problems:
+  - { id: forest-repetition, description: Forest regions are too repetitive }
+  - { id: poi-silhouettes, description: POI silhouettes are too similar }
+  - { id: road-hierarchy, description: Road network lacks hierarchy }
+  - { id: night-readability, description: Nighttime readability is poor }
+  - { id: loot-density, description: Loot density is inconsistent }
+
+facts:
+  regions: 0
+  pois: 0
+  billboardAssets: 0
