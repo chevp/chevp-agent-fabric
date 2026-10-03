@@ -34,7 +34,9 @@ impl Store {
         let path = self.root.join("materials.json");
         match fs::read_to_string(&path) {
             Ok(text) => MaterialLibrary::parse(&text),
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(MaterialLibrary::default_library()),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+                Ok(MaterialLibrary::default_library())
+            }
             Err(e) => Err(io(&path, e)),
         }
     }
@@ -82,13 +84,20 @@ impl Store {
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent).map_err(|e| io(parent, e))?;
         }
-        let mut f = OpenOptions::new().create(true).append(true).open(path).map_err(|e| io(path, e))?;
+        let mut f = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(path)
+            .map_err(|e| io(path, e))?;
         writeln!(f, "{value}").map_err(|e| io(path, e))
     }
 
     pub fn read_jsonl(&self, path: &Path) -> Result<Vec<Value>, String> {
         match fs::read_to_string(path) {
-            Ok(text) => Ok(text.lines().filter_map(|l| serde_json::from_str(l).ok()).collect()),
+            Ok(text) => Ok(text
+                .lines()
+                .filter_map(|l| serde_json::from_str(l).ok())
+                .collect()),
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(Vec::new()),
             Err(e) => Err(io(path, e)),
         }

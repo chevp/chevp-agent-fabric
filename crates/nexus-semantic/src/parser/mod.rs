@@ -92,10 +92,7 @@ impl ParserRegistry {
 
 pub(crate) fn text_of(artifact: &NexusArtifact) -> SemanticResult<&str> {
     artifact.text().ok_or_else(|| {
-        SemanticError::InvalidInput(format!(
-            "artifact \"{}\" has not been loaded",
-            artifact.id
-        ))
+        SemanticError::InvalidInput(format!("artifact \"{}\" has not been loaded", artifact.id))
     })
 }
 

@@ -59,15 +59,25 @@ fn extract(artifact: &NexusArtifact, v: &Value, parser: &str) -> SemanticModel {
         str_field(v, "id").map(|id| (format!("project:{id}"), "project"))
     } else if artifact.kind == ArtifactKind::Policy || v.get("permissions").is_some() {
         str_field(v, "client").map(|c| (format!("policy:{c}"), "policy"))
-    } else if artifact.kind == ArtifactKind::Workflow || (v.get("jobs").is_some() && v.get("on").is_some()) {
+    } else if artifact.kind == ArtifactKind::Workflow
+        || (v.get("jobs").is_some() && v.get("on").is_some())
+    {
         Some((format!("workflow:{}", slug(&artifact.name)), "workflow"))
     } else if v.get("openapi").is_some() || v.get("swagger").is_some() {
-        let title = v.pointer("/info/title").and_then(Value::as_str).unwrap_or(&artifact.name);
+        let title = v
+            .pointer("/info/title")
+            .and_then(Value::as_str)
+            .unwrap_or(&artifact.name);
         Some((format!("api:{}", slug(title)), "api"))
-    } else if artifact.name == "package.json" || artifact.provenance.source.ends_with("package.json") {
+    } else if artifact.name == "package.json"
+        || artifact.provenance.source.ends_with("package.json")
+    {
         str_field(v, "name").map(|n| (format!("package:{n}"), "package"))
     } else {
-        match (str_field(v, "id"), str_field(v, "type").or(str_field(v, "kind"))) {
+        match (
+            str_field(v, "id"),
+            str_field(v, "type").or(str_field(v, "kind")),
+        ) {
             (Some(id), Some(kind)) => Some((slug(id), kind)),
             _ => None,
         }
@@ -92,7 +102,11 @@ fn extract(artifact: &NexusArtifact, v: &Value, parser: &str) -> SemanticModel {
             if let Some(jobs) = v.get("jobs").and_then(Value::as_object) {
                 e.attributes.insert(
                     "jobs".into(),
-                    jobs.keys().cloned().map(Value::from).collect::<Vec<_>>().into(),
+                    jobs.keys()
+                        .cloned()
+                        .map(Value::from)
+                        .collect::<Vec<_>>()
+                        .into(),
                 );
             }
         }
@@ -115,15 +129,21 @@ fn extract(artifact: &NexusArtifact, v: &Value, parser: &str) -> SemanticModel {
         let kind = modal_kind(&c)
             .filter(|k| *k == ConstraintKind::MustNot)
             .unwrap_or(ConstraintKind::Must);
-        m.constraints.push(Constraint::new(subject, &c, kind, at(&c)));
+        m.constraints
+            .push(Constraint::new(subject, &c, kind, at(&c)));
     }
     if let Some(s) = subject {
         for state in strings(v.get("states")) {
-            m.states.push(State::new(s, &state, at(&format!("- {state}"))));
+            m.states
+                .push(State::new(s, &state, at(&format!("- {state}"))));
         }
         for dep in strings(v.get("dependsOn").or_else(|| v.get("depends_on"))) {
-            m.dependencies
-                .push(Dependency::new(s, RelationKind::DependsOn, &slug(&dep), at(&dep)));
+            m.dependencies.push(Dependency::new(
+                s,
+                RelationKind::DependsOn,
+                &slug(&dep),
+                at(&dep),
+            ));
         }
         if let Some(deps) = v.get("dependencies").and_then(Value::as_object) {
             for name in deps.keys() {

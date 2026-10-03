@@ -1,0 +1,54 @@
+{
+  "id": "commit-dba96e7",
+  "projectId": "acme-app",
+  "kind": "commit",
+  "role": "system",
+  "name": "Implement Agent Nexus V1: MCP control plane over a Git-backed context layer",
+  "content": {
+    "type": "inline",
+    "text": "Implement Agent Nexus V1: MCP control plane over a Git-backed context layer"
+  },
+  "provenance": {
+    "source": "git:dba96e7",
+    "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+    "extraction": "GitIngestion",
+    "artifact": "commit-dba96e7"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "stated explicitly in the source"
+  },
+  "metadata": {
+    "author": "Claude",
+    "date": "2026-09-26T12:27:21Z",
+    "files": [
+      {
+        "path": "projects/acme-app/behavior/checkout-button.yaml",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/context/overview.md",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/policies/copilot.yaml",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/policies/figma-make.yaml",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/project.yaml",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/skills/checkout-ux/skill.md",
+        "status": "A"
+      }
+    ],
+    "sha": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+    "subject": "Implement Agent Nexus V1: MCP control plane over a Git-backed context layer"
+  },
+  "registeredAt": 1790505399
+}

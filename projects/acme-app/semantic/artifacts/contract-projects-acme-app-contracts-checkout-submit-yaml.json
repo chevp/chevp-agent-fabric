@@ -1,0 +1,22 @@
+{
+  "id": "contract-projects-acme-app-contracts-checkout-submit-yaml",
+  "projectId": "acme-app",
+  "kind": "contract",
+  "role": "ux",
+  "name": "checkout-submit.yaml",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/contracts/checkout-submit.yaml"
+  },
+  "provenance": {
+    "source": "projects/acme-app/contracts/checkout-submit.yaml",
+    "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/contracts/checkout-submit.yaml"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

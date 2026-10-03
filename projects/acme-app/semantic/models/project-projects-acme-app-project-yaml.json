@@ -1,0 +1,111 @@
+{
+  "artifacts": [
+    "project-projects-acme-app-project-yaml"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "file:projects/acme-app/project.yaml",
+      "name": "project.yaml",
+      "kind": "file",
+      "role": "product",
+      "artifact": "project-projects-acme-app-project-yaml",
+      "attributes": {
+        "artifactKind": "project"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/project.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "project-projects-acme-app-project-yaml"
+        }
+      ]
+    },
+    {
+      "id": "project:acme-app",
+      "name": "Acme App",
+      "kind": "project",
+      "description": "Example e-commerce application used to demonstrate Agent Nexus: a checkout flow with a UX skill, a behavior specification for the checkout button, and a small semantic graph tying them together.",
+      "role": "product",
+      "artifact": "project-projects-acme-app-project-yaml",
+      "attributes": {
+        "roles": [
+          "product",
+          "ux",
+          "design",
+          "engineering",
+          "qa"
+        ],
+        "version": 1
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/project.yaml",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "YamlParser",
+          "artifact": "project-projects-acme-app-project-yaml"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "project:acme-app|defined-by|file:projects/acme-app/project.yaml",
+      "from": "project:acme-app",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/project.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/project.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "project-projects-acme-app-project-yaml"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 3 statements: 3 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/project.yaml",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "project-projects-acme-app-project-yaml"
+    },
+    {
+      "source": "projects/acme-app/project.yaml",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "YamlParser",
+      "artifact": "project-projects-acme-app-project-yaml"
+    }
+  ],
+  "assumptions": []
+}

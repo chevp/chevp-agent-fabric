@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semantic Project Explorer</title>
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #ffffff; --ink: #1d1d1f; --muted: #6b6b70; --line: #e3e3e0;
+  --accent: #2463eb; --explicit: #2463eb; --inferred: #8b5cf6; --candidate: #d97706; --unknown: #9ca3af;
+  --added: #15803d; --removed: #dc2626; --changed: #d97706; --edge: #8a8a92; --halo: #f59e0b;
+  --petal-l: 55%; --petal-a: 0.10; --shadow: 0 1px 3px rgba(0,0,0,.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111114; --panel: #1b1b20; --ink: #ececf1; --muted: #a0a0aa; --line: #2c2c34;
+    --accent: #6ea0ff; --explicit: #6ea0ff; --inferred: #b197fc; --candidate: #fbbf24; --unknown: #6b7280;
+    --added: #4ade80; --removed: #f87171; --changed: #fbbf24; --edge: #7a7a86; --halo: #fbbf24;
+    --petal-l: 62%; --petal-a: 0.13; --shadow: 0 1px 3px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111114; --panel: #1b1b20; --ink: #ececf1; --muted: #a0a0aa; --line: #2c2c34;
+  --accent: #6ea0ff; --explicit: #6ea0ff; --inferred: #b197fc; --candidate: #fbbf24; --unknown: #6b7280;
+  --added: #4ade80; --removed: #f87171; --changed: #fbbf24; --edge: #7a7a86; --halo: #fbbf24;
+  --petal-l: 62%; --petal-a: 0.13; --shadow: 0 1px 3px rgba(0,0,0,.5);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
+header h1 { font-size: 16px; margin: 0; font-weight: 650; }
+header .meta { color: var(--muted); font-size: 12px; }
+header .spacer { flex: 1; }
+button, input[type=search], select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+input[type=search] { min-width: 0; width: 220px; }
+main { display: grid; grid-template-columns: 260px 1fr 340px; height: calc(100% - 53px); min-height: 480px; }
+aside { background: var(--panel); border-right: 1px solid var(--line); overflow: auto; padding: 12px 14px; }
+aside.right { border-right: 0; border-left: 1px solid var(--line); }
+h2 { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 16px 0 6px; font-weight: 600; }
+h2:first-child { margin-top: 0; }
+.chk { display: flex; align-items: center; gap: 7px; padding: 2px 0; cursor: pointer; user-select: none; }
+.chk .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.chk .n { color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; font-size: 12px; }
+#stage { position: relative; overflow: hidden; touch-action: none; }
+#stage > svg { width: 100%; height: 100%; display: block; cursor: grab; }
+#stage > svg.dragging { cursor: grabbing; }
+.zoom { position: absolute; right: 12px; bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+.zoom button { width: 34px; height: 34px; padding: 0; background: var(--panel); box-shadow: var(--shadow); }
+.legend { position: absolute; left: 12px; bottom: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 12px; box-shadow: var(--shadow); }
+.legend div { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.edge { fill: none; stroke: var(--edge); }
+.edge.inferred { stroke-dasharray: 6 4; }
+.edge.candidate { stroke-dasharray: 2 4; }
+.edge.unknown { stroke-dasharray: 1 6; }
+.edge.hl { stroke: var(--accent); stroke-width: 2.2; }
+.node circle.body { stroke-width: 2; }
+.node.noncanonical circle.body { stroke-dasharray: 3 2; }
+.node text { font-size: 11px; fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-width: 3px; pointer-events: none; }
+.node .lbl { display: none; }
+.zoomed .node .lbl, .node.big .lbl, .node.sel .lbl, .node.match .lbl, .node:hover .lbl { display: block; }
+.node { cursor: pointer; }
+.node.sel circle.body { stroke: var(--accent) !important; stroke-width: 3.5; stroke-dasharray: none; }
+.dim { opacity: .12; }
+.halo { fill: none; stroke: var(--halo); stroke-width: 2; opacity: .8; }
+.badge { fill: var(--candidate); stroke: var(--panel); stroke-width: 1.5; }
+.petal-label { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; opacity: .75; pointer-events: none; }
+dl { margin: 0; display: grid; grid-template-columns: 96px 1fr; gap: 4px 10px; }
+dt { color: var(--muted); }
+dd { margin: 0; word-break: break-word; }
+.pill { display: inline-block; padding: 0 7px; border-radius: 99px; font-size: 11px; font-weight: 600; border: 1px solid currentColor; }
+.bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: 4px; }
+.bar i { display: block; height: 100%; background: var(--accent); }
+ul.plain { list-style: none; margin: 0; padding: 0; }
+ul.plain li { padding: 4px 0; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+ul.plain li:last-child { border-bottom: 0; }
+a.ref { color: var(--accent); cursor: pointer; text-decoration: none; }
+a.ref:hover { text-decoration: underline; }
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+.muted { color: var(--muted); }
+.empty { padding: 40px 24px; text-align: center; color: var(--muted); }
+.tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.tabs button.on { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 1100px) { main { grid-template-columns: 220px 1fr; } aside.right { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); max-height: 45vh; } }
+@media (max-width: 720px) {
+  main { display: flex; flex-direction: column; height: auto; }
+  #stage { height: 70vh; order: 1; }
+  aside.left { order: 2; border-right: 0; border-top: 1px solid var(--line); }
+  aside.right { order: 3; max-height: none; }
+  input[type=search] { width: 100%; }
+  header .spacer { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Semantic Project Explorer</h1>
+  <span class="meta" id="meta"></span>
+  <span class="spacer"></span>
+  <input type="search" id="search" placeholder="Search entities…" aria-label="Search entities">
+  <label><button type="button" id="load">Load JSON…</button><input type="file" id="file" accept=".json,application/json" hidden></label>
+  <button type="button" id="theme" title="Toggle theme">Theme</button>
+</header>
+<main>
+  <aside class="left">
+    <h2>Status</h2><div id="f-status"></div>
+    <h2>Entities (clusters)</h2><div id="f-cluster"></div>
+    <h2>Relationships</h2><div id="f-relation"></div>
+  </aside>
+  <section id="stage">
+    <svg id="svg" role="img" aria-label="Radial semantic graph"><g id="viewport"><g id="petals"></g><g id="edges"></g><g id="nodes"></g></g></svg>
+    <div class="legend">
+      <div><svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" class="edge" stroke-width="2"/></svg> canonical / explicit</div>
+      <div><svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" class="edge inferred" stroke-width="2"/></svg> inferred</div>
+      <div><svg width="26" height="10"><line x1="0" y1="5" x2="26" y2="5" class="edge candidate" stroke-width="2"/></svg> candidate</div>
+      <div><svg width="26" height="12"><circle cx="13" cy="6" r="5" class="halo"/></svg> changed in last diff</div>
+      <div><svg width="26" height="12"><circle cx="13" cy="6" r="4" class="badge"/></svg> pending proposal</div>
+    </div>
+    <div class="zoom"><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">−</button><button type="button" id="zreset" aria-label="Reset view">⟲</button></div>
+  </section>
+  <aside class="right">
+    <div class="tabs"><button type="button" id="tab-details" class="on">Details</button><button type="button" id="tab-diff">Semantic diff</button></div>
+    <div id="details"><div class="empty">Select a node to see its type, role, confidence, status, sources, relationships and provenance.</div></div>
+    <div id="diff" hidden></div>
+  </aside>
+</main>
+<script id="graph-data" type="application/json">{"projectId":"acme-app","projectName":"Acme App","root":"project:acme-app","generatedAt":1790505495,"nodes":[{"id":"agent-nexus","label":"agent-nexus","kind":"unresolved","cluster":"other","status":"candidate","canonical":false,"confidence":0.3,"provenance":[],"depth":2,"distance":2,"parent":"skill:agent-nexus-mcp","children":[],"centrality":0.036},{"id":"agent-nexus-root","label":"agent-nexus-root","kind":"unresolved","cluster":"other","status":"candidate","canonical":false,"confidence":0.3,"provenance":[],"depth":2,"distance":2,"parent":"skill:agent-nexus-mcp","children":[],"centrality":0.036},{"id":"aria-live","label":"aria-live","kind":"unresolved","cluster":"other","status":"candidate","canonical":false,"confidence":0.3,"provenance":[],"depth":2,"distance":2,"parent":"skill:accessibility","children":[],"centrality":0.036},{"id":"behavior:checkout-button","label":"checkout-button","kind":"behavior-spec","cluster":"behaviors","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/behavior/checkout-button.yaml","lineStart":1,"lineEnd":1,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"BehaviorSpecParser","artifact":"behavior-spec-projects-acme-app-behavior-checkout-button-yaml"}],"artifact":"behavior-spec-projects-acme-app-behavior-checkout-button-yaml","depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.036},{"id":"button","label":"Button","kind":"component","role":"design","description":"Primary action button of the Acme design system.","cluster":"features","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":1,"lineEnd":1,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"artifact":"design-system-projects-acme-app-design-components-button-yaml","depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.214,"pendingProposals":["prop-1790505399-38f2a8dd6b"],"facets":{"constraints":["[explicit] loading state is announced via aria-busy","[explicit] reachable and operable by keyboard alone"],"states":["default","disabled","hover","loading","pressed"]}},{"id":"card-number","label":"card-number","kind":"field","role":"design","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/checkout-button.html","lineStart":3,"lineEnd":3,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"HtmlParser","artifact":"design-spec-projects-acme-app-design-checkout-button-html"}],"depth":3,"distance":3,"parent":"checkout-form","children":[],"centrality":0.036,"pendingProposals":["prop-1790505399-38f2a8dd6b"],"facets":{"constraints":["[explicit] card-number has aria-describedby=\"card-hint\"","[explicit] card-number is required"]}},{"id":"checkout-button","label":"Checkout Button","kind":"component","role":"design","description":"Primary call-to-action that submits the current cart for payment.","cluster":"features","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/graph/entities/checkout-button.yaml","extraction":"GraphStore"},{"source":"projects/acme-app/design/checkout-button.html","lineStart":4,"lineEnd":4,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"HtmlParser","artifact":"design-spec-projects-acme-app-design-checkout-button-html"}],"depth":1,"distance":1,"parent":"project:acme-app","children":["checkout-form","doc:projects-acme-app-context-overview-md"],"centrality":0.25,"facets":{"constraints":["[explicit] checkout-button has aria-busy=\"true\" while loading","[explicit] checkout-button is disabled while loading","[explicit] user input must remain available after an error","[explicit] preserve user input on error","[explicit] user cannot submit twice while loading"],"requirements":["error is recoverable","prevent duplicate submission"],"states":["disabled","error","idle","loading","success"],"transitions":["error --submit--> loading","idle --submit--> loading","loading --failure--> error","loading --success--> success","success --reset--> idle"]}},{"id":"checkout-form","label":"checkout","kind":"form","role":"design","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/checkout-button.html","lineStart":2,"lineEnd":2,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"HtmlParser","artifact":"design-spec-projects-acme-app-design-checkout-button-html"}],"depth":2,"distance":2,"parent":"checkout-button","children":["card-number"],"centrality":0.071,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"checkout-summary","label":"Checkout Summary","kind":"component","description":"Displays the outcome of a checkout attempt (success or error) to the customer.","cluster":"features","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/graph/entities/checkout-summary.yaml","extraction":"GraphStore"}],"depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.107},{"id":"commit:5534619","label":"Update MCP clients to use JSON-RPC 2.0 over stdio","kind":"commit","cluster":"history","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"git:5534619","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"CommitParser","artifact":"commit-5534619"}],"artifact":"commit-5534619","depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.071,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"commit:dba96e7","label":"Implement Agent Nexus V1: MCP control plane over a Git-backed context layer","kind":"commit","cluster":"history","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"git:dba96e7","commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"CommitParser","artifact":"commit-dba96e7"}],"artifact":"commit-dba96e7","depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.0},{"id":"contract:checkout-submit","label":"Checkout submit","kind":"contract","role":"ux","cluster":"contracts","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/contracts/checkout-submit.yaml","lineStart":1,"lineEnd":1,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"ContractParser","artifact":"contract-projects-acme-app-contracts-checkout-submit-yaml"}],"artifact":"contract-projects-acme-app-contracts-checkout-submit-yaml","depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.036},{"id":"design-system:tokens-json","label":"tokens.json","kind":"design-system","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","lineStart":1,"lineEnd":1,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"artifact":"design-system-projects-acme-app-design-tokens-json","depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.179,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"doc:projects-acme-app-context-overview-md","label":"Acme App Overview","kind":"document","role":"product","cluster":"docs","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/context/overview.md","commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"MarkdownParser","artifact":"documentation-projects-acme-app-context-overview-md"}],"artifact":"documentation-projects-acme-app-context-overview-md","depth":2,"distance":2,"parent":"checkout-button","children":[],"centrality":0.143,"facets":{"constraints":["[inferred] checkout interactions must follow the `checkout-ux` skill and the `checkout-button` behavior specification, and must satisfy the project's `accessibility` skill."]}},{"id":"payment-flow","label":"Payment Flow","kind":"flow","description":"End-to-end process that charges the customer and confirms the order.","cluster":"domains","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/graph/entities/payment-flow.yaml","extraction":"GraphStore"}],"depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.143},{"id":"policy:copilot","label":"copilot","kind":"policy","role":"policy","cluster":"policies","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/policies/copilot.yaml","lineStart":1,"lineEnd":1,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"YamlParser","artifact":"policy-projects-acme-app-policies-copilot-yaml"}],"artifact":"policy-projects-acme-app-policies-copilot-yaml","depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.0},{"id":"policy:figma-make","label":"figma-make","kind":"policy","role":"policy","cluster":"policies","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/policies/figma-make.yaml","lineStart":1,"lineEnd":1,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"YamlParser","artifact":"policy-projects-acme-app-policies-figma-make-yaml"}],"artifact":"policy-projects-acme-app-policies-figma-make-yaml","depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.0},{"id":"policy:human-reviewer","label":"human-reviewer","kind":"policy","role":"policy","cluster":"policies","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/policies/human-reviewer.yaml","lineStart":1,"lineEnd":1,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"YamlParser","artifact":"policy-projects-acme-app-policies-human-reviewer-yaml"}],"artifact":"policy-projects-acme-app-policies-human-reviewer-yaml","depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.0},{"id":"project:acme-app","label":"Acme App","kind":"project","description":"Example e-commerce application used to demonstrate Agent Nexus: a checkout flow with a UX skill, a behavior specification for the checkout button, and a small semantic graph tying them together.","cluster":"core","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/project.yaml","lineStart":2,"lineEnd":2,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"YamlParser","artifact":"project-projects-acme-app-project-yaml"}],"depth":0,"distance":0,"children":["behavior:checkout-button","button","checkout-button","checkout-summary","commit:5534619","commit:dba96e7","contract:checkout-submit","design-system:tokens-json","payment-flow","policy:copilot","policy:figma-make","policy:human-reviewer","skill:accessibility","skill:agent-nexus-mcp","skill:checkout-ux","skill:code-style","token:color.danger","token:color.primary","token:spacing.medium","token:typography.label","variant:button/primary","variant:button/secondary"],"centrality":0.0},{"id":"skill:accessibility","label":"Accessibility","kind":"skill","role":"engineering","description":"Baseline accessibility rules applicable to any interactive UI element","cluster":"skills","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"global/skills/accessibility/skill.md","lineStart":2,"lineEnd":2,"extraction":"SkillParser","artifact":"skill-global-skills-accessibility-skill-md"}],"artifact":"skill-global-skills-accessibility-skill-md","depth":1,"distance":1,"parent":"project:acme-app","children":["aria-live"],"centrality":0.071,"facets":{"constraints":["[explicit] color must never be the only signal for state; pair it with text or an icon with a text alternative.","[explicit] every interactive control must be reachable and operable via keyboard alone.","[explicit] focus must move predictably: never trap focus, and return focus to a sensible element after a modal or transient state closes.","[explicit] state changes that are conveyed visually (loading, success, error) must also be conveyed to assistive technology, e.g. via `aria-live` or equivalent."]}},{"id":"skill:agent-nexus-mcp","label":"Agent Nexus MCP Server","kind":"skill","role":"engineering","description":"How to install, connect, and update the Agent Nexus MCP server in a project","cluster":"skills","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"global/skills/agent-nexus-mcp/skill.md","lineStart":2,"lineEnd":2,"extraction":"SkillParser","artifact":"skill-global-skills-agent-nexus-mcp-skill-md"}],"artifact":"skill-global-skills-agent-nexus-mcp-skill-md","depth":1,"distance":1,"parent":"project:acme-app","children":["agent-nexus","agent-nexus-root"],"centrality":0.071},{"id":"skill:checkout-ux","label":"Checkout UX","kind":"skill","role":"engineering","description":"Rules for implementing checkout interactions","cluster":"skills","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/skills/checkout-ux/skill.md","lineStart":2,"lineEnd":2,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"SkillParser","artifact":"skill-projects-acme-app-skills-checkout-ux-skill-md"}],"artifact":"skill-projects-acme-app-skills-checkout-ux-skill-md","depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.143,"facets":{"constraints":["[explicit] follow the `checkout-button` behavior specification for the exact state machine (`idle -> loading -> success | error`).","[explicit] success and error states must be visually distinct and announced to assistive technology (see the `accessibility` skill).","[explicit] the checkout button must never allow a double submit while a payment is in flight. disable it (do not hide it) once submission starts.","[explicit] user-entered form data must be preserved if payment fails, so the customer can retry without re-entering everything."]}},{"id":"skill:code-style","label":"Code Style","kind":"skill","role":"engineering","description":"General coding-agent conventions applicable across all projects","cluster":"skills","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"global/skills/code-style/skill.md","lineStart":2,"lineEnd":2,"extraction":"SkillParser","artifact":"skill-global-skills-code-style-skill-md"}],"artifact":"skill-global-skills-code-style-skill-md","depth":1,"distance":1,"parent":"project:acme-app","children":[],"centrality":0.0,"facets":{"constraints":["[explicit] do not introduce a new dependency for something the standard library already does well.","[explicit] match the existing formatting/linting configuration of the project you are editing rather than imposing a different style.","[explicit] prefer small, composable functions with explicit types over large, implicit ones."]}},{"id":"token:color.danger","label":"color.danger","kind":"token","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","lineStart":4,"lineEnd":4,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.036,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"token:color.primary","label":"color.primary","kind":"token","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","lineStart":3,"lineEnd":3,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.071,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"token:spacing.medium","label":"spacing.medium","kind":"token","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","lineStart":7,"lineEnd":7,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.071,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"token:typography.label","label":"typography.label","kind":"token","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","lineStart":10,"lineEnd":10,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.071,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"variant:button/primary","label":"Primary","kind":"variant","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":2,"lineEnd":2,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.036,"pendingProposals":["prop-1790505399-38f2a8dd6b"]},{"id":"variant:button/secondary","label":"Secondary","kind":"variant","cluster":"design","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":5,"lineEnd":5,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"depth":4,"distance":4,"parent":"project:acme-app","children":[],"centrality":0.036,"pendingProposals":["prop-1790505399-38f2a8dd6b"]}],"edges":[{"id":"button|changed-by|commit:5534619","from":"button","to":"commit:5534619","relation":"changed-by","status":"inferred","canonical":false,"confidence":0.7,"provenance":[{"source":"git:5534619","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"GitIngestion"},{"source":"projects/acme-app/design/components/button.yaml","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"SemanticEngine","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"button|has-variant|variant:button/primary","from":"button","to":"variant:button/primary","relation":"has-variant","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":2,"lineEnd":2,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"button|has-variant|variant:button/secondary","from":"button","to":"variant:button/secondary","relation":"has-variant","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":5,"lineEnd":5,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"button|uses|token:color.primary","from":"button","to":"token:color.primary","relation":"uses","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":13,"lineEnd":13,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"button|uses|token:spacing.medium","from":"button","to":"token:spacing.medium","relation":"uses","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":14,"lineEnd":14,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"button|uses|token:typography.label","from":"button","to":"token:typography.label","relation":"uses","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/components/button.yaml","lineStart":15,"lineEnd":15,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-components-button-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"checkout-button|defined-by|behavior:checkout-button","from":"checkout-button","to":"behavior:checkout-button","relation":"defined-by","status":"inferred","canonical":false,"confidence":0.5,"provenance":[{"source":"projects/acme-app/behavior/checkout-button.yaml","commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"BehaviorSpecParser","artifact":"behavior-spec-projects-acme-app-behavior-checkout-button-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"checkout-button|governed-by|contract:checkout-submit","from":"checkout-button","to":"contract:checkout-submit","relation":"governed-by","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/contracts/checkout-submit.yaml","lineStart":4,"lineEnd":4,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"ContractParser","artifact":"contract-projects-acme-app-contracts-checkout-submit-yaml"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"checkout-button|governed-by|skill:checkout-ux","from":"checkout-button","to":"skill:checkout-ux","relation":"governed-by","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/graph/relations/checkout-button-governed-by-checkout-ux.yaml","extraction":"GraphStore"}]},{"id":"checkout-button|uses|payment-flow","from":"checkout-button","to":"payment-flow","relation":"uses","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/graph/relations/checkout-button-uses-payment-flow.yaml","extraction":"GraphStore"}]},{"id":"checkout-form|contains|card-number","from":"checkout-form","to":"card-number","relation":"contains","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/checkout-button.html","lineStart":3,"lineEnd":3,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"HtmlParser","artifact":"design-spec-projects-acme-app-design-checkout-button-html"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"checkout-form|contains|checkout-button","from":"checkout-form","to":"checkout-button","relation":"contains","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/checkout-button.html","lineStart":4,"lineEnd":4,"commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"HtmlParser","artifact":"design-spec-projects-acme-app-design-checkout-button-html"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"checkout-summary|depends-on|payment-flow","from":"checkout-summary","to":"payment-flow","relation":"depends-on","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/graph/relations/checkout-summary-depends-on-payment-flow.yaml","extraction":"GraphStore"}]},{"id":"checkout-summary|related-to|checkout-button","from":"checkout-summary","to":"checkout-button","relation":"related-to","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/graph/relations/checkout-summary-related-to-checkout-button.yaml","extraction":"GraphStore"}]},{"id":"design-system:tokens-json|changed-by|commit:5534619","from":"design-system:tokens-json","to":"commit:5534619","relation":"changed-by","status":"inferred","canonical":false,"confidence":0.7,"provenance":[{"source":"git:5534619","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"GitIngestion"},{"source":"projects/acme-app/design/tokens.json","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"SemanticEngine","artifact":"design-system-projects-acme-app-design-tokens-json"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"design-system:tokens-json|contains|token:color.danger","from":"design-system:tokens-json","to":"token:color.danger","relation":"contains","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"design-system:tokens-json|contains|token:color.primary","from":"design-system:tokens-json","to":"token:color.primary","relation":"contains","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"design-system:tokens-json|contains|token:spacing.medium","from":"design-system:tokens-json","to":"token:spacing.medium","relation":"contains","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"design-system:tokens-json|contains|token:typography.label","from":"design-system:tokens-json","to":"token:typography.label","relation":"contains","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/design/tokens.json","commit":"5534619ea9768ac67a146ce437facaf2c5f7f409","extraction":"DesignSystemParser","artifact":"design-system-projects-acme-app-design-tokens-json"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"doc:projects-acme-app-context-overview-md|documents|checkout-button","from":"doc:projects-acme-app-context-overview-md","to":"checkout-button","relation":"documents","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"projects/acme-app/context/overview.md","lineStart":10,"lineEnd":10,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"MarkdownParser","artifact":"documentation-projects-acme-app-context-overview-md"}]},{"id":"doc:projects-acme-app-context-overview-md|documents|checkout-summary","from":"doc:projects-acme-app-context-overview-md","to":"checkout-summary","relation":"documents","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"projects/acme-app/context/overview.md","lineStart":11,"lineEnd":11,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"MarkdownParser","artifact":"documentation-projects-acme-app-context-overview-md"}]},{"id":"doc:projects-acme-app-context-overview-md|documents|payment-flow","from":"doc:projects-acme-app-context-overview-md","to":"payment-flow","relation":"documents","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"projects/acme-app/context/overview.md","lineStart":11,"lineEnd":11,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"MarkdownParser","artifact":"documentation-projects-acme-app-context-overview-md"}]},{"id":"doc:projects-acme-app-context-overview-md|documents|skill:checkout-ux","from":"doc:projects-acme-app-context-overview-md","to":"skill:checkout-ux","relation":"documents","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"projects/acme-app/context/overview.md","lineStart":13,"lineEnd":13,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"MarkdownParser","artifact":"documentation-projects-acme-app-context-overview-md"}]},{"id":"skill:accessibility|related-to|aria-live","from":"skill:accessibility","to":"aria-live","relation":"related-to","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"global/skills/accessibility/skill.md","lineStart":23,"lineEnd":23,"extraction":"SkillParser","artifact":"skill-global-skills-accessibility-skill-md"}]},{"id":"skill:agent-nexus-mcp|related-to|agent-nexus","from":"skill:agent-nexus-mcp","to":"agent-nexus","relation":"related-to","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"global/skills/agent-nexus-mcp/skill.md","lineStart":16,"lineEnd":16,"extraction":"SkillParser","artifact":"skill-global-skills-agent-nexus-mcp-skill-md"}]},{"id":"skill:agent-nexus-mcp|related-to|agent-nexus-root","from":"skill:agent-nexus-mcp","to":"agent-nexus-root","relation":"related-to","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"global/skills/agent-nexus-mcp/skill.md","lineStart":28,"lineEnd":28,"extraction":"SkillParser","artifact":"skill-global-skills-agent-nexus-mcp-skill-md"}]},{"id":"skill:checkout-ux|depends-on|skill:accessibility","from":"skill:checkout-ux","to":"skill:accessibility","relation":"depends-on","status":"explicit","canonical":true,"confidence":1.0,"provenance":[{"source":"projects/acme-app/skills/checkout-ux/skill.md","lineStart":11,"lineEnd":11,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"SkillParser","artifact":"skill-projects-acme-app-skills-checkout-ux-skill-md"}]},{"id":"skill:checkout-ux|related-to|checkout-button","from":"skill:checkout-ux","to":"checkout-button","relation":"related-to","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"projects/acme-app/skills/checkout-ux/skill.md","lineStart":26,"lineEnd":26,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"SkillParser","artifact":"skill-projects-acme-app-skills-checkout-ux-skill-md"}],"proposal":"prop-1790505399-38f2a8dd6b"},{"id":"skill:checkout-ux|related-to|payment-flow","from":"skill:checkout-ux","to":"payment-flow","relation":"related-to","status":"candidate","canonical":false,"confidence":0.3,"provenance":[{"source":"projects/acme-app/skills/checkout-ux/skill.md","lineStart":33,"lineEnd":33,"commit":"dba96e76eae309d855c7e1aafa0cf0666051be71","extraction":"SkillParser","artifact":"skill-projects-acme-app-skills-checkout-ux-skill-md"}],"proposal":"prop-1790505399-38f2a8dd6b"}],"clusters":[{"id":"behaviors","count":1},{"id":"contracts","count":1},{"id":"core","count":1},{"id":"design","count":9},{"id":"docs","count":1},{"id":"domains","count":1},{"id":"features","count":3},{"id":"history","count":2},{"id":"other","count":3},{"id":"policies","count":3},{"id":"skills","count":4}],"diff":[{"type":"IntentAdded","category":"Intent","id":"intent:submit-checkout-order","change":{"evidence":"explicit","id":"intent:submit-checkout-order","statement":"submit checkout order"}},{"type":"RequirementAdded","category":"Requirement","id":"requirement:checkout-button:error-is-recoverable","entity":"checkout-button","change":{"evidence":"explicit","id":"requirement:checkout-button:error-is-recoverable","kind":"functional","statement":"error is recoverable","subject":"checkout-button"}},{"type":"RequirementAdded","category":"Requirement","id":"requirement:checkout-button:prevent-duplicate-submission","entity":"checkout-button","change":{"evidence":"explicit","id":"requirement:checkout-button:prevent-duplicate-submission","kind":"functional","statement":"prevent duplicate submission","subject":"checkout-button"}},{"type":"EntityAdded","category":"Entity","id":"contract:checkout-submit","entity":"contract:checkout-submit","change":{"artifact":"contract-projects-acme-app-contracts-checkout-submit-yaml","evidence":"explicit","id":"contract:checkout-submit","kind":"contract","name":"Checkout submit","role":"ux"}},{"type":"EntityAdded","category":"Entity","id":"file:projects/acme-app/contracts/checkout-submit.yaml","entity":"file:projects/acme-app/contracts/checkout-submit.yaml","change":{"artifact":"contract-projects-acme-app-contracts-checkout-submit-yaml","attributes":{"artifactKind":"contract"},"evidence":"explicit","id":"file:projects/acme-app/contracts/checkout-submit.yaml","kind":"file","name":"checkout-submit.yaml","role":"ux"}},{"type":"StateAdded","category":"State","id":"checkout-button/error","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/error","name":"error","subject":"checkout-button"}},{"type":"StateAdded","category":"State","id":"checkout-button/idle","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/idle","name":"idle","subject":"checkout-button"}},{"type":"StateAdded","category":"State","id":"checkout-button/loading","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/loading","name":"loading","subject":"checkout-button"}},{"type":"StateAdded","category":"State","id":"checkout-button/success","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/success","name":"success","subject":"checkout-button"}},{"type":"ConstraintAdded","category":"Constraint","id":"constraint:checkout-button:preserve-user-input-on-error","entity":"checkout-button","change":{"evidence":"explicit","id":"constraint:checkout-button:preserve-user-input-on-error","kind":"must","statement":"preserve user input on error","subject":"checkout-button"}},{"type":"DependencyAdded","category":"Dependency","id":"checkout-button|governed-by|contract:checkout-submit","entity":"checkout-button","change":{"evidence":"explicit","from":"checkout-button","id":"checkout-button|governed-by|contract:checkout-submit","relation":"governed-by","to":"contract:checkout-submit"}},{"type":"DependencyAdded","category":"Dependency","id":"contract:checkout-submit|defined-by|file:projects/acme-app/contracts/checkout-submit.yaml","entity":"contract:checkout-submit","change":{"evidence":"explicit","from":"contract:checkout-submit","id":"contract:checkout-submit|defined-by|file:projects/acme-app/contracts/checkout-submit.yaml","relation":"defined-by","to":"file:projects/acme-app/contracts/checkout-submit.yaml"}},{"type":"IntentAdded","category":"Intent","id":"intent:place-order","change":{"evidence":"candidate","id":"intent:place-order","statement":"place order"}},{"type":"EntityAdded","category":"Entity","id":"card-number","entity":"card-number","change":{"attributes":{"tag":"input"},"evidence":"explicit","id":"card-number","kind":"field","name":"card-number","role":"design"}},{"type":"EntityAdded","category":"Entity","id":"checkout-button","entity":"checkout-button","change":{"attributes":{"tag":"button"},"evidence":"explicit","id":"checkout-button","kind":"component","name":"checkout-button","role":"design"}},{"type":"EntityAdded","category":"Entity","id":"checkout-form","entity":"checkout-form","change":{"attributes":{"tag":"form"},"evidence":"explicit","id":"checkout-form","kind":"form","name":"checkout","role":"design"}},{"type":"EntityAdded","category":"Entity","id":"file:projects/acme-app/design/checkout-button.html","entity":"file:projects/acme-app/design/checkout-button.html","change":{"artifact":"design-spec-projects-acme-app-design-checkout-button-html","attributes":{"artifactKind":"design-spec"},"evidence":"explicit","id":"file:projects/acme-app/design/checkout-button.html","kind":"file","name":"checkout-button.html","role":"design"}},{"type":"StateAdded","category":"State","id":"checkout-button/error","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/error","name":"error","subject":"checkout-button"}},{"type":"StateAdded","category":"State","id":"checkout-button/idle","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/idle","name":"idle","subject":"checkout-button"}},{"type":"StateAdded","category":"State","id":"checkout-button/loading","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/loading","name":"loading","subject":"checkout-button"}},{"type":"StateAdded","category":"State","id":"checkout-button/success","entity":"checkout-button","change":{"evidence":"explicit","id":"checkout-button/success","name":"success","subject":"checkout-button"}},{"type":"ConstraintAdded","category":"Constraint","id":"constraint:card-number:card-number-has-aria-describedby-card-hint","entity":"card-number","change":{"evidence":"explicit","id":"constraint:card-number:card-number-has-aria-describedby-card-hint","kind":"accessibility","statement":"card-number has aria-describedby=\"card-hint\"","subject":"card-number"}},{"type":"ConstraintAdded","category":"Constraint","id":"constraint:card-number:card-number-is-required","entity":"card-number","change":{"evidence":"explicit","id":"constraint:card-number:card-number-is-required","kind":"must","statement":"card-number is required","subject":"card-number"}},{"type":"ConstraintAdded","category":"Constraint","id":"constraint:checkout-button:checkout-button-has-aria-busy-true-while-loading","entity":"checkout-button","change":{"evidence":"explicit","id":"constraint:checkout-button:checkout-button-has-aria-busy-true-while-loading","kind":"accessibility","statement":"checkout-button has aria-busy=\"true\" while loading","subject":"checkout-button"}},{"type":"ConstraintAdded","category":"Constraint","id":"constraint:checkout-button:checkout-button-is-disabled-while-loading","entity":"checkout-button","change":{"evidence":"explicit","id":"constraint:checkout-button:checkout-button-is-disabled-while-loading","kind":"must","statement":"checkout-button is disabled while loading","subject":"checkout-button"}},{"type":"InteractionAdded","category":"Interaction","id":"interaction:checkout-button:click:submit","entity":"checkout-button","change":{"effect":"submit","evidence":"explicit","id":"interaction:checkout-button:click:submit","target":"checkout-button","trigger":"click"}},{"type":"DependencyAdded","category":"Dependency","id":"checkout-form|contains|card-number","entity":"checkout-form","change":{"evidence":"explicit","from":"checkout-form","id":"checkout-form|contains|card-number","relation":"contains","to":"card-number"}},{"type":"DependencyAdded","category":"Dependency","id":"checkout-form|contains|checkout-button","entity":"checkout-form","change":{"evidence":"explicit","from":"checkout-form","id":"checkout-form|contains|checkout-button","relation":"contains","to":"checkout-button"}},{"type":"EntityAdded","category":"Entity","id":"button","entity":"button","change":{"artifact":"design-system-projects-acme-app-design-components-button-yaml","description":"Primary action button of the Acme design system.","evidence":"explicit","id":"button","kind":"component","name":"Button","role":"design"}},{"type":"EntityAdded","category":"Entity","id":"file:projects/acme-app/design/components/button.yaml","entity":"file:projects/acme-app/design/components/button.yaml","change":{"artifact":"design-system-projects-acme-app-design-components-button-yaml","attributes":{"artifactKind":"design-system"},"evidence":"explicit","id":"file:projects/acme-app/design/components/button.yaml","kind":"file","name":"button.yaml","role":"design"}},{"type":"EntityAdded","category":"Entity","id":"variant:button/primary","entity":"variant:button/primary","change":{"evidence":"explicit","id":"variant:button/primary","kind":"variant","name":"Primary"}},{"type":"EntityAdded","category":"Entity","id":"variant:button/secondary","entity":"variant:button/secondary","change":{"evidence":"explicit","id":"variant:button/secondary","kind":"variant","name":"Secondary"}},{"type":"StateAdded","category":"State","id":"button/default","entity":"button","change":{"evidence":"explicit","id":"button/default","name":"default","subject":"button"}},{"type":"StateAdded","category":"State","id":"button/disabled","entity":"button","change":{"evidence":"explicit","id":"button/disabled","name":"disabled","subject":"button"}},{"type":"StateAdded","category":"State","id":"button/hover","entity":"button","change":{"evidence":"explicit","id":"button/hover","name":"hover","subject":"button"}},{"type":"StateAdded","category":"State","id":"button/loading","entity":"button","change":{"evidence":"explicit","id":"button/loading","name":"loading","subject":"button"}},{"type":"StateAdded","category":"State","id":"button/pressed","entity":"button","change":{"evidence":"explicit","id":"button/pressed","name":"pressed","subject":"button"}},{"type":"ConstraintAdded","category":"Constraint","id":"constraint:button:loading-state-is-announced-via-aria-busy","entity":"button","change":{"evidence":"explicit","id":"constraint:button:loading-state-is-announced-via-aria-busy","kind":"accessibility","statement":"Loading state is announced via aria-busy","subject":"button"}},{"type":"ConstraintAdded","category":"Constraint","id":"constraint:button:reachable-and-operable-by-keyboard-alone","entity":"button","change":{"evidence":"explicit","id":"constraint:button:reachable-and-operable-by-keyboard-alone","kind":"accessibility","statement":"Reachable and operable by keyboard alone","subject":"button"}},{"type":"InteractionAdded","category":"Interaction","id":"interaction:button:click:submit","entity":"button","change":{"effect":"submit","evidence":"explicit","id":"interaction:button:click:submit","target":"button","trigger":"click"}},{"type":"DependencyAdded","category":"Dependency","id":"button|defined-by|file:projects/acme-app/design/components/button.yaml","entity":"button","change":{"evidence":"explicit","from":"button","id":"button|defined-by|file:projects/acme-app/design/components/button.yaml","relation":"defined-by","to":"file:projects/acme-app/design/components/button.yaml"}},{"type":"DependencyAdded","category":"Dependency","id":"button|has-variant|variant:button/primary","entity":"button","change":{"evidence":"explicit","from":"button","id":"button|has-variant|variant:button/primary","relation":"has-variant","to":"variant:button/primary"}},{"type":"DependencyAdded","category":"Dependency","id":"button|has-variant|variant:button/secondary","entity":"button","change":{"evidence":"explicit","from":"button","id":"button|has-variant|variant:button/secondary","relation":"has-variant","to":"variant:button/secondary"}},{"type":"DependencyAdded","category":"Dependency","id":"button|uses|token:color.primary","entity":"button","change":{"evidence":"explicit","from":"button","id":"button|uses|token:color.primary","relation":"uses","to":"token:color.primary"}},{"type":"DependencyAdded","category":"Dependency","id":"button|uses|token:spacing.medium","entity":"button","change":{"evidence":"explicit","from":"button","id":"button|uses|token:spacing.medium","relation":"uses","to":"token:spacing.medium"}},{"type":"DependencyAdded","category":"Dependency","id":"button|uses|token:typography.label","entity":"button","change":{"evidence":"explicit","from":"button","id":"button|uses|token:typography.label","relation":"uses","to":"token:typography.label"}},{"type":"EntityAdded","category":"Entity","id":"design-system:tokens-json","entity":"design-system:tokens-json","change":{"artifact":"design-system-projects-acme-app-design-tokens-json","evidence":"explicit","id":"design-system:tokens-json","kind":"design-system","name":"tokens.json"}},{"type":"EntityAdded","category":"Entity","id":"file:projects/acme-app/design/tokens.json","entity":"file:projects/acme-app/design/tokens.json","change":{"artifact":"design-system-projects-acme-app-design-tokens-json","attributes":{"artifactKind":"design-system"},"evidence":"explicit","id":"file:projects/acme-app/design/tokens.json","kind":"file","name":"tokens.json","role":"design"}},{"type":"EntityAdded","category":"Entity","id":"token:color.danger","entity":"token:color.danger","change":{"attributes":{"type":"color","value":"#cf222e"},"evidence":"explicit","id":"token:color.danger","kind":"token","name":"color.danger"}},{"type":"EntityAdded","category":"Entity","id":"token:color.primary","entity":"token:color.primary","change":{"attributes":{"type":"color","value":"#1f6feb"},"evidence":"explicit","id":"token:color.primary","kind":"token","name":"color.primary"}},{"type":"EntityAdded","category":"Entity","id":"token:spacing.medium","entity":"token:spacing.medium","change":{"attributes":{"type":"dimension","value":"12px"},"evidence":"explicit","id":"token:spacing.medium","kind":"token","name":"spacing.medium"}},{"type":"EntityAdded","category":"Entity","id":"token:typography.label","entity":"token:typography.label","change":{"attributes":{"type":"typography","value":"600 14px/20px Inter"},"evidence":"explicit","id":"token:typography.label","kind":"token","name":"typography.label"}},{"type":"DependencyAdded","category":"Dependency","id":"design-system:tokens-json|contains|token:color.danger","entity":"design-system:tokens-json","change":{"evidence":"explicit","from":"design-system:tokens-json","id":"design-system:tokens-json|contains|token:color.danger","relation":"contains","to":"token:color.danger"}},{"type":"DependencyAdded","category":"Dependency","id":"design-system:tokens-json|contains|token:color.primary","entity":"design-system:tokens-json","change":{"evidence":"explicit","from":"design-system:tokens-json","id":"design-system:tokens-json|contains|token:color.primary","relation":"contains","to":"token:color.primary"}},{"type":"DependencyAdded","category":"Dependency","id":"design-system:tokens-json|contains|token:spacing.medium","entity":"design-system:tokens-json","change":{"evidence":"explicit","from":"design-system:tokens-json","id":"design-system:tokens-json|contains|token:spacing.medium","relation":"contains","to":"token:spacing.medium"}},{"type":"DependencyAdded","category":"Dependency","id":"design-system:tokens-json|contains|token:typography.label","entity":"design-system:tokens-json","change":{"evidence":"explicit","from":"design-system:tokens-json","id":"design-system:tokens-json|contains|token:typography.label","relation":"contains","to":"token:typography.label"}},{"type":"DependencyAdded","category":"Dependency","id":"design-system:tokens-json|defined-by|file:projects/acme-app/design/tokens.json","entity":"design-system:tokens-json","change":{"evidence":"explicit","from":"design-system:tokens-json","id":"design-system:tokens-json|defined-by|file:projects/acme-app/design/tokens.json","relation":"defined-by","to":"file:projects/acme-app/design/tokens.json"}},{"type":"EntityAdded","category":"Entity","id":"file:projects/acme-app/policies/human-reviewer.yaml","entity":"file:projects/acme-app/policies/human-reviewer.yaml","change":{"artifact":"policy-projects-acme-app-policies-human-reviewer-yaml","attributes":{"artifactKind":"policy"},"evidence":"explicit","id":"file:projects/acme-app/policies/human-reviewer.yaml","kind":"file","name":"human-reviewer.yaml","role":"policy"}},{"type":"EntityAdded","category":"Entity","id":"policy:human-reviewer","entity":"policy:human-reviewer","change":{"artifact":"policy-projects-acme-app-policies-human-reviewer-yaml","attributes":{"permissions":["read:project","read:graph","review:proposals"]},"evidence":"explicit","id":"policy:human-reviewer","kind":"policy","name":"human-reviewer","role":"policy"}},{"type":"DependencyAdded","category":"Dependency","id":"policy:human-reviewer|defined-by|file:projects/acme-app/policies/human-reviewer.yaml","entity":"policy:human-reviewer","change":{"evidence":"explicit","from":"policy:human-reviewer","id":"policy:human-reviewer|defined-by|file:projects/acme-app/policies/human-reviewer.yaml","relation":"defined-by","to":"file:projects/acme-app/policies/human-reviewer.yaml"}},{"type":"EntityChanged","category":"Entity","id":"project:acme-app","entity":"project:acme-app","change":{"attributes":{"after":{"roles":["product","ux","design","engineering","qa"],"version":1},"before":{"version":1}}}}],"modelConfidence":{"value":0.94,"reason":"mean of 160 statements: 144 explicit, 6 inferred, 10 candidate, 0 unknown"}}</script>
+<script>
+(function () {
+  "use strict";
+  var ORDER = ["skills", "policies", "tests", "behaviors", "contracts", "design", "features", "domains", "apis", "code", "docs", "history", "files", "other"];
+  var HUES = { skills: 210, policies: 0, tests: 150, behaviors: 280, contracts: 320, design: 25, features: 190, domains: 95, apis: 45, code: 235, docs: 170, history: 60, files: 0, other: 0, core: 0 };
+  var SAT = { files: 0, other: 0, core: 0 };
+  var STATUSES = ["explicit", "inferred", "candidate", "unknown"];
+  var svg = document.getElementById("svg"), vp = document.getElementById("viewport");
+  var gPetals = document.getElementById("petals"), gEdges = document.getElementById("edges"), gNodes = document.getElementById("nodes");
+  var NS = "http://www.w3.org/2000/svg";
+  var graph = null, byId = {}, pos = {}, selected = null;
+  var filters = { status: {}, cluster: {}, relation: {}, canonicalOnly: false };
+  var view = { x: 0, y: 0, k: 1 };
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function h(tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function clusterColor(c, alpha) {
+    var s = SAT[c] === 0 ? 0 : 62;
+    return "hsla(" + (HUES[c] || 0) + "," + s + "%," + css("--petal-l") + "," + (alpha == null ? 1 : alpha) + ")";
+  }
+  function statusColor(s) { return css("--" + (STATUSES.indexOf(s) >= 0 ? s : "unknown")); }
+  function store(key, value) { try { if (value === undefined) return localStorage.getItem(key); localStorage.setItem(key, value); } catch (e) { return null; } }
+
+  // ---- data -------------------------------------------------------------
+  function load(data) {
+    if (!data || !data.nodes) { showEmpty(); return; }
+    graph = data; byId = {};
+    data.nodes.forEach(function (n) { byId[n.id] = n; n._in = []; n._out = []; });
+    data.edges.forEach(function (e) { if (byId[e.from]) byId[e.from]._out.push(e); if (byId[e.to]) byId[e.to]._in.push(e); });
+    document.getElementById("title").textContent = (data.projectName || data.projectId) + " — semantic graph";
+    var when = data.generatedAt ? new Date(data.generatedAt * 1000).toISOString().slice(0, 16).replace("T", " ") : "";
+    document.getElementById("meta").textContent = data.nodes.length + " nodes · " + data.edges.length + " edges · model confidence " + (data.modelConfidence ? data.modelConfidence.value : "?") + (when ? " · " + when + " UTC" : "");
+    buildFilters(); layout(); render(); renderDiff(); resetView();
+  }
+  function showEmpty() {
+    document.getElementById("details").innerHTML = "";
+    var d = h("div", "No graph embedded. Use “Load JSON…” to open a semantic-graph.json exported by agent-nexus.", "empty");
+    document.getElementById("details").appendChild(d);
+  }
+
+  // ---- filters ----------------------------------------------------------
+  function checkbox(container, key, group, label, count, color) {
+    var row = h("label", null, "chk");
+    var input = document.createElement("input"); input.type = "checkbox"; input.checked = filters[group][key] !== false;
+    input.addEventListener("change", function () { filters[group][key] = input.checked; applyVisibility(); });
+    row.appendChild(input);
+    if (color) { var sw = h("span", null, "sw"); sw.style.background = color; row.appendChild(sw); }
+    row.appendChild(h("span", label));
+    row.appendChild(h("span", String(count), "n"));
+    container.appendChild(row);
+  }
+  function buildFilters() {
+    var fs = document.getElementById("f-status"), fc = document.getElementById("f-cluster"), fr = document.getElementById("f-relation");
+    fs.innerHTML = fc.innerHTML = fr.innerHTML = "";
+    var sc = {}; graph.nodes.forEach(function (n) { sc[n.status] = (sc[n.status] || 0) + 1; });
+    STATUSES.forEach(function (s) { if (sc[s]) checkbox(fs, s, "status", s, sc[s], statusColor(s)); });
+    var canon = h("label", null, "chk"), ci = document.createElement("input"); ci.type = "checkbox";
+    ci.addEventListener("change", function () { filters.canonicalOnly = ci.checked; applyVisibility(); });
+    canon.appendChild(ci); canon.appendChild(h("span", "canonical only"));
+    canon.appendChild(h("span", String(graph.nodes.filter(function (n) { return n.canonical; }).length), "n"));
+    fs.appendChild(canon);
+    graph.clusters.forEach(function (c) { if (c.id !== "core") checkbox(fc, c.id, "cluster", c.id, c.count, clusterColor(c.id)); });
+    var rc = {}; graph.edges.forEach(function (e) { rc[e.relation] = (rc[e.relation] || 0) + 1; });
+    Object.keys(rc).sort().forEach(function (r) { checkbox(fr, r, "relation", r, rc[r]); });
+  }
+  function nodeVisible(n) {
+    if (n.id === graph.root) return true;
+    if (filters.status[n.status] === false) return false;
+    if (filters.cluster[n.cluster] === false) return false;
+    if (filters.canonicalOnly && !n.canonical) return false;
+    return true;
+  }
+  function edgeVisible(e) {
+    return filters.relation[e.relation] !== false && byId[e.from] && byId[e.to] && nodeVisible(byId[e.from]) && nodeVisible(byId[e.to]) && !(filters.canonicalOnly && !e.canonical) && filters.status[e.status] !== false;
+  }
+
+  // ---- radial layout ----------------------------------------------------
+  var petals = [];
+  function layout() {
+    pos = {}; petals = [];
+    var root = byId[graph.root]; if (root) pos[root.id] = { x: 0, y: 0 };
+    var groups = {};
+    graph.nodes.forEach(function (n) { if (n.id !== graph.root) (groups[n.cluster] = groups[n.cluster] || []).push(n); });
+    var names = Object.keys(groups).sort(function (a, b) { return (ORDER.indexOf(a) + 99) % 99 - (ORDER.indexOf(b) + 99) % 99 || a.localeCompare(b); });
+    var weights = names.map(function (c) { return Math.max(1.2, Math.sqrt(groups[c].length)); });
+    var total = weights.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var gap = names.length > 1 ? 0.06 : 0, avail = Math.PI * 2 - gap * names.length, a = -Math.PI / 2;
+    var R0 = 120, RING = 95;
+    names.forEach(function (c, i) {
+      var span = avail * weights[i] / total, a0 = a + gap / 2, a1 = a0 + span; a = a1 + gap / 2;
+      var byDepth = {};
+      groups[c].forEach(function (n) { (byDepth[n.depth] = byDepth[n.depth] || []).push(n); });
+      var depths = Object.keys(byDepth).map(Number).sort(function (x, y) { return x - y; });
+      var ring = 0, rMax = R0;
+      depths.forEach(function (d) {
+        var list = byDepth[d].sort(function (x, y) { return y.centrality - x.centrality || x.id.localeCompare(y.id); });
+        var r = R0 + ring * RING, perRow = Math.max(1, Math.floor(span * r / 38));
+        for (var j = 0; j < list.length; j += perRow) {
+          var row = list.slice(j, j + perRow), rr = R0 + ring * RING;
+          row.forEach(function (n, k) {
+            var t = row.length === 1 ? 0.5 : (k + 0.5) / row.length;
+            var ang = a0 + span * (0.08 + 0.84 * t);
+            pos[n.id] = { x: Math.cos(ang) * rr, y: Math.sin(ang) * rr };
+          });
+          rMax = Math.max(rMax, rr); ring++;
+          perRow = Math.max(1, Math.floor(span * (R0 + ring * RING) / 38));
+        }
+      });
+      petals.push({ cluster: c, a0: a0, a1: a1, r: rMax + 60 });
+    });
+  }
+  function polar(r, a) { return (Math.cos(a) * r).toFixed(1) + "," + (Math.sin(a) * r).toFixed(1); }
+
+  // ---- render -----------------------------------------------------------
+  function render() {
+    gPetals.innerHTML = gEdges.innerHTML = gNodes.innerHTML = "";
+    petals.forEach(function (p) {
+      var mid = (p.a0 + p.a1) / 2, bulge = Math.min(0.35, (p.a1 - p.a0) * 0.25);
+      var d = "M0,0 C" + polar(p.r * 0.45, p.a0 - bulge) + " " + polar(p.r * 0.95, p.a0 - bulge * 0.4) + " " + polar(p.r, mid) +
+        " C" + polar(p.r * 0.95, p.a1 + bulge * 0.4) + " " + polar(p.r * 0.45, p.a1 + bulge) + " 0,0 Z";
+      el("path", { d: d, fill: clusterColor(p.cluster, css("--petal-a")), stroke: clusterColor(p.cluster, 0.35), "stroke-width": 1, "data-cluster": p.cluster }, gPetals);
+      var t = el("text", { x: Math.cos(mid) * (p.r + 30), y: Math.sin(mid) * (p.r + 30), "text-anchor": "middle", "dominant-baseline": "middle", class: "petal-label", fill: clusterColor(p.cluster), "data-cluster": p.cluster }, gPetals);
+      t.textContent = p.cluster;
+    });
+    graph.edges.forEach(function (e) {
+      var s = pos[e.from], t = pos[e.to]; if (!s || !t) return;
+      var cx = (s.x + t.x) * 0.3, cy = (s.y + t.y) * 0.3;
+      var path = el("path", { d: "M" + s.x.toFixed(1) + "," + s.y.toFixed(1) + " Q" + cx.toFixed(1) + "," + cy.toFixed(1) + " " + t.x.toFixed(1) + "," + t.y.toFixed(1), class: "edge " + e.status, "stroke-width": (0.6 + e.confidence * 1.1).toFixed(2), "stroke-opacity": (0.25 + e.confidence * 0.5).toFixed(2) }, gEdges);
+      path._edge = e; e._el = path;
+      var title = el("title", {}, path); title.textContent = e.from + " —" + e.relation + "→ " + e.to + " (" + e.status + (e.canonical ? ", canonical" : "") + ", " + e.confidence + ")";
+    });
+    var changed = {};
+    (graph.diff || []).forEach(function (c) { if (c.entity) changed[c.entity] = true; if (c.category === "Entity") changed[c.id] = true; });
+    graph.nodes.forEach(function (n) {
+      var p = pos[n.id]; if (!p) return;
+      var root = n.id === graph.root, r = root ? 22 : Math.min(18, 5 + n.centrality * 40);
+      var g = el("g", { class: "node" + (n.canonical ? "" : " noncanonical") + (root || n.depth <= 1 || r > 9 ? " big" : ""), transform: "translate(" + p.x.toFixed(1) + "," + p.y.toFixed(1) + ")", tabindex: 0, role: "button", "aria-label": n.label }, gNodes);
+      if (changed[n.id]) el("circle", { r: r + 5, class: "halo" }, g);
+      el("circle", { r: r, class: "body", fill: root ? css("--accent") : clusterColor(n.cluster, 0.35 + 0.65 * n.confidence), stroke: statusColor(n.status) }, g);
+      if (n.pendingProposals && n.pendingProposals.length) el("circle", { r: 4, cx: r * 0.75, cy: -r * 0.75, class: "badge" }, g);
+      var lbl = el("text", { class: "lbl", x: r + 4, y: 4 }, g); lbl.textContent = n.label.length > 36 ? n.label.slice(0, 35) + "…" : n.label;
+      g._node = n; n._el = g;
+      g.addEventListener("click", function (ev) { ev.stopPropagation(); select(n.id); });
+      g.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(n.id); } });
+    });
+    applyVisibility();
+  }
+  function applyVisibility() {
+    if (!graph) return;
+    var q = document.getElementById("search").value.trim().toLowerCase(), any = false;
+    graph.nodes.forEach(function (n) {
+      if (!n._el) return;
+      var vis = nodeVisible(n), match = q && (n.label.toLowerCase().indexOf(q) >= 0 || n.id.toLowerCase().indexOf(q) >= 0 || n.kind.toLowerCase().indexOf(q) >= 0);
+      if (match) any = true;
+      n._el.style.display = vis ? "" : "none";
+      n._el.classList.toggle("match", !!match);
+      n._match = match;
+    });
+    var focus = selected ? neighbours(selected) : null;
+    graph.nodes.forEach(function (n) {
+      if (!n._el) return;
+      var dim = (q && any && !n._match) || (focus && !focus[n.id]);
+      n._el.classList.toggle("dim", !!dim);
+    });
+    graph.edges.forEach(function (e) {
+      if (!e._el) return;
+      e._el.style.display = edgeVisible(e) ? "" : "none";
+      var hl = selected && (e.from === selected || e.to === selected);
+      e._el.classList.toggle("hl", !!hl);
+      e._el.classList.toggle("dim", !!((selected && !hl) || (q && any && !(byId[e.from]._match || byId[e.to]._match))));
+    });
+    gPetals.querySelectorAll("[data-cluster]").forEach(function (p) { p.style.display = filters.cluster[p.getAttribute("data-cluster")] === false ? "none" : ""; });
+  }
+  function neighbours(id) {
+    var set = {}; set[id] = true;
+    graph.edges.forEach(function (e) { if (e.from === id) set[e.to] = true; if (e.to === id) set[e.from] = true; });
+    return set;
+  }
+
+  // ---- details ----------------------------------------------------------
+  function ref(id) {
+    var a = h("a", byId[id] ? byId[id].label : id, "ref"); a.title = id;
+    a.addEventListener("click", function () { select(id, true); });
+    return a;
+  }
+  function provList(list) {
+    var ul = h("ul", null, "plain");
+    (list || []).forEach(function (p) {
+      var li = h("li"); var src = h("code", p.source + (p.lineStart ? ":" + p.lineStart + (p.lineEnd && p.lineEnd !== p.lineStart ? "-" + p.lineEnd : "") : ""));
+      li.appendChild(src);
+      var extra = [p.extraction]; if (p.commit) extra.push("commit " + p.commit.slice(0, 7)); if (p.artifact) extra.push(p.artifact);
+      li.appendChild(h("div", extra.join(" · "), "muted"));
+      ul.appendChild(li);
+    });
+    if (!ul.children.length) ul.appendChild(h("li", "none recorded", "muted"));
+    return ul;
+  }
+  function select(id, center) {
+    selected = byId[id] ? id : null;
+    graph.nodes.forEach(function (n) { if (n._el) n._el.classList.toggle("sel", n.id === selected); });
+    applyVisibility(); showTab("details");
+    var box = document.getElementById("details"); box.innerHTML = "";
+    if (!selected) { box.appendChild(h("div", "Select a node.", "empty")); return; }
+    var n = byId[selected];
+    if (center && pos[n.id]) { var r = svg.getBoundingClientRect(); view.x = r.width / 2 - pos[n.id].x * view.k; view.y = r.height / 2 - pos[n.id].y * view.k; applyView(); }
+    box.appendChild(h("h2", "Entity"));
+    var title = h("div", n.label); title.style.fontSize = "16px"; title.style.fontWeight = "650"; box.appendChild(title);
+    box.appendChild(h("code", n.id));
+    var dl = h("dl"); dl.style.marginTop = "10px";
+    function row(k, v) { dl.appendChild(h("dt", k)); var dd = h("dd"); if (v instanceof Node) dd.appendChild(v); else dd.textContent = v == null || v === "" ? "—" : v; dl.appendChild(dd); }
+    row("Type", n.kind); row("Role", n.role); row("Cluster", n.cluster);
+    var st = h("span", n.status, "pill"); st.style.color = statusColor(n.status); row("Status", st);
+    row("Canonical", n.canonical ? "yes (graph or authored source)" : "no (not reviewed)");
+    var conf = h("div"); conf.appendChild(h("span", String(n.confidence))); var bar = h("div", null, "bar"), fill = h("i"); fill.style.width = Math.round(n.confidence * 100) + "%"; bar.appendChild(fill); conf.appendChild(bar); row("Confidence", conf);
+    row("Description", n.description);
+    row("Source", n.provenance && n.provenance[0] ? n.provenance[0].source : "");
+    row("Depth", n.depth + " (parent " + (n.parent || "—") + ")"); row("Centrality", String(n.centrality));
+    if (n.pendingProposals && n.pendingProposals.length) row("Proposals", n.pendingProposals.join(", ") + " (pending)");
+    box.appendChild(dl);
+    Object.keys(n.facets || {}).forEach(function (k) {
+      box.appendChild(h("h2", k)); var ul = h("ul", null, "plain");
+      n.facets[k].forEach(function (t) { ul.appendChild(h("li", t)); }); box.appendChild(ul);
+    });
+    box.appendChild(h("h2", "Relationships (" + (n._out.length + n._in.length) + ")"));
+    var rl = h("ul", null, "plain");
+    n._out.forEach(function (e) { var li = h("li"); li.appendChild(h("span", e.relation + " → ", "muted")); li.appendChild(ref(e.to)); li.appendChild(h("span", " · " + e.status + (e.canonical ? "" : ", not canonical"), "muted")); rl.appendChild(li); });
+    n._in.forEach(function (e) { var li = h("li"); li.appendChild(ref(e.from)); li.appendChild(h("span", " → " + e.relation + " · " + e.status, "muted")); rl.appendChild(li); });
+    if (!rl.children.length) rl.appendChild(h("li", "none", "muted"));
+    box.appendChild(rl);
+    box.appendChild(h("h2", "Provenance")); box.appendChild(provList(n.provenance));
+  }
+
+  // ---- diff -------------------------------------------------------------
+  function renderDiff() {
+    var box = document.getElementById("diff"); box.innerHTML = "";
+    var list = graph.diff || [];
+    box.appendChild(h("h2", "Semantic changes (" + list.length + ")"));
+    if (!list.length) { box.appendChild(h("div", "No semantic changes recorded by the last ingestion.", "empty")); return; }
+    var ul = h("ul", null, "plain");
+    list.forEach(function (c) {
+      var li = h("li"), kind = /Added$/.test(c.type) ? "added" : /Removed$/.test(c.type) ? "removed" : "changed";
+      var pill = h("span", c.type, "pill"); pill.style.color = css("--" + kind); li.appendChild(pill);
+      li.appendChild(h("div", c.id)); li.lastChild.style.marginTop = "3px";
+      var target = c.entity && byId[c.entity] ? c.entity : (byId[c.id] ? c.id : null);
+      if (target) { var d = h("div", null, "muted"); d.appendChild(h("span", "on ")); d.appendChild(ref(target)); li.appendChild(d); }
+      if (/Changed$/.test(c.type) && c.change) {
+        var pre = h("code", JSON.stringify(c.change)); pre.style.display = "block"; pre.style.whiteSpace = "pre-wrap"; pre.style.marginTop = "3px"; li.appendChild(pre);
+      }
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  }
+  function showTab(name) {
+    document.getElementById("details").hidden = name !== "details";
+    document.getElementById("diff").hidden = name !== "diff";
+    document.getElementById("tab-details").classList.toggle("on", name === "details");
+    document.getElementById("tab-diff").classList.toggle("on", name === "diff");
+  }
+
+  // ---- pan & zoom -------------------------------------------------------
+  function applyView() {
+    vp.setAttribute("transform", "translate(" + view.x.toFixed(1) + "," + view.y.toFixed(1) + ") scale(" + view.k.toFixed(3) + ")");
+    svg.classList.toggle("zoomed", view.k > 1.5);
+  }
+  function resetView() {
+    var r = svg.getBoundingClientRect(), maxR = 200;
+    Object.keys(pos).forEach(function (id) { var p = pos[id]; maxR = Math.max(maxR, Math.hypot(p.x, p.y)); });
+    petals.forEach(function (p) { maxR = Math.max(maxR, p.r + 30); });
+    view.k = Math.max(0.15, Math.min(r.width, r.height) / (2 * maxR + 40));
+    view.x = r.width / 2; view.y = r.height / 2; applyView();
+  }
+  function zoomAt(factor, cx, cy) {
+    var k = Math.max(0.1, Math.min(8, view.k * factor)); factor = k / view.k;
+    view.x = cx - (cx - view.x) * factor; view.y = cy - (cy - view.y) * factor; view.k = k; applyView();
+  }
+  svg.addEventListener("wheel", function (ev) {
+    ev.preventDefault(); var r = svg.getBoundingClientRect();
+    zoomAt(Math.exp(-ev.deltaY * 0.0015), ev.clientX - r.left, ev.clientY - r.top);
+  }, { passive: false });
+  var drag = null, pointers = {};
+  svg.addEventListener("pointerdown", function (ev) {
+    pointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+    if (ev.target.closest && ev.target.closest(".node")) return;
+    drag = { x: ev.clientX, y: ev.clientY, vx: view.x, vy: view.y, moved: false };
+    svg.setPointerCapture(ev.pointerId); svg.classList.add("dragging");
+  });
+  svg.addEventListener("pointermove", function (ev) {
+    var ids = Object.keys(pointers);
+    if (ids.length === 2 && pointers[ev.pointerId]) {
+      var other = pointers[ids[0] == ev.pointerId ? ids[1] : ids[0]], prev = pointers[ev.pointerId];
+      var before = Math.hypot(prev.x - other.x, prev.y - other.y), after = Math.hypot(ev.clientX - other.x, ev.clientY - other.y);
+      var r = svg.getBoundingClientRect();
+      if (before > 0) zoomAt(after / before, (ev.clientX + other.x) / 2 - r.left, (ev.clientY + other.y) / 2 - r.top);
+      pointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY }; drag = null; return;
+    }
+    if (pointers[ev.pointerId]) pointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+    if (!drag) return;
+    var dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+    view.x = drag.vx + dx; view.y = drag.vy + dy; applyView();
+  });
+  function endDrag(ev) {
+    delete pointers[ev.pointerId];
+    if (drag && !drag.moved && ev.type === "pointerup") select(null);
+    drag = null; svg.classList.remove("dragging");
+  }
+  svg.addEventListener("pointerup", endDrag);
+  svg.addEventListener("pointercancel", endDrag);
+  document.getElementById("zin").onclick = function () { var r = svg.getBoundingClientRect(); zoomAt(1.3, r.width / 2, r.height / 2); };
+  document.getElementById("zout").onclick = function () { var r = svg.getBoundingClientRect(); zoomAt(1 / 1.3, r.width / 2, r.height / 2); };
+  document.getElementById("zreset").onclick = resetView;
+
+  // ---- chrome -----------------------------------------------------------
+  document.getElementById("search").addEventListener("input", applyVisibility);
+  document.getElementById("search").addEventListener("keydown", function (ev) {
+    if (ev.key !== "Enter" || !graph) return;
+    var hit = graph.nodes.filter(function (n) { return n._match && nodeVisible(n); })[0];
+    if (hit) select(hit.id, true);
+  });
+  document.getElementById("tab-details").onclick = function () { showTab("details"); };
+  document.getElementById("tab-diff").onclick = function () { showTab("diff"); };
+  document.getElementById("load").onclick = function () { document.getElementById("file").click(); };
+  document.getElementById("file").addEventListener("change", function (ev) {
+    var f = ev.target.files[0]; if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () { try { load(JSON.parse(reader.result)); } catch (e) { alert("Not a semantic-graph.json: " + e.message); } };
+    reader.readAsText(f);
+  });
+  var themeBtn = document.getElementById("theme");
+  function setTheme(t) { if (t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme"); store("nexus-theme", t || ""); if (graph) { render(); if (selected) select(selected); } }
+  themeBtn.onclick = function () {
+    var cur = document.documentElement.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    setTheme(cur === "dark" ? "light" : "dark");
+  };
+  var saved = store("nexus-theme"); if (saved) document.documentElement.setAttribute("data-theme", saved);
+  window.addEventListener("resize", function () { if (graph) resetView(); });
+
+  var embedded = null;
+  try { embedded = JSON.parse(document.getElementById("graph-data").textContent); } catch (e) { embedded = null; }
+  if (embedded) load(embedded); else showEmpty();
+  if (graph && location.hash.length > 1) select(decodeURIComponent(location.hash.slice(1)), true);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+{
+  "artifacts": [
+    "skill-projects-acme-app-skills-checkout-ux-skill-md"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "file:projects/acme-app/skills/checkout-ux/skill.md",
+      "name": "skill.md",
+      "kind": "file",
+      "role": "engineering",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md",
+      "attributes": {
+        "artifactKind": "skill"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:checkout-ux",
+      "name": "Checkout UX",
+      "kind": "skill",
+      "description": "Rules for implementing checkout interactions",
+      "role": "engineering",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md",
+      "attributes": {
+        "tags": [
+          "checkout",
+          "ux"
+        ]
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [
+    {
+      "id": "constraint:skill:checkout-ux:follow-the-checkout-button-behavior-specification-for-the-exact-state-machine-id",
+      "statement": "Follow the `checkout-button` behavior specification for the exact state machine (`idle -> loading -> success | error`).",
+      "kind": "must",
+      "subject": "skill:checkout-ux",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 26,
+          "lineEnd": 27,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "constraint:skill:checkout-ux:success-and-error-states-must-be-visually-distinct-and-announced-to-assistive-te",
+      "statement": "Success and error states must be visually distinct and announced to assistive technology (see the `accessibility` skill).",
+      "kind": "must",
+      "subject": "skill:checkout-ux",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 24,
+          "lineEnd": 25,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "constraint:skill:checkout-ux:the-checkout-button-must-never-allow-a-double-submit-while-a-payment-is-in-fligh",
+      "statement": "The checkout button must never allow a double submit while a payment is in flight. Disable it (do not hide it) once submission starts.",
+      "kind": "must-not",
+      "subject": "skill:checkout-ux",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 20,
+          "lineEnd": 21,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "constraint:skill:checkout-ux:user-entered-form-data-must-be-preserved-if-payment-fails-so-the-customer-can-re",
+      "statement": "User-entered form data must be preserved if payment fails, so the customer can retry without re-entering everything.",
+      "kind": "must",
+      "subject": "skill:checkout-ux",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 22,
+          "lineEnd": 23,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    }
+  ],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "skill:checkout-ux|defined-by|file:projects/acme-app/skills/checkout-ux/skill.md",
+      "from": "skill:checkout-ux",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/skills/checkout-ux/skill.md",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:checkout-ux|depends-on|skill:accessibility",
+      "from": "skill:checkout-ux",
+      "relation": "depends-on",
+      "to": "skill:accessibility",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:checkout-ux|related-to|checkout-button",
+      "from": "skill:checkout-ux",
+      "relation": "related-to",
+      "to": "checkout-button",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 26,
+          "lineEnd": 26,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:checkout-ux|related-to|payment-flow",
+      "from": "skill:checkout-ux",
+      "relation": "related-to",
+      "to": "payment-flow",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 33,
+          "lineEnd": 33,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 0.86,
+    "reason": "mean of 10 statements: 8 explicit, 0 inferred, 2 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SemanticEngine",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 11,
+      "lineEnd": 11,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 20,
+      "lineEnd": 21,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 22,
+      "lineEnd": 23,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 24,
+      "lineEnd": 25,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 26,
+      "lineEnd": 26,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 26,
+      "lineEnd": 27,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 33,
+      "lineEnd": 33,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    }
+  ],
+  "assumptions": []
+}

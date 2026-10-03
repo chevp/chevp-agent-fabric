@@ -25,7 +25,10 @@ impl CodeMetadataParser {
             || path.contains("/tests/")
             || path.starts_with("tests/")
             || path.contains("_test.")
-            || path.rsplit('/').next().is_some_and(|f| f.starts_with("test_"))
+            || path
+                .rsplit('/')
+                .next()
+                .is_some_and(|f| f.starts_with("test_"))
     }
 }
 
@@ -112,9 +115,18 @@ impl ArtifactParser for CodeMetadataParser {
             let decl = after(
                 line,
                 &[
-                    "pub fn ", "fn ", "pub async fn ", "async fn ", "pub(crate) fn ",
-                    "export default function ", "export function ", "export async function ",
-                    "function ", "def ", "async def ", "func ",
+                    "pub fn ",
+                    "fn ",
+                    "pub async fn ",
+                    "async fn ",
+                    "pub(crate) fn ",
+                    "export default function ",
+                    "export function ",
+                    "export async function ",
+                    "function ",
+                    "def ",
+                    "async def ",
+                    "func ",
                 ],
             )
             .map(|r| ("function", ident(r)))
@@ -122,9 +134,19 @@ impl ArtifactParser for CodeMetadataParser {
                 after(
                     line,
                     &[
-                        "pub struct ", "struct ", "pub enum ", "enum ", "pub trait ", "trait ",
-                        "export class ", "export default class ", "class ", "export interface ",
-                        "interface ", "export type ", "type ",
+                        "pub struct ",
+                        "struct ",
+                        "pub enum ",
+                        "enum ",
+                        "pub trait ",
+                        "trait ",
+                        "export class ",
+                        "export default class ",
+                        "class ",
+                        "export interface ",
+                        "interface ",
+                        "export type ",
+                        "type ",
                     ],
                 )
                 .map(|r| ("type", ident(r)))
@@ -139,9 +161,14 @@ impl ArtifactParser for CodeMetadataParser {
                     || (kind == "function" && ext == "go" && name.starts_with("Test"));
                 if test_name {
                     let tid = format!("test:{path}#{name}");
-                    m.entities.push(SemanticEntity::new(&tid, &name, "test", at()));
-                    m.dependencies
-                        .push(Dependency::new(&file_id, RelationKind::TestedBy, &tid, at()));
+                    m.entities
+                        .push(SemanticEntity::new(&tid, &name, "test", at()));
+                    m.dependencies.push(Dependency::new(
+                        &file_id,
+                        RelationKind::TestedBy,
+                        &tid,
+                        at(),
+                    ));
                 } else if jsx
                     && kind != "type"
                     && name.chars().next().is_some_and(char::is_uppercase)
@@ -173,9 +200,14 @@ impl ArtifactParser for CodeMetadataParser {
             if let Some(rest) = after(line, &["describe(", "it(", "test("]) {
                 if let Some(name) = quoted(rest) {
                     let tid = format!("test:{path}#{}", slug(&name));
-                    m.entities.push(SemanticEntity::new(&tid, &name, "test", at()));
-                    m.dependencies
-                        .push(Dependency::new(&file_id, RelationKind::TestedBy, &tid, at()));
+                    m.entities
+                        .push(SemanticEntity::new(&tid, &name, "test", at()));
+                    m.dependencies.push(Dependency::new(
+                        &file_id,
+                        RelationKind::TestedBy,
+                        &tid,
+                        at(),
+                    ));
                 }
             }
 
@@ -189,15 +221,22 @@ impl ArtifactParser for CodeMetadataParser {
                 (".patch(", Some("PATCH")),
                 (".delete(", Some("DELETE")),
             ] {
-                let Some(idx) = lower.find(needle) else { continue };
-                let Some(url) = quoted(&line[idx + needle.len()..]) else { continue };
+                let Some(idx) = lower.find(needle) else {
+                    continue;
+                };
+                let Some(url) = quoted(&line[idx + needle.len()..]) else {
+                    continue;
+                };
                 if !url.starts_with('/') && !url.starts_with("http") {
                     continue;
                 }
                 let method = method.map(str::to_string).unwrap_or_else(|| {
                     ["POST", "PUT", "PATCH", "DELETE"]
                         .into_iter()
-                        .find(|meth| line.contains(&format!("'{meth}'")) || line.contains(&format!("\"{meth}\"")))
+                        .find(|meth| {
+                            line.contains(&format!("'{meth}'"))
+                                || line.contains(&format!("\"{meth}\""))
+                        })
                         .unwrap_or("GET")
                         .to_string()
                 });
@@ -220,7 +259,8 @@ impl ArtifactParser for CodeMetadataParser {
                         if let Some(owner) = components.last().cloned() {
                             for v in values.split('|').filter_map(quoted) {
                                 let vid = format!("variant:{owner}/{}", slug(&v));
-                                m.entities.push(SemanticEntity::new(&vid, &v, "variant", at()));
+                                m.entities
+                                    .push(SemanticEntity::new(&vid, &v, "variant", at()));
                                 m.dependencies.push(Dependency::new(
                                     &owner,
                                     RelationKind::HasVariant,
@@ -237,7 +277,11 @@ impl ArtifactParser for CodeMetadataParser {
         let mut file = SemanticEntity::new(
             &file_id,
             &path,
-            if is_test_file { "test-file" } else { "code-file" },
+            if is_test_file {
+                "test-file"
+            } else {
+                "code-file"
+            },
             Basis::explicit(artifact.at(NAME, None)),
         );
         file.artifact = Some(artifact.id.clone());
@@ -247,7 +291,11 @@ impl ArtifactParser for CodeMetadataParser {
         if !symbols.is_empty() {
             file.attributes.insert(
                 "symbols".into(),
-                symbols.into_iter().map(Value::from).collect::<Vec<_>>().into(),
+                symbols
+                    .into_iter()
+                    .map(Value::from)
+                    .collect::<Vec<_>>()
+                    .into(),
             );
         }
         m.entities.push(file);

@@ -1,8 +1,10 @@
 //! Semantic contracts (`projects/<id>/contracts/*.yaml`) and the
 //! `NexusProject` view that adds roles and contracts to a domain `Project`.
 
+use crate::confidence;
 use crate::error::{SemanticError, SemanticResult};
-use crate::model::{Provenance, Role};
+use crate::knowledge::{ConceptKind, ContentIdentity, Definition};
+use crate::model::{Confidence, Provenance, Role};
 use crate::text::rel_path;
 use nexus_domain::fs_util::{list_files_recursive, read_file_to_string};
 use nexus_domain::types::{BehaviorTransition, Project};
@@ -38,6 +40,24 @@ pub struct SemanticContract {
     pub constraints: Vec<String>,
     #[serde(default, skip_deserializing)]
     pub provenance: Option<Provenance>,
+    /// Canonical short identifier for the Semantic Knowledge Layer (e.g.
+    /// `CheckoutButton`). Falls back to `id` when unset.
+    #[serde(default)]
+    pub term: Option<String>,
+    #[serde(default)]
+    pub kind: Option<ConceptKind>,
+    #[serde(default)]
+    pub definition: Option<Definition>,
+    /// Alternate free-text names that resolve to this same entry.
+    #[serde(default)]
+    pub aliases: Vec<String>,
+    /// Confidence in the entry itself (not per-statement). A hand-authored
+    /// contract checked into `contracts/` is canonical, so this defaults to
+    /// `confidence::explicit()` when unset.
+    #[serde(default)]
+    pub confidence: Option<Confidence>,
+    #[serde(default)]
+    pub identity: Option<ContentIdentity>,
 }
 
 impl SemanticContract {
@@ -67,9 +87,28 @@ impl SemanticContract {
     pub fn subject(&self) -> &str {
         self.subject.as_deref().unwrap_or(&self.id)
     }
+
+    /// Canonical short identifier, falling back to `id`.
+    pub fn term(&self) -> &str {
+        self.term.as_deref().unwrap_or(&self.id)
+    }
+
+    /// Human-facing label, falling back to `name`, then `id`.
+    pub fn display_name(&self) -> &str {
+        self.name.as_deref().unwrap_or(&self.id)
+    }
+
+    /// Entry-level confidence, defaulting to `explicit` for a hand-authored,
+    /// checked-in contract.
+    pub fn confidence(&self) -> Confidence {
+        self.confidence.clone().unwrap_or_else(confidence::explicit)
+    }
 }
 
-pub fn load_contracts(repo_root: &Path, project_dir: &Path) -> SemanticResult<Vec<SemanticContract>> {
+pub fn load_contracts(
+    repo_root: &Path,
+    project_dir: &Path,
+) -> SemanticResult<Vec<SemanticContract>> {
     let files = list_files_recursive(&project_dir.join("contracts"), &["yaml", "yml"])?;
     files
         .iter()
@@ -97,7 +136,11 @@ impl NexusProject {
     pub fn load(repo_root: &Path, project: Project) -> SemanticResult<Self> {
         let semantic_contracts = load_contracts(repo_root, &project.path)?;
         Ok(Self {
-            roles: project.roles.iter().map(|r| Role::from(r.as_str())).collect(),
+            roles: project
+                .roles
+                .iter()
+                .map(|r| Role::from(r.as_str()))
+                .collect(),
             id: project.id,
             name: project.name,
             version: project.version,

@@ -1,0 +1,54 @@
+{
+  "id": "commit-5534619",
+  "projectId": "acme-app",
+  "kind": "commit",
+  "role": "system",
+  "name": "Update MCP clients to use JSON-RPC 2.0 over stdio",
+  "content": {
+    "type": "inline",
+    "text": "Update MCP clients to use JSON-RPC 2.0 over stdio"
+  },
+  "provenance": {
+    "source": "git:5534619",
+    "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+    "extraction": "GitIngestion",
+    "artifact": "commit-5534619"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "stated explicitly in the source"
+  },
+  "metadata": {
+    "author": "chevp",
+    "date": "2026-09-27T12:31:35+02:00",
+    "files": [
+      {
+        "path": "projects/acme-app/contracts/checkout-submit.yaml",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/design/checkout-button.html",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/design/components/button.yaml",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/design/tokens.json",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/policies/human-reviewer.yaml",
+        "status": "A"
+      },
+      {
+        "path": "projects/acme-app/project.yaml",
+        "status": "M"
+      }
+    ],
+    "sha": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+    "subject": "Update MCP clients to use JSON-RPC 2.0 over stdio"
+  },
+  "registeredAt": 1790505399
+}

@@ -1,0 +1,108 @@
+{
+  "artifacts": [
+    "policy-projects-acme-app-policies-figma-make-yaml"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "file:projects/acme-app/policies/figma-make.yaml",
+      "name": "figma-make.yaml",
+      "kind": "file",
+      "role": "policy",
+      "artifact": "policy-projects-acme-app-policies-figma-make-yaml",
+      "attributes": {
+        "artifactKind": "policy"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/figma-make.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "policy-projects-acme-app-policies-figma-make-yaml"
+        }
+      ]
+    },
+    {
+      "id": "policy:figma-make",
+      "name": "figma-make",
+      "kind": "policy",
+      "role": "policy",
+      "artifact": "policy-projects-acme-app-policies-figma-make-yaml",
+      "attributes": {
+        "permissions": [
+          "read:project",
+          "read:skills",
+          "read:behavior",
+          "read:design-system"
+        ]
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/figma-make.yaml",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "YamlParser",
+          "artifact": "policy-projects-acme-app-policies-figma-make-yaml"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "policy:figma-make|defined-by|file:projects/acme-app/policies/figma-make.yaml",
+      "from": "policy:figma-make",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/policies/figma-make.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/figma-make.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "policy-projects-acme-app-policies-figma-make-yaml"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 3 statements: 3 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/policies/figma-make.yaml",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SemanticEngine",
+      "artifact": "policy-projects-acme-app-policies-figma-make-yaml"
+    },
+    {
+      "source": "projects/acme-app/policies/figma-make.yaml",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "YamlParser",
+      "artifact": "policy-projects-acme-app-policies-figma-make-yaml"
+    }
+  ],
+  "assumptions": []
+}

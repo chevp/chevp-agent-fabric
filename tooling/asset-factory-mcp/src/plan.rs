@@ -17,7 +17,8 @@ use serde_json::{json, Value};
 pub const LEVELS: [&str; 2] = ["exploration", "hero"];
 
 /// Reference views of the hero pipeline; the design spec proper.
-pub const REFERENCE_VIEWS: [&str; 7] = ["front", "rear", "left", "right", "top", "bottom", "hero_3q"];
+pub const REFERENCE_VIEWS: [&str; 7] =
+    ["front", "rear", "left", "right", "top", "bottom", "hero_3q"];
 
 /// Views the assembled base mesh is checked against.
 pub const VALIDATION_VIEWS: [&str; 4] = ["front", "left", "top", "hero_3q"];
@@ -136,7 +137,12 @@ pub fn reference_prompts(spec: &DesignSpec) -> Value {
 
 /// Hunyuan3D 2.1 `api_server.py` request body (image is filled in by the
 /// driver from `image` path). Face budget follows the component's role.
-pub fn hunyuan_request(spec: &DesignSpec, c: Option<&Component>, level: &str, attempt: u32) -> Value {
+pub fn hunyuan_request(
+    spec: &DesignSpec,
+    c: Option<&Component>,
+    level: &str,
+    attempt: u32,
+) -> Value {
     let (octree, steps, faces) = match (level, c.map(|c| c.group.as_str())) {
         ("exploration", _) => (256, 25, 40_000),
         (_, Some("primary_structure")) => (512, 50, 120_000),
@@ -175,16 +181,19 @@ pub fn card_rig(spec: &DesignSpec) -> Value {
         "background": [0.18, 0.18, 0.19],
         "groundPlane": { "z": 0.0, "color": [0.32, 0.32, 0.33], "shadowCatcher": true },
         "scaleBar": { "length": scale_bar(extent), "unit": d.unit },
+        // Suns, not area lights: scale-independent, so every asset size is
+        // lit the same. `from` is the direction the light comes from.
         "lights": [
-            { "name": "key",  "type": "area", "energy": 800.0, "location": [dist, -dist, dist * 0.9], "size": extent },
-            { "name": "fill", "type": "area", "energy": 250.0, "location": [-dist, -dist * 0.5, dist * 0.5], "size": extent },
-            { "name": "rim",  "type": "area", "energy": 400.0, "location": [0.0, dist, dist * 0.6], "size": extent }
+            { "name": "key",  "type": "sun", "strength": 3.2, "from": [0.6, 0.5, 0.75],  "angle": 3.0 },
+            { "name": "fill", "type": "sun", "strength": 1.0, "from": [-0.8, 0.3, 0.4],  "angle": 10.0 },
+            { "name": "rim",  "type": "sun", "strength": 1.8, "from": [0.0, -1.0, 0.55], "angle": 5.0 }
         ],
+        // Asset space: +X right, +Y forward (nose), +Z up.
         "cameras": [
-            { "name": "front",   "type": "ORTHO", "orthoScale": ortho, "location": [0.0, -dist, d.height / 2.0], "lookAt": [0.0, 0.0, d.height / 2.0] },
+            { "name": "front",   "type": "ORTHO", "orthoScale": ortho, "location": [0.0, dist, d.height / 2.0], "lookAt": [0.0, 0.0, d.height / 2.0] },
             { "name": "left",    "type": "ORTHO", "orthoScale": ortho, "location": [-dist, 0.0, d.height / 2.0], "lookAt": [0.0, 0.0, d.height / 2.0] },
             { "name": "top",     "type": "ORTHO", "orthoScale": ortho, "location": [0.0, 0.0, dist], "lookAt": [0.0, 0.0, 0.0] },
-            { "name": "hero_3q", "type": "PERSP", "lens": 35.0, "location": [-dist * 0.8, -dist * 0.9, dist * 0.55], "lookAt": [0.0, 0.0, d.height / 2.0] }
+            { "name": "hero_3q", "type": "PERSP", "lens": 50.0, "location": [-dist * 0.42, dist * 0.47, dist * 0.3], "lookAt": [0.0, 0.0, d.height / 2.0] }
         ],
         "layout": { "grid": [2, 2], "order": ["hero_3q", "front", "left", "top"], "output": "card.png" }
     })
@@ -201,7 +210,15 @@ fn scale_bar(extent: f64) -> f64 {
         .unwrap_or(mag)
 }
 
-fn job(id: &str, stage: &str, kind: &str, deps: &[&str], inputs: Vec<String>, outputs: Vec<String>, params: Value) -> Job {
+fn job(
+    id: &str,
+    stage: &str,
+    kind: &str,
+    deps: &[&str],
+    inputs: Vec<String>,
+    outputs: Vec<String>,
+    params: Value,
+) -> Job {
     Job {
         id: id.into(),
         stage: stage.into(),
@@ -232,18 +249,51 @@ fn exploration(spec: &DesignSpec, lib: &MaterialLibrary) -> Plan {
         .map(|c| c.material.clone())
         .unwrap_or_else(|| "M02".into());
     let jobs = vec![
-        job("master", "design_master", "image.generate", &[], vec![], vec!["refs/master.png".into()],
-            json!({ "prompt": prompts["master"]["prompt"], "negative": prompts["negative"] })),
-        job("shape.whole", "shape", "hunyuan.shape", &["master"], vec!["refs/master.png".into()],
-            vec!["meshes/whole.glb".into()], hunyuan_request(spec, None, "exploration", 0)),
-        job("normalize", "cleanup", "blender.normalize", &["shape.whole"], vec!["meshes/whole.glb".into()],
+        job(
+            "master",
+            "design_master",
+            "image.generate",
+            &[],
+            vec![],
+            vec!["refs/master.png".into()],
+            json!({ "prompt": prompts["master"]["prompt"], "negative": prompts["negative"] }),
+        ),
+        job(
+            "shape.whole",
+            "shape",
+            "hunyuan.shape",
+            &["master"],
+            vec!["refs/master.png".into()],
+            vec!["meshes/whole.glb".into()],
+            hunyuan_request(spec, None, "exploration", 0),
+        ),
+        job(
+            "normalize",
+            "cleanup",
+            "blender.normalize",
+            &["shape.whole"],
+            vec!["meshes/whole.glb".into()],
             vec!["meshes/whole.norm.glb".into()],
-            json!({ "fitTo": [spec.dimensions.width, spec.dimensions.length, spec.dimensions.height], "groundAtZ0": true, "forward": "+Y" })),
-        job("materials", "material", "blender.assign_flat", &["normalize"], vec!["meshes/whole.norm.glb".into()],
+            json!({ "fitTo": [spec.dimensions.width, spec.dimensions.length, spec.dimensions.height], "groundAtZ0": true, "forward": "+Y" }),
+        ),
+        job(
+            "materials",
+            "material",
+            "blender.assign_flat",
+            &["normalize"],
+            vec!["meshes/whole.norm.glb".into()],
             vec!["asset.glb".into()],
-            json!({ "material": lib.get(&dominant) })),
-        job("card", "presentation", "blender.card", &["materials"], vec!["asset.glb".into()],
-            vec!["card.png".into()], card_rig(spec)),
+            json!({ "material": lib.get(&dominant) }),
+        ),
+        job(
+            "card",
+            "presentation",
+            "blender.card",
+            &["materials"],
+            vec!["asset.glb".into()],
+            vec!["card.png".into()],
+            card_rig(spec),
+        ),
     ];
     finish(spec, "exploration", jobs)
 }
@@ -251,11 +301,19 @@ fn exploration(spec: &DesignSpec, lib: &MaterialLibrary) -> Plan {
 fn hero(spec: &DesignSpec, lib: &MaterialLibrary) -> Plan {
     let prompts = reference_prompts(spec);
     let mut jobs = vec![job(
-        "master", "design_master", "image.generate", &[], vec![], vec!["refs/master.png".into()],
+        "master",
+        "design_master",
+        "image.generate",
+        &[],
+        vec![],
+        vec!["refs/master.png".into()],
         json!({ "prompt": prompts["master"]["prompt"], "negative": prompts["negative"] }),
     )];
 
-    let ref_outputs: Vec<String> = REFERENCE_VIEWS.iter().map(|v| format!("refs/{v}.png")).collect();
+    let ref_outputs: Vec<String> = REFERENCE_VIEWS
+        .iter()
+        .map(|v| format!("refs/{v}.png"))
+        .collect();
     for v in prompts["views"].as_array().into_iter().flatten() {
         let view = v["view"].as_str().unwrap_or_default();
         jobs.push(job(
@@ -269,7 +327,11 @@ fn hero(spec: &DesignSpec, lib: &MaterialLibrary) -> Plan {
 
     let mut assembly_inputs = Vec::new();
     let mut shape_ids = Vec::new();
-    for c in spec.components.iter().filter(|c| c.source == "hunyuan" && c.mirror_of.is_none()) {
+    for c in spec
+        .components
+        .iter()
+        .filter(|c| c.source == "hunyuan" && c.mirror_of.is_none())
+    {
         let crop_id = format!("crop.{}", c.id);
         jobs.push(job(
             &crop_id, "component_refs", "image.component_crop", &ref_deps, ref_outputs.clone(),
@@ -279,8 +341,12 @@ fn hero(spec: &DesignSpec, lib: &MaterialLibrary) -> Plan {
         ));
         let shape_id = format!("shape.{}", c.id);
         jobs.push(job(
-            &shape_id, "shape", "hunyuan.shape", &[crop_id.as_str()],
-            vec![format!("refs/components/{}.png", c.id)], vec![format!("meshes/{}.glb", c.id)],
+            &shape_id,
+            "shape",
+            "hunyuan.shape",
+            &[crop_id.as_str()],
+            vec![format!("refs/components/{}.png", c.id)],
+            vec![format!("meshes/{}.glb", c.id)],
             hunyuan_request(spec, Some(c), "hero", 0),
         ));
         let clean_id = format!("clean.{}", c.id);
@@ -325,7 +391,11 @@ fn hero(spec: &DesignSpec, lib: &MaterialLibrary) -> Plan {
     let mut paint_ids = Vec::new();
     for g in &groups {
         let id = format!("paint.{}", g.material.id);
-        let id = if paint_ids.contains(&id) { format!("{id}.{}", paint_ids.len()) } else { id };
+        let id = if paint_ids.contains(&id) {
+            format!("{id}.{}", paint_ids.len())
+        } else {
+            id
+        };
         jobs.push(job(
             &id, "pbr", "hunyuan.paint", &["assembly"],
             vec!["assembly.glb".into(), "refs/hero_3q.png".into()],
@@ -352,7 +422,15 @@ fn hero(spec: &DesignSpec, lib: &MaterialLibrary) -> Plan {
         val_ids.push(id);
     }
     let val_deps: Vec<&str> = val_ids.iter().map(String::as_str).collect();
-    jobs.push(job("card", "presentation", "blender.card", &val_deps, vec!["asset.glb".into()], vec!["card.png".into()], card_rig(spec)));
+    jobs.push(job(
+        "card",
+        "presentation",
+        "blender.card",
+        &val_deps,
+        vec!["asset.glb".into()],
+        vec!["card.png".into()],
+        card_rig(spec),
+    ));
     finish(spec, "hero", jobs)
 }
 
@@ -363,7 +441,12 @@ fn finish(spec: &DesignSpec, level: &str, jobs: Vec<Job>) -> Plan {
             stages.push(j.stage.clone());
         }
     }
-    Plan { spec_id: spec.id.clone(), level: level.into(), stages, jobs }
+    Plan {
+        spec_id: spec.id.clone(),
+        level: level.into(),
+        stages,
+        jobs,
+    }
 }
 
 #[cfg(test)]
@@ -376,7 +459,12 @@ mod tests {
         let mut seen = BTreeSet::new();
         for j in &p.jobs {
             for d in &j.depends_on {
-                assert!(seen.contains(d.as_str()), "{} depends on later/unknown {}", j.id, d);
+                assert!(
+                    seen.contains(d.as_str()),
+                    "{} depends on later/unknown {}",
+                    j.id,
+                    d
+                );
             }
             assert!(seen.insert(j.id.as_str()), "duplicate job {}", j.id);
         }
@@ -391,7 +479,12 @@ mod tests {
 
     #[test]
     fn exploration_is_a_short_chain() {
-        let p = plan(&sample(), &MaterialLibrary::default_library(), "exploration").unwrap();
+        let p = plan(
+            &sample(),
+            &MaterialLibrary::default_library(),
+            "exploration",
+        )
+        .unwrap();
         check_dag(&p);
         assert_eq!(p.jobs.len(), 5);
         assert_eq!(p.jobs[1].params["octree_resolution"], 256);
@@ -401,12 +494,24 @@ mod tests {
     fn hero_generates_mirrors_once_and_paints_per_group() {
         let p = plan(&sample(), &MaterialLibrary::default_library(), "hero").unwrap();
         check_dag(&p);
-        let shapes: Vec<&str> = p.jobs.iter().filter(|j| j.kind == "hunyuan.shape").map(|j| j.id.as_str()).collect();
+        let shapes: Vec<&str> = p
+            .jobs
+            .iter()
+            .filter(|j| j.kind == "hunyuan.shape")
+            .map(|j| j.id.as_str())
+            .collect();
         assert_eq!(shapes, ["shape.main_hull", "shape.engine_l"]);
         let paints = p.jobs.iter().filter(|j| j.kind == "hunyuan.paint").count();
-        assert_eq!(paints, 3); // M01 hull, M05 engines (shared), M02 panels
+        assert_eq!(paints, 2); // M01 hull (+ M02 panel details), M05 engines (shared)
+        let hull = p.jobs.iter().find(|j| j.id == "paint.M01").unwrap();
+        assert_eq!(hull.params["surfaceDetails"][0]["id"], "panels");
         let assembly = p.jobs.iter().find(|j| j.id == "assembly").unwrap();
-        let right = assembly.params["placements"].as_array().unwrap().iter().find(|p| p["id"] == "engine_r").unwrap();
+        let right = assembly.params["placements"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|p| p["id"] == "engine_r")
+            .unwrap();
         assert_eq!(right["mesh"], "meshes/engine_l.clean.glb");
         assert_eq!(right["mirrorX"], true);
     }

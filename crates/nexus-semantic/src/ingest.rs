@@ -13,8 +13,21 @@ use std::path::{Path, PathBuf};
 
 /// Directories never descended into.
 pub const SKIP_DIRS: &[&str] = &[
-    ".git", "target", "node_modules", "dist", "build", "out", ".next", ".turbo", ".cache",
-    "coverage", ".idea", ".vscode", "__pycache__", ".venv", "venv",
+    ".git",
+    "target",
+    "node_modules",
+    "dist",
+    "build",
+    "out",
+    ".next",
+    ".turbo",
+    ".cache",
+    "coverage",
+    ".idea",
+    ".vscode",
+    "__pycache__",
+    ".venv",
+    "venv",
 ];
 
 pub const MAX_FILE_BYTES: u64 = 512 * 1024;
@@ -156,7 +169,10 @@ pub fn classify(rel: &str) -> Option<(ArtifactKind, Role)> {
     if lower.contains(".github/workflows/") {
         return k(ArtifactKind::Workflow);
     }
-    if file.contains("openapi") || file.contains("swagger") || matches!(ext, "proto" | "graphql" | "gql") {
+    if file.contains("openapi")
+        || file.contains("swagger")
+        || matches!(ext, "proto" | "graphql" | "gql")
+    {
         return k(ArtifactKind::Api);
     }
     if file.contains("token") && matches!(ext, "json" | "yaml" | "yml") {
@@ -203,7 +219,9 @@ pub fn walk(root: &Path, skip_top: &[&str]) -> (Vec<String>, Vec<String>) {
     let mut dirs = Vec::new();
     let mut stack = vec![root.to_path_buf()];
     while let Some(dir) = stack.pop() {
-        let Ok(entries) = std::fs::read_dir(&dir) else { continue };
+        let Ok(entries) = std::fs::read_dir(&dir) else {
+            continue;
+        };
         for entry in entries.flatten() {
             let path = entry.path();
             let rel = crate::text::rel_path(root, &path);
@@ -211,7 +229,8 @@ pub fn walk(root: &Path, skip_top: &[&str]) -> (Vec<String>, Vec<String>) {
             let Ok(ft) = entry.file_type() else { continue };
             if ft.is_dir() {
                 let top = !rel.contains('/');
-                if SKIP_DIRS.contains(&name.as_str()) || (top && skip_top.contains(&name.as_str())) {
+                if SKIP_DIRS.contains(&name.as_str()) || (top && skip_top.contains(&name.as_str()))
+                {
                     continue;
                 }
                 dirs.push(rel);
@@ -227,7 +246,11 @@ pub fn walk(root: &Path, skip_top: &[&str]) -> (Vec<String>, Vec<String>) {
 }
 
 /// `dir:` entities with `contains` edges down to each file's artifact entity.
-pub fn structure_model(root_label: &str, dirs: &[String], files: &[(String, String)]) -> SemanticModel {
+pub fn structure_model(
+    root_label: &str,
+    dirs: &[String],
+    files: &[(String, String)],
+) -> SemanticModel {
     let prov = |source: &str| Provenance {
         source: source.to_string(),
         line_start: None,
@@ -236,10 +259,21 @@ pub fn structure_model(root_label: &str, dirs: &[String], files: &[(String, Stri
         extraction: "RepositoryWalker".to_string(),
         artifact: None,
     };
-    let dir_id = |d: &str| if d.is_empty() { "dir:.".to_string() } else { format!("dir:{d}") };
-    let parent = |p: &str| p.rsplit_once('/').map(|(a, _)| a.to_string()).unwrap_or_default();
+    let dir_id = |d: &str| {
+        if d.is_empty() {
+            "dir:.".to_string()
+        } else {
+            format!("dir:{d}")
+        }
+    };
+    let parent = |p: &str| {
+        p.rsplit_once('/')
+            .map(|(a, _)| a.to_string())
+            .unwrap_or_default()
+    };
     let mut m = SemanticModel::default();
-    let mut root = SemanticEntity::new("dir:.", root_label, "directory", Basis::explicit(prov(".")));
+    let mut root =
+        SemanticEntity::new("dir:.", root_label, "directory", Basis::explicit(prov(".")));
     root.role = Some(Role::System);
     m.entities.push(root);
     for d in dirs {
@@ -273,16 +307,34 @@ mod tests {
     fn classifies_by_path_convention() {
         let kind = |p: &str| classify(p).map(|(k, _)| k);
         assert_eq!(kind("project.yaml"), Some(ArtifactKind::Project));
-        assert_eq!(kind("skills/checkout-ux/skill.md"), Some(ArtifactKind::Skill));
-        assert_eq!(kind("behavior/checkout-button.yaml"), Some(ArtifactKind::BehaviorSpec));
-        assert_eq!(kind("contracts/checkout-submit.yaml"), Some(ArtifactKind::Contract));
+        assert_eq!(
+            kind("skills/checkout-ux/skill.md"),
+            Some(ArtifactKind::Skill)
+        );
+        assert_eq!(
+            kind("behavior/checkout-button.yaml"),
+            Some(ArtifactKind::BehaviorSpec)
+        );
+        assert_eq!(
+            kind("contracts/checkout-submit.yaml"),
+            Some(ArtifactKind::Contract)
+        );
         assert_eq!(kind("design/tokens.json"), Some(ArtifactKind::DesignSystem));
         assert_eq!(kind("design/checkout.html"), Some(ArtifactKind::DesignSpec));
-        assert_eq!(kind("src/components/Button.tsx"), Some(ArtifactKind::Component));
+        assert_eq!(
+            kind("src/components/Button.tsx"),
+            Some(ArtifactKind::Component)
+        );
         assert_eq!(kind("src/Button.test.tsx"), Some(ArtifactKind::Test));
         assert_eq!(kind("src/lib.rs"), Some(ArtifactKind::Code));
-        assert_eq!(kind("context/overview.md"), Some(ArtifactKind::Documentation));
-        assert_eq!(kind(".github/workflows/ci.yml"), Some(ArtifactKind::Workflow));
+        assert_eq!(
+            kind("context/overview.md"),
+            Some(ArtifactKind::Documentation)
+        );
+        assert_eq!(
+            kind(".github/workflows/ci.yml"),
+            Some(ArtifactKind::Workflow)
+        );
         assert_eq!(kind("logo.png"), None);
     }
 }

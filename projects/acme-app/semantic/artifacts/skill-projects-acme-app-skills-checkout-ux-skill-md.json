@@ -1,0 +1,22 @@
+{
+  "id": "skill-projects-acme-app-skills-checkout-ux-skill-md",
+  "projectId": "acme-app",
+  "kind": "skill",
+  "role": "engineering",
+  "name": "skill.md",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/skills/checkout-ux/skill.md"
+  },
+  "provenance": {
+    "source": "projects/acme-app/skills/checkout-ux/skill.md",
+    "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/skills/checkout-ux/skill.md"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

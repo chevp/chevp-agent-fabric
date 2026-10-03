@@ -72,9 +72,7 @@ impl ArtifactParser for SkillParser {
 
         let mut entity = SemanticEntity::new(
             &entity_id,
-            fm.as_ref()
-                .and_then(|f| f.name.as_deref())
-                .unwrap_or(&id),
+            fm.as_ref().and_then(|f| f.name.as_deref()).unwrap_or(&id),
             "skill",
             super::explicit_at(artifact, NAME, "id:"),
         );
@@ -83,12 +81,18 @@ impl ArtifactParser for SkillParser {
         entity.description = fm.as_ref().and_then(|f| f.description.clone());
         if let Some(fm) = &fm {
             if !fm.tags.is_empty() {
-                entity.attributes.insert("tags".into(), fm.tags.clone().into());
+                entity
+                    .attributes
+                    .insert("tags".into(), fm.tags.clone().into());
             }
         }
         m.entities.push(entity);
 
-        for dep in fm.as_ref().map(|f| f.depends_on.clone()).unwrap_or_default() {
+        for dep in fm
+            .as_ref()
+            .map(|f| f.depends_on.clone())
+            .unwrap_or_default()
+        {
             m.dependencies.push(Dependency::new(
                 &entity_id,
                 RelationKind::DependsOn,
@@ -107,22 +111,32 @@ impl ArtifactParser for SkillParser {
             (&ctx.outputs, RequirementKind::Output),
         ] {
             for (text, basis) in list.iter().map(item) {
-                m.requirements.push(Requirement::new(subject, text, kind, basis));
+                m.requirements
+                    .push(Requirement::new(subject, text, kind, basis));
             }
         }
         for (text, basis) in ctx.constraints.iter().map(item) {
             let kind = modal_kind(text)
                 .filter(|k| *k == ConstraintKind::MustNot)
                 .unwrap_or(ConstraintKind::Must);
-            m.constraints.push(Constraint::new(subject, text, kind, basis));
+            m.constraints
+                .push(Constraint::new(subject, text, kind, basis));
         }
         for (text, basis) in ctx.conventions.iter().map(item) {
-            m.constraints
-                .push(Constraint::new(subject, text, ConstraintKind::Convention, basis));
+            m.constraints.push(Constraint::new(
+                subject,
+                text,
+                ConstraintKind::Convention,
+                basis,
+            ));
         }
         for (text, basis) in ctx.forbidden.iter().map(item) {
-            m.constraints
-                .push(Constraint::new(subject, text, ConstraintKind::MustNot, basis));
+            m.constraints.push(Constraint::new(
+                subject,
+                text,
+                ConstraintKind::MustNot,
+                basis,
+            ));
         }
 
         let deps: Vec<String> = fm.map(|f| f.depends_on).unwrap_or_default();

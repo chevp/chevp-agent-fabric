@@ -1,0 +1,22 @@
+{
+  "id": "policy-projects-acme-app-policies-human-reviewer-yaml",
+  "projectId": "acme-app",
+  "kind": "policy",
+  "role": "policy",
+  "name": "human-reviewer.yaml",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/policies/human-reviewer.yaml"
+  },
+  "provenance": {
+    "source": "projects/acme-app/policies/human-reviewer.yaml",
+    "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/policies/human-reviewer.yaml"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

@@ -3,6 +3,17 @@ name: Checkout submit
 role: ux
 subject: checkout-button
 
+term: CheckoutSubmit
+aliases:
+  - checkout submit
+  - submit checkout
+kind: behavior
+definition:
+  short: Submits the current checkout order for processing.
+  semantic: >
+    The state machine and constraints a checkout submission must satisfy,
+    regardless of which UI component or API implements it.
+
 intent:
   - submit checkout order
 

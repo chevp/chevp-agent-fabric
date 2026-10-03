@@ -1,0 +1,157 @@
+{
+  "artifacts": [
+    "skill-global-skills-agent-nexus-mcp-skill-md"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "file:global/skills/agent-nexus-mcp/skill.md",
+      "name": "skill.md",
+      "kind": "file",
+      "role": "engineering",
+      "artifact": "skill-global-skills-agent-nexus-mcp-skill-md",
+      "attributes": {
+        "artifactKind": "skill"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/agent-nexus-mcp/skill.md",
+          "extraction": "SemanticEngine",
+          "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:agent-nexus-mcp",
+      "name": "Agent Nexus MCP Server",
+      "kind": "skill",
+      "description": "How to install, connect, and update the Agent Nexus MCP server in a project",
+      "role": "engineering",
+      "artifact": "skill-global-skills-agent-nexus-mcp-skill-md",
+      "attributes": {
+        "tags": [
+          "mcp",
+          "tooling",
+          "agent-nexus"
+        ]
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/agent-nexus-mcp/skill.md",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "extraction": "SkillParser",
+          "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "skill:agent-nexus-mcp|defined-by|file:global/skills/agent-nexus-mcp/skill.md",
+      "from": "skill:agent-nexus-mcp",
+      "relation": "defined-by",
+      "to": "file:global/skills/agent-nexus-mcp/skill.md",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/agent-nexus-mcp/skill.md",
+          "extraction": "SemanticEngine",
+          "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:agent-nexus-mcp|related-to|agent-nexus",
+      "from": "skill:agent-nexus-mcp",
+      "relation": "related-to",
+      "to": "agent-nexus",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/agent-nexus-mcp/skill.md",
+          "lineStart": 16,
+          "lineEnd": 16,
+          "extraction": "SkillParser",
+          "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:agent-nexus-mcp|related-to|agent-nexus-root",
+      "from": "skill:agent-nexus-mcp",
+      "relation": "related-to",
+      "to": "agent-nexus-root",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/agent-nexus-mcp/skill.md",
+          "lineStart": 28,
+          "lineEnd": 28,
+          "extraction": "SkillParser",
+          "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 0.72,
+    "reason": "mean of 5 statements: 3 explicit, 0 inferred, 2 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "global/skills/agent-nexus-mcp/skill.md",
+      "extraction": "SemanticEngine",
+      "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+    },
+    {
+      "source": "global/skills/agent-nexus-mcp/skill.md",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "extraction": "SkillParser",
+      "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+    },
+    {
+      "source": "global/skills/agent-nexus-mcp/skill.md",
+      "lineStart": 16,
+      "lineEnd": 16,
+      "extraction": "SkillParser",
+      "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+    },
+    {
+      "source": "global/skills/agent-nexus-mcp/skill.md",
+      "lineStart": 28,
+      "lineEnd": 28,
+      "extraction": "SkillParser",
+      "artifact": "skill-global-skills-agent-nexus-mcp-skill-md"
+    }
+  ],
+  "assumptions": []
+}

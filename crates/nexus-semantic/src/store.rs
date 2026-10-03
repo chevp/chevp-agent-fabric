@@ -29,7 +29,13 @@ pub struct SemanticStore {
 
 fn file_name(id: &str) -> String {
     id.chars()
-        .map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' || c == '.' { c } else { '_' })
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || c == '-' || c == '_' || c == '.' {
+                c
+            } else {
+                '_'
+            }
+        })
         .collect()
 }
 
@@ -92,7 +98,10 @@ impl SemanticStore {
 
     /// Removes stored artifacts (and their models) matching `produced_by_ingest`,
     /// plus the non-artifact ingest models, before a re-ingest.
-    pub fn clear_ingested(&self, produced_by_ingest: impl Fn(&NexusArtifact) -> bool) -> SemanticResult<()> {
+    pub fn clear_ingested(
+        &self,
+        produced_by_ingest: impl Fn(&NexusArtifact) -> bool,
+    ) -> SemanticResult<()> {
         for a in self.artifacts()? {
             if produced_by_ingest(&a) {
                 for sub in ["artifacts", "models"] {

@@ -76,7 +76,8 @@ impl ArtifactParser for MarkdownParser {
                         let k = modal_kind(text)
                             .filter(|k| *k == ConstraintKind::MustNot)
                             .unwrap_or(ConstraintKind::Must);
-                        m.constraints.push(Constraint::new(subject, text, k, explicit()));
+                        m.constraints
+                            .push(Constraint::new(subject, text, k, explicit()));
                     }
                     SectionKind::Conventions => m.constraints.push(Constraint::new(
                         subject,

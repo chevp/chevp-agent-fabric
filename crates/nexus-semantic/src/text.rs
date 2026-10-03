@@ -39,9 +39,9 @@ pub fn pascal(s: &str) -> String {
 }
 
 const STOPWORDS: &[&str] = &[
-    "the", "a", "an", "and", "or", "of", "to", "in", "on", "is", "be", "it", "for", "with", "while",
-    "must", "should", "shall", "not", "never", "no", "can", "cannot", "do", "does", "don", "t",
-    "user", "users",
+    "the", "a", "an", "and", "or", "of", "to", "in", "on", "is", "be", "it", "for", "with",
+    "while", "must", "should", "shall", "not", "never", "no", "can", "cannot", "do", "does", "don",
+    "t", "user", "users",
 ];
 
 /// Content words, lowercased, without stopwords and negations.
@@ -133,7 +133,10 @@ pub fn nonce() -> String {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_nanos())
         .unwrap_or(0);
-    short_hash(&format!("{nanos}-{}", COUNTER.fetch_add(1, Ordering::Relaxed)), 6)
+    short_hash(
+        &format!("{nanos}-{}", COUNTER.fetch_add(1, Ordering::Relaxed)),
+        6,
+    )
 }
 
 pub fn now() -> u64 {
@@ -157,10 +160,14 @@ mod tests {
 
     #[test]
     fn finds_backtick_references_outside_code_fences() {
-        let refs = backtick_refs("Use `checkout-button` and `x`.\n```\n`ignored-ref`\n```\n`PaymentFlow`");
+        let refs =
+            backtick_refs("Use `checkout-button` and `x`.\n```\n`ignored-ref`\n```\n`PaymentFlow`");
         assert_eq!(
             refs,
-            vec![("checkout-button".to_string(), 1), ("payment-flow".to_string(), 5)]
+            vec![
+                ("checkout-button".to_string(), 1),
+                ("payment-flow".to_string(), 5)
+            ]
         );
     }
 

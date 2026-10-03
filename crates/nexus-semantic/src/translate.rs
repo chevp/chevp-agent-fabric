@@ -96,7 +96,8 @@ impl BehaviorRepresentation {
     }
 
     pub fn from_model(model: &SemanticModel) -> Vec<BehaviorRepresentation> {
-        let mut subjects: BTreeSet<&str> = model.states.iter().map(|s| s.subject.as_str()).collect();
+        let mut subjects: BTreeSet<&str> =
+            model.states.iter().map(|s| s.subject.as_str()).collect();
         subjects.extend(model.behaviors.iter().map(|b| b.subject.as_str()));
         subjects
             .into_iter()
@@ -176,8 +177,10 @@ pub struct DesignRepresentation {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "lowercase")]
 pub enum TranslationResult {
-    Engineering(EngineeringSpec),
-    Behavior { machines: Vec<BehaviorRepresentation> },
+    Engineering(Box<EngineeringSpec>),
+    Behavior {
+        machines: Vec<BehaviorRepresentation>,
+    },
     Design(DesignRepresentation),
 }
 
@@ -316,7 +319,12 @@ fn engineering(model: &SemanticModel) -> EngineeringSpec {
         .entities
         .iter()
         .filter(|e| COMPONENT_KINDS.contains(&e.kind.as_str()))
-        .map(|e| item(format!("{} ({}, id {})", pascal(&e.id), e.kind, e.id), &e.basis))
+        .map(|e| {
+            item(
+                format!("{} ({}, id {})", pascal(&e.id), e.kind, e.id),
+                &e.basis,
+            )
+        })
         .collect();
     let acceptance = model
         .requirements
@@ -347,19 +355,29 @@ fn design(model: &SemanticModel) -> DesignRepresentation {
         .iter()
         .filter(|e| COMPONENT_KINDS.contains(&e.kind.as_str()) || e.kind == "variant")
     {
-        d.components.push(item(format!("{} ({})", e.name, e.kind), &e.basis));
+        d.components
+            .push(item(format!("{} ({})", e.name, e.kind), &e.basis));
     }
     for s in &model.states {
-        d.states.entry(s.subject.clone()).or_default().push(s.name.clone());
+        d.states
+            .entry(s.subject.clone())
+            .or_default()
+            .push(s.name.clone());
     }
     for i in &model.interactions {
         let text = format!(
             "{} {} {}",
             i.trigger,
             i.target.as_deref().unwrap_or(""),
-            i.effect.as_deref().map(|e| format!("-> {e}")).unwrap_or_default()
+            i.effect
+                .as_deref()
+                .map(|e| format!("-> {e}"))
+                .unwrap_or_default()
         );
-        d.interactions.push(item(text.split_whitespace().collect::<Vec<_>>().join(" "), &i.basis));
+        d.interactions.push(item(
+            text.split_whitespace().collect::<Vec<_>>().join(" "),
+            &i.basis,
+        ));
     }
     for c in &model.constraints {
         let target = if c.kind == ConstraintKind::Accessibility {
@@ -385,7 +403,8 @@ fn unresolved(model: &SemanticModel, direction: TranslationDirection) -> Vec<Unr
                 if !touched.contains(s.as_str()) {
                     out.push(Unresolved {
                         item: format!("{}/{s}", rep.id),
-                        reason: "state has no transition in or out; its behavior is unspecified".into(),
+                        reason: "state has no transition in or out; its behavior is unspecified"
+                            .into(),
                     });
                 }
             }
@@ -394,7 +413,10 @@ fn unresolved(model: &SemanticModel, direction: TranslationDirection) -> Vec<Unr
     let events: BTreeSet<&str> = model.behaviors.iter().map(|b| b.event.as_str()).collect();
     for i in &model.interactions {
         if let Some(effect) = &i.effect {
-            if i.trigger != "http" && !effect.starts_with("navigate") && !events.contains(effect.as_str()) {
+            if i.trigger != "http"
+                && !effect.starts_with("navigate")
+                && !events.contains(effect.as_str())
+            {
                 out.push(Unresolved {
                     item: i.id.clone(),
                     reason: format!("interaction effect \"{effect}\" matches no transition event"),
@@ -423,7 +445,10 @@ fn conflicts(model: &SemanticModel, target: &EngineeringContext) -> Vec<Conflict
             let mut provenance = source.basis.provenance.clone();
             provenance.extend(rule.basis.provenance.clone());
             out.push(Conflict {
-                id: format!("conflict:{}", short_hash(&format!("{}|{}", source.id, rule.text), 8)),
+                id: format!(
+                    "conflict:{}",
+                    short_hash(&format!("{}|{}", source.id, rule.text), 8)
+                ),
                 kind: "constraint_conflict".into(),
                 source: source.statement.clone(),
                 target: rule.text.clone(),
@@ -462,14 +487,21 @@ impl Translator for DeterministicTranslator {
             _ => {
                 let mut spec = engineering(model);
                 spec.target_context = self.target_context.clone();
-                TranslationResult::Engineering(spec)
+                TranslationResult::Engineering(Box::new(spec))
             }
         };
         let conflicts = match (&self.target_context, &result) {
             (Some(target), TranslationResult::Engineering(_)) => conflicts(model, target),
             _ => Vec::new(),
         };
-        Ok(finish(model, direction, result, conflicts, Vec::new(), self.name()))
+        Ok(finish(
+            model,
+            direction,
+            result,
+            conflicts,
+            Vec::new(),
+            self.name(),
+        ))
     }
 }
 
@@ -499,11 +531,7 @@ fn finish(
     let mut assumptions = model.assumptions.clone();
     assumptions.extend(extra_assumptions);
     Translation {
-        id: format!(
-            "tr-{}-{}",
-            direction.as_str(),
-            crate::text::nonce()
-        ),
+        id: format!("tr-{}-{}", direction.as_str(), crate::text::nonce()),
         project_id: None,
         direction,
         source: model.artifacts.clone(),
@@ -562,7 +590,10 @@ impl<P: LlmProvider> Translator for LlmTranslator<P> {
         direction: TranslationDirection,
     ) -> SemanticResult<Translation> {
         let mut t = self.base.translate(model, direction).await?;
-        let reply = self.provider.complete(&build_prompt(model, direction)).await?;
+        let reply = self
+            .provider
+            .complete(&build_prompt(model, direction))
+            .await?;
         let suggestions: Vec<Suggestion> = serde_json::from_str(reply.trim())
             .map_err(|e| SemanticError::Provider(format!("unparseable LLM reply: {e}")))?;
         if let TranslationResult::Engineering(spec) = &mut t.result {
@@ -587,7 +618,10 @@ impl<P: LlmProvider> Translator for LlmTranslator<P> {
                     "outputs" => &mut c.outputs,
                     _ => &mut c.capabilities,
                 };
-                target.push(ContextItem { text: s.text, basis });
+                target.push(ContextItem {
+                    text: s.text,
+                    basis,
+                });
             }
         }
         t.translator = format!("LlmTranslator({})", self.provider.name());
@@ -614,33 +648,77 @@ mod tests {
     fn model() -> SemanticModel {
         let e = || Basis::explicit(prov());
         let mut m = SemanticModel::default();
-        m.entities.push(SemanticEntity::new("checkout-button", "Checkout Button", "component", e()));
+        m.entities.push(SemanticEntity::new(
+            "checkout-button",
+            "Checkout Button",
+            "component",
+            e(),
+        ));
         m.intent.push(Intent::new("submit checkout order", e()));
         for s in ["idle", "loading", "success"] {
             m.states.push(State::new("checkout-button", s, e()));
         }
-        m.behaviors.push(Behavior::new("checkout-button", "idle", "submit", "loading", e()));
-        m.behaviors.push(Behavior::new("checkout-button", "loading", "success", "success", e()));
-        m.constraints.push(Constraint::new(Some("checkout-button"), "Use a custom loading state", ConstraintKind::Must, e()));
+        m.behaviors.push(Behavior::new(
+            "checkout-button",
+            "idle",
+            "submit",
+            "loading",
+            e(),
+        ));
+        m.behaviors.push(Behavior::new(
+            "checkout-button",
+            "loading",
+            "success",
+            "success",
+            e(),
+        ));
+        m.constraints.push(Constraint::new(
+            Some("checkout-button"),
+            "Use a custom loading state",
+            ConstraintKind::Must,
+            e(),
+        ));
         m.finalize();
         m
     }
 
     #[test]
     fn semantic_model_to_engineering_context_keeps_provenance() {
-        let t = block_on(DeterministicTranslator::default().translate(&model(), TranslationDirection::BehaviorToEngineering)).unwrap();
-        let TranslationResult::Engineering(spec) = &t.result else { panic!() };
+        let t = block_on(
+            DeterministicTranslator::default()
+                .translate(&model(), TranslationDirection::BehaviorToEngineering),
+        )
+        .unwrap();
+        let TranslationResult::Engineering(spec) = &t.result else {
+            panic!()
+        };
         assert_eq!(spec.context.purpose[0].text, "submit checkout order");
-        assert_eq!(spec.components[0].text, "CheckoutButton (component, id checkout-button)");
-        assert_eq!(spec.state_machines[0].states, vec!["idle", "loading", "success"]);
-        assert!(t.result.items().iter().all(|(_, i)| !i.basis.provenance.is_empty()));
+        assert_eq!(
+            spec.components[0].text,
+            "CheckoutButton (component, id checkout-button)"
+        );
+        assert_eq!(
+            spec.state_machines[0].states,
+            vec!["idle", "loading", "success"]
+        );
+        assert!(t
+            .result
+            .items()
+            .iter()
+            .all(|(_, i)| !i.basis.provenance.is_empty()));
         assert_eq!(t.confidence.value, 1.0);
     }
 
     #[test]
     fn semantic_model_to_behavior_representation_round_trips_as_yaml() {
-        let t = block_on(DeterministicTranslator::default().translate(&model(), TranslationDirection::EngineeringToBehavior)).unwrap();
-        let TranslationResult::Behavior { machines } = &t.result else { panic!() };
+        let t = block_on(
+            DeterministicTranslator::default()
+                .translate(&model(), TranslationDirection::EngineeringToBehavior),
+        )
+        .unwrap();
+        let TranslationResult::Behavior { machines } = &t.result else {
+            panic!()
+        };
         let yaml = machines[0].to_yaml();
         assert!(yaml.contains("id: checkout-button"));
         assert!(yaml.contains("event: submit"));
@@ -657,8 +735,11 @@ mod tests {
             }],
             ..Default::default()
         };
-        let tr = DeterministicTranslator { target_context: Some(target) };
-        let t = block_on(tr.translate(&model(), TranslationDirection::DesignToEngineering)).unwrap();
+        let tr = DeterministicTranslator {
+            target_context: Some(target),
+        };
+        let t =
+            block_on(tr.translate(&model(), TranslationDirection::DesignToEngineering)).unwrap();
         assert_eq!(t.conflicts.len(), 1);
         assert_eq!(t.conflicts[0].resolution, "requires_human_decision");
     }
@@ -676,10 +757,21 @@ mod tests {
 
     #[test]
     fn llm_suggestions_are_only_candidates() {
-        let tr = LlmTranslator { provider: Stub, base: DeterministicTranslator::default() };
-        let t = block_on(tr.translate(&model(), TranslationDirection::BehaviorToEngineering)).unwrap();
-        let TranslationResult::Engineering(spec) = &t.result else { panic!() };
-        let s = spec.context.constraints.iter().find(|c| c.text == "debounce submit").unwrap();
+        let tr = LlmTranslator {
+            provider: Stub,
+            base: DeterministicTranslator::default(),
+        };
+        let t =
+            block_on(tr.translate(&model(), TranslationDirection::BehaviorToEngineering)).unwrap();
+        let TranslationResult::Engineering(spec) = &t.result else {
+            panic!()
+        };
+        let s = spec
+            .context
+            .constraints
+            .iter()
+            .find(|c| c.text == "debounce submit")
+            .unwrap();
         assert_eq!(s.basis.evidence, Evidence::Candidate);
     }
 }

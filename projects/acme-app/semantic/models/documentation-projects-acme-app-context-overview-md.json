@@ -1,0 +1,234 @@
+{
+  "artifacts": [
+    "documentation-projects-acme-app-context-overview-md"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "doc:projects-acme-app-context-overview-md",
+      "name": "Acme App Overview",
+      "kind": "document",
+      "role": "product",
+      "artifact": "documentation-projects-acme-app-context-overview-md",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "MarkdownParser",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/context/overview.md",
+      "name": "overview.md",
+      "kind": "file",
+      "role": "product",
+      "artifact": "documentation-projects-acme-app-context-overview-md",
+      "attributes": {
+        "artifactKind": "documentation"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [
+    {
+      "id": "constraint:doc:projects-acme-app-context-overview-md:checkout-interactions-must-follow-the-checkout-ux-skill-and-the-checkout-button",
+      "statement": "Checkout interactions must follow the `checkout-ux` skill and the `checkout-button` behavior specification, and must satisfy the project's `accessibility` skill.",
+      "kind": "must",
+      "subject": "doc:projects-acme-app-context-overview-md",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.5,
+        "reason": "modal keyword in prose (1 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "lineStart": 13,
+          "lineEnd": 15,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "MarkdownParser",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    }
+  ],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "doc:projects-acme-app-context-overview-md|defined-by|file:projects/acme-app/context/overview.md",
+      "from": "doc:projects-acme-app-context-overview-md",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/context/overview.md",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    },
+    {
+      "id": "doc:projects-acme-app-context-overview-md|documents|checkout-button",
+      "from": "doc:projects-acme-app-context-overview-md",
+      "relation": "documents",
+      "to": "checkout-button",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "lineStart": 10,
+          "lineEnd": 10,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "MarkdownParser",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    },
+    {
+      "id": "doc:projects-acme-app-context-overview-md|documents|checkout-summary",
+      "from": "doc:projects-acme-app-context-overview-md",
+      "relation": "documents",
+      "to": "checkout-summary",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "MarkdownParser",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    },
+    {
+      "id": "doc:projects-acme-app-context-overview-md|documents|checkout-ux",
+      "from": "doc:projects-acme-app-context-overview-md",
+      "relation": "documents",
+      "to": "checkout-ux",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "lineStart": 13,
+          "lineEnd": 13,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "MarkdownParser",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    },
+    {
+      "id": "doc:projects-acme-app-context-overview-md|documents|payment-flow",
+      "from": "doc:projects-acme-app-context-overview-md",
+      "relation": "documents",
+      "to": "payment-flow",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/context/overview.md",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "MarkdownParser",
+          "artifact": "documentation-projects-acme-app-context-overview-md"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 0.588,
+    "reason": "mean of 8 statements: 3 explicit, 1 inferred, 4 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/context/overview.md",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "MarkdownParser",
+      "artifact": "documentation-projects-acme-app-context-overview-md"
+    },
+    {
+      "source": "projects/acme-app/context/overview.md",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SemanticEngine",
+      "artifact": "documentation-projects-acme-app-context-overview-md"
+    },
+    {
+      "source": "projects/acme-app/context/overview.md",
+      "lineStart": 10,
+      "lineEnd": 10,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "MarkdownParser",
+      "artifact": "documentation-projects-acme-app-context-overview-md"
+    },
+    {
+      "source": "projects/acme-app/context/overview.md",
+      "lineStart": 11,
+      "lineEnd": 11,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "MarkdownParser",
+      "artifact": "documentation-projects-acme-app-context-overview-md"
+    },
+    {
+      "source": "projects/acme-app/context/overview.md",
+      "lineStart": 13,
+      "lineEnd": 13,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "MarkdownParser",
+      "artifact": "documentation-projects-acme-app-context-overview-md"
+    },
+    {
+      "source": "projects/acme-app/context/overview.md",
+      "lineStart": 13,
+      "lineEnd": 15,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "MarkdownParser",
+      "artifact": "documentation-projects-acme-app-context-overview-md"
+    }
+  ],
+  "assumptions": []
+}

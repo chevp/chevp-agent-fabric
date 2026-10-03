@@ -63,4 +63,4 @@ printf '%s\n%s\n' \
 
 A healthy server responds to `initialize` with `serverInfo.name ==
 "agent-nexus"` and to `tools/list` with the fixed domain tools plus any
-registered concrete tools (see README section 8).
+registered concrete tools (see README section 9).

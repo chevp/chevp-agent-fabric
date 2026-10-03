@@ -22,21 +22,36 @@ pub struct Score {
 pub const MAX_ATTEMPTS: u32 = 4;
 
 /// `history` = earlier review records (reviews.jsonl) for this run.
-pub fn decide(spec: &DesignSpec, level: &str, scores: &[Score], threshold: f64, history: &[Value]) -> Result<Value, String> {
+pub fn decide(
+    spec: &DesignSpec,
+    level: &str,
+    scores: &[Score],
+    threshold: f64,
+    history: &[Value],
+) -> Result<Value, String> {
     let mut worst: BTreeMap<&str, (&Score, usize)> = BTreeMap::new();
     for s in scores {
         let c = spec
             .component(&s.component)
             .ok_or_else(|| format!("unknown component \"{}\"", s.component))?;
         if !VALIDATION_VIEWS.contains(&s.view.as_str()) {
-            return Err(format!("view \"{}\" must be one of {VALIDATION_VIEWS:?}", s.view));
+            return Err(format!(
+                "view \"{}\" must be one of {VALIDATION_VIEWS:?}",
+                s.view
+            ));
         }
         if !(0.0..=1.0).contains(&s.score) {
-            return Err(format!("score for {}/{} must be in [0,1]", s.component, s.view));
+            return Err(format!(
+                "score for {}/{} must be in [0,1]",
+                s.component, s.view
+            ));
         }
         // A bad mirror means its source mesh is bad.
         let target = c.mirror_of.as_deref().unwrap_or(&c.id);
-        let target = spec.component(target).map(|c| c.id.as_str()).unwrap_or(target);
+        let target = spec
+            .component(target)
+            .map(|c| c.id.as_str())
+            .unwrap_or(target);
         let entry = worst.entry(target).or_insert((s, 0));
         entry.1 += 1;
         if s.score < entry.0.score {
@@ -64,9 +79,11 @@ pub fn decide(spec: &DesignSpec, level: &str, scores: &[Score], threshold: f64, 
             escalate.push(json!({ "component": component, "attempts": previous, "worst": reason,
                 "why": if c.source != "hunyuan" { "not a Hunyuan component; fix procedural/texture step" } else { "attempt budget used up; revise spec or reference crop" } }));
         } else {
-            regenerate.push(json!({ "component": component, "attempt": attempt, "worst": reason,
+            regenerate.push(
+                json!({ "component": component, "attempt": attempt, "worst": reason,
                 "jobs": [format!("shape.{component}"), format!("clean.{component}")],
-                "hunyuan": hunyuan_request(spec, Some(c), level, attempt) }));
+                "hunyuan": hunyuan_request(spec, Some(c), level, attempt) }),
+            );
         }
     }
     let rerun_downstream = !regenerate.is_empty();
@@ -88,13 +105,25 @@ mod tests {
     use crate::spec::tests::sample;
 
     fn s(component: &str, view: &str, score: f64) -> Score {
-        Score { component: component.into(), view: view.into(), score, note: String::new() }
+        Score {
+            component: component.into(),
+            view: view.into(),
+            score,
+            note: String::new(),
+        }
     }
 
     #[test]
     fn only_failing_components_regenerate_and_mirrors_map_to_source() {
         let spec = sample();
-        let out = decide(&spec, "hero", &[s("main_hull", "front", 0.9), s("engine_r", "top", 0.4)], 0.7, &[]).unwrap();
+        let out = decide(
+            &spec,
+            "hero",
+            &[s("main_hull", "front", 0.9), s("engine_r", "top", 0.4)],
+            0.7,
+            &[],
+        )
+        .unwrap();
         assert_eq!(out["keep"], json!(["main_hull"]));
         assert_eq!(out["regenerate"][0]["component"], "engine_l");
         assert_eq!(out["regenerate"][0]["attempt"], 1);

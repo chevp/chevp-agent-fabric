@@ -1,0 +1,22 @@
+{
+  "id": "design-system-projects-acme-app-design-components-button-yaml",
+  "projectId": "acme-app",
+  "kind": "design-system",
+  "role": "design",
+  "name": "button.yaml",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/design/components/button.yaml"
+  },
+  "provenance": {
+    "source": "projects/acme-app/design/components/button.yaml",
+    "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/design/components/button.yaml"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

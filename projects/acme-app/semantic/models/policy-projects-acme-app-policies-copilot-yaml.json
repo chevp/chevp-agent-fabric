@@ -1,0 +1,109 @@
+{
+  "artifacts": [
+    "policy-projects-acme-app-policies-copilot-yaml"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "file:projects/acme-app/policies/copilot.yaml",
+      "name": "copilot.yaml",
+      "kind": "file",
+      "role": "policy",
+      "artifact": "policy-projects-acme-app-policies-copilot-yaml",
+      "attributes": {
+        "artifactKind": "policy"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/copilot.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "policy-projects-acme-app-policies-copilot-yaml"
+        }
+      ]
+    },
+    {
+      "id": "policy:copilot",
+      "name": "copilot",
+      "kind": "policy",
+      "role": "policy",
+      "artifact": "policy-projects-acme-app-policies-copilot-yaml",
+      "attributes": {
+        "permissions": [
+          "read:project",
+          "read:skills",
+          "read:behavior",
+          "read:graph",
+          "write:code-reference"
+        ]
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/copilot.yaml",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "YamlParser",
+          "artifact": "policy-projects-acme-app-policies-copilot-yaml"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "policy:copilot|defined-by|file:projects/acme-app/policies/copilot.yaml",
+      "from": "policy:copilot",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/policies/copilot.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/copilot.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "policy-projects-acme-app-policies-copilot-yaml"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 3 statements: 3 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/policies/copilot.yaml",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SemanticEngine",
+      "artifact": "policy-projects-acme-app-policies-copilot-yaml"
+    },
+    {
+      "source": "projects/acme-app/policies/copilot.yaml",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "YamlParser",
+      "artifact": "policy-projects-acme-app-policies-copilot-yaml"
+    }
+  ],
+  "assumptions": []
+}

@@ -76,7 +76,10 @@ pub fn merge(bases: &[&Basis]) -> Basis {
         ),
         Evidence::Candidate if sources >= 2 => (
             Evidence::Inferred,
-            inferred(sources, "corroborated by independent candidate observations"),
+            inferred(
+                sources,
+                "corroborated by independent candidate observations",
+            ),
         ),
         Evidence::Candidate => (
             Evidence::Candidate,

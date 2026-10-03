@@ -22,7 +22,13 @@ impl ArtifactParser for CommitParser {
     }
 
     async fn inspect(&self, artifact: &NexusArtifact) -> SemanticResult<SemanticModel> {
-        let meta = |k: &str| artifact.metadata.get(k).and_then(Value::as_str).unwrap_or("");
+        let meta = |k: &str| {
+            artifact
+                .metadata
+                .get(k)
+                .and_then(Value::as_str)
+                .unwrap_or("")
+        };
         let sha = meta("sha");
         let short = &sha[..sha.len().min(7)];
         let id = format!("commit:{short}");

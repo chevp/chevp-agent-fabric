@@ -1,0 +1,516 @@
+{
+  "artifacts": [
+    "design-system-projects-acme-app-design-components-button-yaml"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "button",
+      "name": "Button",
+      "kind": "component",
+      "description": "Primary action button of the Acme design system.",
+      "role": "design",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/design/components/button.yaml",
+      "name": "button.yaml",
+      "kind": "file",
+      "role": "design",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml",
+      "attributes": {
+        "artifactKind": "design-system"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "variant:button/primary",
+      "name": "Primary",
+      "kind": "variant",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "variant:button/secondary",
+      "name": "Secondary",
+      "kind": "variant",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "button/default",
+      "name": "default",
+      "subject": "button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 7,
+          "lineEnd": 7,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button/disabled",
+      "name": "disabled",
+      "subject": "button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 10,
+          "lineEnd": 10,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button/hover",
+      "name": "hover",
+      "subject": "button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 8,
+          "lineEnd": 8,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button/loading",
+      "name": "loading",
+      "subject": "button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 11,
+          "lineEnd": 11,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button/pressed",
+      "name": "pressed",
+      "subject": "button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 9,
+          "lineEnd": 9,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint:button:loading-state-is-announced-via-aria-busy",
+      "statement": "Loading state is announced via aria-busy",
+      "kind": "accessibility",
+      "subject": "button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 20,
+          "lineEnd": 20,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "constraint:button:reachable-and-operable-by-keyboard-alone",
+      "statement": "Reachable and operable by keyboard alone",
+      "kind": "accessibility",
+      "subject": "button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 19,
+          "lineEnd": 19,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "interaction:button:click:submit",
+      "trigger": "click",
+      "target": "button",
+      "effect": "submit",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 17,
+          "lineEnd": 17,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "button|defined-by|file:projects/acme-app/design/components/button.yaml",
+      "from": "button",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/design/components/button.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button|has-variant|variant:button/primary",
+      "from": "button",
+      "relation": "has-variant",
+      "to": "variant:button/primary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button|has-variant|variant:button/secondary",
+      "from": "button",
+      "relation": "has-variant",
+      "to": "variant:button/secondary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button|uses|token:color.primary",
+      "from": "button",
+      "relation": "uses",
+      "to": "token:color.primary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 13,
+          "lineEnd": 13,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button|uses|token:spacing.medium",
+      "from": "button",
+      "relation": "uses",
+      "to": "token:spacing.medium",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 14,
+          "lineEnd": 14,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "button|uses|token:typography.label",
+      "from": "button",
+      "relation": "uses",
+      "to": "token:typography.label",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 15,
+          "lineEnd": 15,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 18 statements: 18 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 5,
+      "lineEnd": 5,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 7,
+      "lineEnd": 7,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 8,
+      "lineEnd": 8,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 9,
+      "lineEnd": 9,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 10,
+      "lineEnd": 10,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 11,
+      "lineEnd": 11,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 13,
+      "lineEnd": 13,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 14,
+      "lineEnd": 14,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 15,
+      "lineEnd": 15,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 17,
+      "lineEnd": 17,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 19,
+      "lineEnd": 19,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 20,
+      "lineEnd": 20,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    }
+  ],
+  "assumptions": []
+}

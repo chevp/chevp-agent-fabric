@@ -1,0 +1,166 @@
+{
+  "artifacts": [
+    "commit-5534619"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "commit:5534619",
+      "name": "Update MCP clients to use JSON-RPC 2.0 over stdio",
+      "kind": "commit",
+      "artifact": "commit-5534619",
+      "attributes": {
+        "author": "chevp",
+        "date": "2026-09-27T12:31:35+02:00",
+        "sha": "5534619ea9768ac67a146ce437facaf2c5f7f409"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "file:projects/acme-app/contracts/checkout-submit.yaml|changed-by|commit:5534619",
+      "from": "file:projects/acme-app/contracts/checkout-submit.yaml",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/design/checkout-button.html|changed-by|commit:5534619",
+      "from": "file:projects/acme-app/design/checkout-button.html",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/design/components/button.yaml|changed-by|commit:5534619",
+      "from": "file:projects/acme-app/design/components/button.yaml",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/design/tokens.json|changed-by|commit:5534619",
+      "from": "file:projects/acme-app/design/tokens.json",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/policies/human-reviewer.yaml|changed-by|commit:5534619",
+      "from": "file:projects/acme-app/policies/human-reviewer.yaml",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/project.yaml|changed-by|commit:5534619",
+      "from": "file:projects/acme-app/project.yaml",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 7 statements: 7 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "git:5534619",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "CommitParser",
+      "artifact": "commit-5534619"
+    }
+  ],
+  "assumptions": []
+}

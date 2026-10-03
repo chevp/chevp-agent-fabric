@@ -28,6 +28,7 @@ pub mod error;
 pub mod git;
 pub mod graph_view;
 pub mod ingest;
+pub mod knowledge;
 pub mod model;
 pub mod parser;
 pub mod proposal;

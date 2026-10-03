@@ -1,0 +1,107 @@
+{
+  "artifacts": [
+    "policy-projects-acme-app-policies-human-reviewer-yaml"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "file:projects/acme-app/policies/human-reviewer.yaml",
+      "name": "human-reviewer.yaml",
+      "kind": "file",
+      "role": "policy",
+      "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml",
+      "attributes": {
+        "artifactKind": "policy"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/human-reviewer.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml"
+        }
+      ]
+    },
+    {
+      "id": "policy:human-reviewer",
+      "name": "human-reviewer",
+      "kind": "policy",
+      "role": "policy",
+      "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml",
+      "attributes": {
+        "permissions": [
+          "read:project",
+          "read:graph",
+          "review:proposals"
+        ]
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/human-reviewer.yaml",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "YamlParser",
+          "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "policy:human-reviewer|defined-by|file:projects/acme-app/policies/human-reviewer.yaml",
+      "from": "policy:human-reviewer",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/policies/human-reviewer.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/policies/human-reviewer.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 3 statements: 3 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/policies/human-reviewer.yaml",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml"
+    },
+    {
+      "source": "projects/acme-app/policies/human-reviewer.yaml",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "YamlParser",
+      "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml"
+    }
+  ],
+  "assumptions": []
+}

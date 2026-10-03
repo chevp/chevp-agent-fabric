@@ -7,7 +7,12 @@ use std::path::Path;
 use std::process::Command;
 
 fn git(dir: &Path, args: &[&str]) -> Option<String> {
-    let out = Command::new("git").arg("-C").arg(dir).args(args).output().ok()?;
+    let out = Command::new("git")
+        .arg("-C")
+        .arg(dir)
+        .args(args)
+        .output()
+        .ok()?;
     out.status
         .success()
         .then(|| String::from_utf8_lossy(&out.stdout).to_string())
@@ -80,7 +85,7 @@ pub fn log(dir: &Path, max: usize) -> Vec<CommitInfo> {
                 .filter_map(|l| {
                     let mut parts = l.split('\t');
                     let status = parts.next()?.trim().to_string();
-                    let path = parts.last()?.trim();
+                    let path = parts.next_back()?.trim();
                     let rel = path.strip_prefix(prefix.as_str())?;
                     (!status.is_empty()).then(|| CommitFile {
                         status: status.chars().next().unwrap_or('M').to_string(),

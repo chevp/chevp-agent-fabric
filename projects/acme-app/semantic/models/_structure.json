@@ -1,0 +1,576 @@
+{
+  "artifacts": [],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "dir:.",
+      "name": "Acme App",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": ".",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:behavior",
+      "name": "behavior",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "behavior",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:context",
+      "name": "context",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "context",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:contracts",
+      "name": "contracts",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "contracts",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:design",
+      "name": "design",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "design",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:design/components",
+      "name": "design/components",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "design/components",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:policies",
+      "name": "policies",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "policies",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:skills",
+      "name": "skills",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "skills",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:skills/checkout-ux",
+      "name": "skills/checkout-ux",
+      "kind": "directory",
+      "role": "system",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "skills/checkout-ux",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "dir:.|contains|dir:behavior",
+      "from": "dir:.",
+      "relation": "contains",
+      "to": "dir:behavior",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "behavior",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:.|contains|dir:context",
+      "from": "dir:.",
+      "relation": "contains",
+      "to": "dir:context",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "context",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:.|contains|dir:contracts",
+      "from": "dir:.",
+      "relation": "contains",
+      "to": "dir:contracts",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "contracts",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:.|contains|dir:design",
+      "from": "dir:.",
+      "relation": "contains",
+      "to": "dir:design",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "design",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:.|contains|dir:policies",
+      "from": "dir:.",
+      "relation": "contains",
+      "to": "dir:policies",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "policies",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:.|contains|dir:skills",
+      "from": "dir:.",
+      "relation": "contains",
+      "to": "dir:skills",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "skills",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:.|contains|file:projects/acme-app/project.yaml",
+      "from": "dir:.",
+      "relation": "contains",
+      "to": "file:projects/acme-app/project.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "project.yaml",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:behavior|contains|file:projects/acme-app/behavior/checkout-button.yaml",
+      "from": "dir:behavior",
+      "relation": "contains",
+      "to": "file:projects/acme-app/behavior/checkout-button.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "behavior/checkout-button.yaml",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:context|contains|file:projects/acme-app/context/overview.md",
+      "from": "dir:context",
+      "relation": "contains",
+      "to": "file:projects/acme-app/context/overview.md",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "context/overview.md",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:contracts|contains|file:projects/acme-app/contracts/checkout-submit.yaml",
+      "from": "dir:contracts",
+      "relation": "contains",
+      "to": "file:projects/acme-app/contracts/checkout-submit.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "contracts/checkout-submit.yaml",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:design/components|contains|file:projects/acme-app/design/components/button.yaml",
+      "from": "dir:design/components",
+      "relation": "contains",
+      "to": "file:projects/acme-app/design/components/button.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "design/components/button.yaml",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:design|contains|dir:design/components",
+      "from": "dir:design",
+      "relation": "contains",
+      "to": "dir:design/components",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "design/components",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:design|contains|file:projects/acme-app/design/checkout-button.html",
+      "from": "dir:design",
+      "relation": "contains",
+      "to": "file:projects/acme-app/design/checkout-button.html",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "design/checkout-button.html",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:design|contains|file:projects/acme-app/design/tokens.json",
+      "from": "dir:design",
+      "relation": "contains",
+      "to": "file:projects/acme-app/design/tokens.json",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "design/tokens.json",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:policies|contains|file:projects/acme-app/policies/copilot.yaml",
+      "from": "dir:policies",
+      "relation": "contains",
+      "to": "file:projects/acme-app/policies/copilot.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "policies/copilot.yaml",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:policies|contains|file:projects/acme-app/policies/figma-make.yaml",
+      "from": "dir:policies",
+      "relation": "contains",
+      "to": "file:projects/acme-app/policies/figma-make.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "policies/figma-make.yaml",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:policies|contains|file:projects/acme-app/policies/human-reviewer.yaml",
+      "from": "dir:policies",
+      "relation": "contains",
+      "to": "file:projects/acme-app/policies/human-reviewer.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "policies/human-reviewer.yaml",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:skills/checkout-ux|contains|file:projects/acme-app/skills/checkout-ux/skill.md",
+      "from": "dir:skills/checkout-ux",
+      "relation": "contains",
+      "to": "file:projects/acme-app/skills/checkout-ux/skill.md",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "skills/checkout-ux/skill.md",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    },
+    {
+      "id": "dir:skills|contains|dir:skills/checkout-ux",
+      "from": "dir:skills",
+      "relation": "contains",
+      "to": "dir:skills/checkout-ux",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "skills/checkout-ux",
+          "extraction": "RepositoryWalker"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 28 statements: 28 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": ".",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "behavior",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "behavior/checkout-button.yaml",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "context",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "context/overview.md",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "contracts",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "contracts/checkout-submit.yaml",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "design",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "design/checkout-button.html",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "design/components",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "design/components/button.yaml",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "design/tokens.json",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "policies",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "policies/copilot.yaml",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "policies/figma-make.yaml",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "policies/human-reviewer.yaml",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "project.yaml",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "skills",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "skills/checkout-ux",
+      "extraction": "RepositoryWalker"
+    },
+    {
+      "source": "skills/checkout-ux/skill.md",
+      "extraction": "RepositoryWalker"
+    }
+  ],
+  "assumptions": []
+}

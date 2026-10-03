@@ -1,0 +1,773 @@
+{
+  "id": "prop-1790505399-38f2a8dd6b",
+  "projectId": "acme-app",
+  "title": "Ingestion of projects/acme-app",
+  "scope": "ingest:projects/acme-app",
+  "changes": [
+    {
+      "op": "add-entity",
+      "id": "button",
+      "name": "Button",
+      "kind": "component",
+      "description": "Primary action button of the Acme design system.",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "card-number",
+      "name": "card-number",
+      "kind": "field",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "checkout-form",
+      "name": "checkout",
+      "kind": "form",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "commit:5534619",
+      "name": "Update MCP clients to use JSON-RPC 2.0 over stdio",
+      "kind": "commit",
+      "artifact": "commit-5534619",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "CommitParser",
+          "artifact": "commit-5534619"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "design-system:tokens-json",
+      "name": "tokens.json",
+      "kind": "design-system",
+      "artifact": "design-system-projects-acme-app-design-tokens-json",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "token:color.danger",
+      "name": "color.danger",
+      "kind": "token",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "token:color.primary",
+      "name": "color.primary",
+      "kind": "token",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "token:spacing.medium",
+      "name": "spacing.medium",
+      "kind": "token",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 7,
+          "lineEnd": 7,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "token:typography.label",
+      "name": "typography.label",
+      "kind": "token",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 10,
+          "lineEnd": 10,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "variant:button/primary",
+      "name": "Primary",
+      "kind": "variant",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-entity",
+      "id": "variant:button/secondary",
+      "name": "Secondary",
+      "kind": "variant",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "button",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.7,
+        "reason": "entity is defined in a file this commit touched (2 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "GitIngestion"
+        },
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "button",
+      "relation": "has-variant",
+      "to": "variant:button/primary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "button",
+      "relation": "has-variant",
+      "to": "variant:button/secondary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 5,
+          "lineEnd": 5,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "button",
+      "relation": "uses",
+      "to": "token:color.primary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 13,
+          "lineEnd": 13,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "button",
+      "relation": "uses",
+      "to": "token:spacing.medium",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 14,
+          "lineEnd": 14,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "button",
+      "relation": "uses",
+      "to": "token:typography.label",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "lineStart": 15,
+          "lineEnd": 15,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "checkout-button",
+      "relation": "defined-by",
+      "to": "behavior:checkout-button",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.5,
+        "reason": "behavior spec id equals the subject entity id (Context Resolver convention) (1 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "checkout-button",
+      "relation": "governed-by",
+      "to": "contract:checkout-submit",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/contracts/checkout-submit.yaml",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "ContractParser",
+          "artifact": "contract-projects-acme-app-contracts-checkout-submit-yaml"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "checkout-form",
+      "relation": "contains",
+      "to": "card-number",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "checkout-form",
+      "relation": "contains",
+      "to": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "design-system:tokens-json",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.7,
+        "reason": "entity is defined in a file this commit touched (2 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "GitIngestion"
+        },
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:color.danger",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:color.primary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:spacing.medium",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:typography.label",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "skill:checkout-ux",
+      "relation": "related-to",
+      "to": "checkout-button",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 26,
+          "lineEnd": 26,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    },
+    {
+      "op": "add-relation",
+      "from": "skill:checkout-ux",
+      "relation": "related-to",
+      "to": "payment-flow",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "identifier mentioned in backticks"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/skills/checkout-ux/skill.md",
+          "lineStart": 33,
+          "lineEnd": 33,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SkillParser",
+          "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 0.911,
+    "reason": "mean of 28 statements: 23 explicit, 3 inferred, 2 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "git:5534619",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "CommitParser",
+      "artifact": "commit-5534619"
+    },
+    {
+      "source": "git:5534619",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "GitIngestion"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/contracts/checkout-submit.yaml",
+      "lineStart": 4,
+      "lineEnd": 4,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "ContractParser",
+      "artifact": "contract-projects-acme-app-contracts-checkout-submit-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/checkout-button.html",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "HtmlParser",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+    },
+    {
+      "source": "projects/acme-app/design/checkout-button.html",
+      "lineStart": 3,
+      "lineEnd": 3,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "HtmlParser",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+    },
+    {
+      "source": "projects/acme-app/design/checkout-button.html",
+      "lineStart": 4,
+      "lineEnd": 4,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "HtmlParser",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 5,
+      "lineEnd": 5,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 13,
+      "lineEnd": 13,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 14,
+      "lineEnd": 14,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "lineStart": 15,
+      "lineEnd": 15,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 3,
+      "lineEnd": 3,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 4,
+      "lineEnd": 4,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 7,
+      "lineEnd": 7,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 10,
+      "lineEnd": 10,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 26,
+      "lineEnd": 26,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    },
+    {
+      "source": "projects/acme-app/skills/checkout-ux/skill.md",
+      "lineStart": 33,
+      "lineEnd": 33,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SkillParser",
+      "artifact": "skill-projects-acme-app-skills-checkout-ux-skill-md"
+    }
+  ],
+  "status": "pending",
+  "createdAt": 1790505399
+}

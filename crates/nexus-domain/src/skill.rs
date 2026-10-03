@@ -151,7 +151,9 @@ fn merge_with_project_overrides(global: Vec<Skill>, project: Vec<Skill>) -> Vec<
 }
 
 // Function words that would otherwise match nearly every skill description.
-const STOPWORDS: &[&str] = &["the", "and", "for", "with", "from", "into", "this", "that", "how"];
+const STOPWORDS: &[&str] = &[
+    "the", "and", "for", "with", "from", "into", "this", "that", "how",
+];
 
 fn tokenize(text: &str) -> HashSet<String> {
     text.to_lowercase()

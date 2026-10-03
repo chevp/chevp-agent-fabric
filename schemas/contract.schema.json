@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agent-nexus/schemas/contract.schema.json",
+  "title": "SemanticContract",
+  "type": "object",
+  "required": [
+    "id",
+    "role"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "description": "product|ux|design|engineering|qa|... or custom"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Entity the contract is about; defaults to id."
+    },
+    "intent": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "behaviors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "from",
+              "event",
+              "to"
+            ],
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "event": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

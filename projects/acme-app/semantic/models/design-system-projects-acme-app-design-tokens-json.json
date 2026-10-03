@@ -1,0 +1,309 @@
+{
+  "artifacts": [
+    "design-system-projects-acme-app-design-tokens-json"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "design-system:tokens-json",
+      "name": "tokens.json",
+      "kind": "design-system",
+      "artifact": "design-system-projects-acme-app-design-tokens-json",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/design/tokens.json",
+      "name": "tokens.json",
+      "kind": "file",
+      "role": "design",
+      "artifact": "design-system-projects-acme-app-design-tokens-json",
+      "attributes": {
+        "artifactKind": "design-system"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "token:color.danger",
+      "name": "color.danger",
+      "kind": "token",
+      "attributes": {
+        "type": "color",
+        "value": "#cf222e"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "token:color.primary",
+      "name": "color.primary",
+      "kind": "token",
+      "attributes": {
+        "type": "color",
+        "value": "#1f6feb"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "token:spacing.medium",
+      "name": "spacing.medium",
+      "kind": "token",
+      "attributes": {
+        "type": "dimension",
+        "value": "12px"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 7,
+          "lineEnd": 7,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "token:typography.label",
+      "name": "typography.label",
+      "kind": "token",
+      "attributes": {
+        "type": "typography",
+        "value": "600 14px/20px Inter"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "lineStart": 10,
+          "lineEnd": 10,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "design-system:tokens-json|contains|token:color.danger",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:color.danger",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "design-system:tokens-json|contains|token:color.primary",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:color.primary",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "design-system:tokens-json|contains|token:spacing.medium",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:spacing.medium",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "design-system:tokens-json|contains|token:typography.label",
+      "from": "design-system:tokens-json",
+      "relation": "contains",
+      "to": "token:typography.label",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "DesignSystemParser",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    },
+    {
+      "id": "design-system:tokens-json|defined-by|file:projects/acme-app/design/tokens.json",
+      "from": "design-system:tokens-json",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/design/tokens.json",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 11 statements: 11 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 3,
+      "lineEnd": 3,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 4,
+      "lineEnd": 4,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 7,
+      "lineEnd": 7,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "lineStart": 10,
+      "lineEnd": 10,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "DesignSystemParser",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    }
+  ],
+  "assumptions": []
+}

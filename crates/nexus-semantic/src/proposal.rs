@@ -6,6 +6,7 @@
 //! statements with their original evidence, confidence and provenance: an
 //! inferred relation becomes part of the canonical graph *as inferred*.
 
+use crate::contract::SemanticContract;
 use crate::error::{SemanticError, SemanticResult};
 use crate::model::*;
 use crate::store::SemanticStore;
@@ -47,24 +48,64 @@ pub enum ProposedChange {
         #[serde(flatten)]
         basis: Basis,
     },
+    /// A Semantic Knowledge Layer entry, written to `contracts/<id>.yaml` on
+    /// acceptance — never to `graph/`, `contracts/` is its own canonical home.
+    /// Boxed: `SemanticContract` is much larger than the other variants.
+    AddContract {
+        contract: Box<SemanticContract>,
+        #[serde(flatten)]
+        basis: Basis,
+    },
 }
 
 impl ProposedChange {
     pub fn basis(&self) -> &Basis {
         match self {
-            ProposedChange::AddEntity { basis, .. } | ProposedChange::AddRelation { basis, .. } => {
-                basis
-            }
+            ProposedChange::AddEntity { basis, .. }
+            | ProposedChange::AddRelation { basis, .. }
+            | ProposedChange::AddContract { basis, .. } => basis,
         }
     }
 
     pub fn key(&self) -> String {
         match self {
             ProposedChange::AddEntity { id, .. } => format!("entity:{id}"),
-            ProposedChange::AddRelation { from, relation, to, .. } => {
+            ProposedChange::AddRelation {
+                from, relation, to, ..
+            } => {
                 format!("relation:{from}|{}|{to}", relation.as_str())
             }
+            ProposedChange::AddContract { contract, .. } => format!("contract:{}", contract.id),
         }
+    }
+}
+
+/// Wraps a single already-built candidate contract into a pending proposal.
+/// Unlike `build`, this never diffs against the canonical graph — the caller
+/// (a human or an agent, via the `propose_knowledge_entry` MCP tool) decided
+/// exactly what the contract should contain.
+pub fn from_contract(project_id: &str, scope: String, contract: SemanticContract, basis: Basis) -> Proposal {
+    let change = ProposedChange::AddContract {
+        contract: Box::new(contract),
+        basis: basis.clone(),
+    };
+    let created_at = now();
+    let key = change.key();
+    Proposal {
+        id: format!("prop-{created_at}-{}{}", short_hash(&key, 4), crate::text::nonce()),
+        project_id: ProjectId::from(project_id),
+        title: format!("Knowledge entry: {key}"),
+        scope,
+        confidence: basis.confidence,
+        provenance: basis.provenance,
+        changes: vec![change],
+        status: ProposalStatus::Pending,
+        created_at,
+        reviewed_at: None,
+        reviewer: None,
+        note: None,
+        superseded_by: None,
+        written: Vec::new(),
     }
 }
 
@@ -98,7 +139,15 @@ pub struct Proposal {
 /// Entities that stay out of the canonical graph: structure (files,
 /// directories, modules) and authored sources that are canonical as files.
 pub const NON_GRAPH_PREFIXES: &[&str] = &[
-    "file:", "dir:", "doc:", "module:", "package:", "skill:", "behavior:", "contract:", "policy:",
+    "file:",
+    "dir:",
+    "doc:",
+    "module:",
+    "package:",
+    "skill:",
+    "behavior:",
+    "contract:",
+    "policy:",
     "project:",
 ];
 
@@ -131,7 +180,11 @@ pub struct BuildInput<'a> {
 }
 
 pub fn build(input: BuildInput<'_>) -> Proposal {
-    let entity_ids: BTreeSet<String> = input.canonical_entities.iter().map(|e| e.id.clone()).collect();
+    let entity_ids: BTreeSet<String> = input
+        .canonical_entities
+        .iter()
+        .map(|e| e.id.clone())
+        .collect();
     let norm = |id: &str| normalize_ref(id, &entity_ids, input.sources);
     let canonical_edges: BTreeSet<(String, RelationKind, String)> = input
         .canonical_relations
@@ -164,7 +217,10 @@ pub fn build(input: BuildInput<'_>) -> Proposal {
             continue;
         }
         // Commits enter only as endpoints of changed-by relations.
-        if to.starts_with("commit:") && d.relation == RelationKind::ChangedBy && endpoint_ok(&from, &proposed) {
+        if to.starts_with("commit:")
+            && d.relation == RelationKind::ChangedBy
+            && endpoint_ok(&from, &proposed)
+        {
             proposed.insert(to.clone());
         }
         if endpoint_ok(&from, &proposed) && endpoint_ok(&to, &proposed) {
@@ -202,7 +258,11 @@ pub fn build(input: BuildInput<'_>) -> Proposal {
     let created_at = now();
     let keys: Vec<String> = changes.iter().map(|c| c.key()).collect();
     Proposal {
-        id: format!("prop-{created_at}-{}{}", short_hash(&keys.join(","), 4), crate::text::nonce()),
+        id: format!(
+            "prop-{created_at}-{}{}",
+            short_hash(&keys.join(","), 4),
+            crate::text::nonce()
+        ),
         project_id: ProjectId::from(input.project_id),
         title: input.title,
         scope: input.scope,
@@ -224,7 +284,10 @@ pub fn build(input: BuildInput<'_>) -> Proposal {
 pub fn submit(store: &SemanticStore, proposal: &Proposal) -> SemanticResult<Vec<String>> {
     let mut superseded = Vec::new();
     for mut old in store.proposals()? {
-        if old.status == ProposalStatus::Pending && old.scope == proposal.scope && old.id != proposal.id {
+        if old.status == ProposalStatus::Pending
+            && old.scope == proposal.scope
+            && old.id != proposal.id
+        {
             old.status = ProposalStatus::Superseded;
             old.superseded_by = Some(proposal.id.clone());
             store.save_proposal(&old)?;
@@ -249,7 +312,8 @@ fn yaml_write(path: &Path, value: &Value) -> SemanticResult<bool> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|e| SemanticError::io(parent, e))?;
     }
-    let text = serde_yaml::to_string(value).map_err(|e| SemanticError::InvalidInput(e.to_string()))?;
+    let text =
+        serde_yaml::to_string(value).map_err(|e| SemanticError::InvalidInput(e.to_string()))?;
     fs::write(path, text).map_err(|e| SemanticError::io(path, e))?;
     Ok(true)
 }
@@ -275,7 +339,14 @@ pub fn review(
         let graph = project_dir.join("graph");
         for change in &p.changes {
             let (path, value) = match change {
-                ProposedChange::AddEntity { id, name, kind, description, artifact, basis } => (
+                ProposedChange::AddEntity {
+                    id,
+                    name,
+                    kind,
+                    description,
+                    artifact,
+                    basis,
+                } => (
                     graph.join("entities").join(format!("{}.yaml", slug(id))),
                     serde_json::json!({
                         "id": id,
@@ -289,10 +360,18 @@ pub fn review(
                         "proposal": p.id,
                     }),
                 ),
-                ProposedChange::AddRelation { from, relation, to, basis } => (
-                    graph
-                        .join("relations")
-                        .join(format!("{}-{}-{}.yaml", slug(from), relation.as_str(), slug(to))),
+                ProposedChange::AddRelation {
+                    from,
+                    relation,
+                    to,
+                    basis,
+                } => (
+                    graph.join("relations").join(format!(
+                        "{}-{}-{}.yaml",
+                        slug(from),
+                        relation.as_str(),
+                        slug(to)
+                    )),
                     serde_json::json!({
                         "from": from,
                         "relation": relation,
@@ -300,6 +379,28 @@ pub fn review(
                         "evidence": basis.evidence,
                         "confidence": basis.confidence,
                         "provenance": basis.provenance,
+                        "proposal": p.id,
+                    }),
+                ),
+                ProposedChange::AddContract { contract, basis } => (
+                    project_dir
+                        .join("contracts")
+                        .join(format!("{}.yaml", slug(&contract.id))),
+                    serde_json::json!({
+                        "id": contract.id,
+                        "name": contract.name,
+                        "role": contract.role,
+                        "subject": contract.subject,
+                        "term": contract.term,
+                        "kind": contract.kind,
+                        "definition": contract.definition,
+                        "aliases": contract.aliases,
+                        "intent": contract.intent,
+                        "requirements": contract.requirements,
+                        "behaviors": contract.behaviors,
+                        "constraints": contract.constraints,
+                        "confidence": basis.confidence,
+                        "identity": contract.identity,
                         "proposal": p.id,
                     }),
                 ),
@@ -322,4 +423,125 @@ pub fn review(
     p.note = note;
     store.save_proposal(&p)?;
     Ok(p)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::knowledge::{build_contract, ContractInput, Definition};
+    use tempfile::TempDir;
+
+    #[test]
+    fn contract_proposal_round_trips_through_submit_and_review() {
+        let dir = TempDir::new().unwrap();
+        let project_dir = dir.path().join("acme-app");
+        std::fs::create_dir_all(&project_dir).unwrap();
+        let store = SemanticStore::for_project(&project_dir);
+
+        let contract = build_contract(ContractInput {
+            definition: Some(Definition {
+                short: "test".into(),
+                semantic: None,
+            }),
+            ..ContractInput::new("checkout-cancel", "CheckoutCancel", Role::from("behavior"))
+        });
+        let basis = Basis::candidate(
+            Provenance {
+                source: "test".into(),
+                line_start: None,
+                line_end: None,
+                commit: None,
+                extraction: "test".into(),
+                artifact: None,
+            },
+            "test",
+        );
+        let proposal = from_contract(
+            "acme-app",
+            "propose-knowledge:checkout-cancel".to_string(),
+            contract,
+            basis,
+        );
+        assert_eq!(proposal.status, ProposalStatus::Pending);
+
+        submit(&store, &proposal).unwrap();
+
+        let reviewed = review(
+            &store,
+            &project_dir,
+            dir.path(),
+            &proposal.id,
+            Decision::Accept,
+            "human-reviewer",
+            None,
+        )
+        .unwrap();
+        assert_eq!(reviewed.status, ProposalStatus::Accepted);
+        assert_eq!(reviewed.written.len(), 1);
+
+        let written = project_dir.join("contracts/checkout-cancel.yaml");
+        assert!(written.exists());
+        let text = std::fs::read_to_string(&written).unwrap();
+        assert!(text.contains("CheckoutCancel"));
+
+        // Reviewing again is rejected: only pending proposals can be reviewed.
+        assert!(review(
+            &store,
+            &project_dir,
+            dir.path(),
+            &proposal.id,
+            Decision::Accept,
+            "human-reviewer",
+            None,
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn rejecting_a_contract_proposal_writes_nothing() {
+        let dir = TempDir::new().unwrap();
+        let project_dir = dir.path().join("acme-app");
+        std::fs::create_dir_all(&project_dir).unwrap();
+        let store = SemanticStore::for_project(&project_dir);
+
+        let contract = build_contract(ContractInput {
+            definition: Some(Definition {
+                short: "test".into(),
+                semantic: None,
+            }),
+            ..ContractInput::new("checkout-cancel", "CheckoutCancel", Role::from("behavior"))
+        });
+        let basis = Basis::candidate(
+            Provenance {
+                source: "test".into(),
+                line_start: None,
+                line_end: None,
+                commit: None,
+                extraction: "test".into(),
+                artifact: None,
+            },
+            "test",
+        );
+        let proposal = from_contract(
+            "acme-app",
+            "propose-knowledge:checkout-cancel".to_string(),
+            contract,
+            basis,
+        );
+        submit(&store, &proposal).unwrap();
+
+        let reviewed = review(
+            &store,
+            &project_dir,
+            dir.path(),
+            &proposal.id,
+            Decision::Reject,
+            "human-reviewer",
+            None,
+        )
+        .unwrap();
+        assert_eq!(reviewed.status, ProposalStatus::Rejected);
+        assert!(reviewed.written.is_empty());
+        assert!(!project_dir.join("contracts/checkout-cancel.yaml").exists());
+    }
 }

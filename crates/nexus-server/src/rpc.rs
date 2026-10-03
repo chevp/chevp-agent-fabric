@@ -1,5 +1,6 @@
 //! A minimal, hand-rolled JSON-RPC 2.0 dispatcher for the MCP methods Agent
-//! Nexus supports (`initialize`, `tools/list`, `tools/call`, `ping`). This is
+//! Nexus supports (`initialize`, `tools/list`, `tools/call`, `resources/list`,
+//! `resources/templates/list`, `resources/read`, `ping`). This is
 //! deliberately not built on a generic RPC framework: the MCP stdio
 //! transport is one newline-delimited JSON message in, at most one JSON
 //! message out, and that is simple enough to own directly.
@@ -8,7 +9,8 @@
 //! so it can be unit tested without spawning a process or touching stdio.
 
 use crate::app::McpApp;
-use crate::domain_tools;
+use crate::resources::{self, ReadError};
+use crate::{domain_tools, knowledge_tools, semantic_tools};
 use nexus_tools::{ToolContext, ToolDescriptor};
 use serde_json::{json, Value};
 
@@ -30,6 +32,9 @@ pub fn handle_message(app: &McpApp, message: &Value) -> Option<Value> {
         "notifications/initialized" | "notifications/cancelled" => None,
         "tools/list" => Some(success(id, json!({ "tools": tool_list_json(app) }))),
         "tools/call" => Some(success(id, call_tool(app, &params))),
+        "resources/list" => Some(success(id, resources::list(app))),
+        "resources/templates/list" => Some(success(id, resources::templates())),
+        "resources/read" => Some(read_resource(app, id, &params)),
         _ => id.map(|id| error(id, -32601, "Method not found")),
     }
 }
@@ -37,13 +42,15 @@ pub fn handle_message(app: &McpApp, message: &Value) -> Option<Value> {
 fn initialize_result() -> Value {
     json!({
         "protocolVersion": PROTOCOL_VERSION,
-        "capabilities": { "tools": {} },
+        "capabilities": { "tools": {}, "resources": {} },
         "serverInfo": { "name": "agent-nexus", "version": env!("CARGO_PKG_VERSION") }
     })
 }
 
 fn tool_list_json(app: &McpApp) -> Vec<Value> {
     let mut descriptors: Vec<ToolDescriptor> = domain_tools::descriptors();
+    descriptors.extend(semantic_tools::descriptors());
+    descriptors.extend(knowledge_tools::descriptors());
     descriptors.extend(app.tools.list());
     descriptors
         .into_iter()
@@ -68,12 +75,40 @@ fn call_tool(app: &McpApp, params: &Value) -> Value {
         };
     }
 
+    if let Some(result) = semantic_tools::call(&app.semantic, &app.domain, name, arguments.clone())
+    {
+        return match result {
+            Ok(value) => text_result(value),
+            Err(message) => error_result(message),
+        };
+    }
+
+    if let Some(result) = knowledge_tools::call(&app.semantic, &app.domain, name, arguments.clone())
+    {
+        return match result {
+            Ok(value) => text_result(value),
+            Err(message) => error_result(message),
+        };
+    }
+
     let ctx = ToolContext {
         domain: &app.domain,
     };
     match app.tools.call(&ctx, name, arguments) {
         Ok(value) => text_result(value),
         Err(err) => error_result(err.to_string()),
+    }
+}
+
+fn read_resource(app: &McpApp, id: Option<Value>, params: &Value) -> Value {
+    let id = id.unwrap_or(Value::Null);
+    let Some(uri) = params.get("uri").and_then(Value::as_str) else {
+        return error(id, -32602, "resources/read requires a \"uri\"");
+    };
+    match resources::read(app, uri) {
+        Ok(result) => success(Some(id), result),
+        Err(ReadError::NotFound(message)) => error(id, -32002, &message),
+        Err(ReadError::Internal(message)) => error(id, -32603, &message),
     }
 }
 
@@ -146,7 +181,12 @@ mod tests {
         assert!(names.contains(&"studio_claim_job"));
         assert_eq!(
             names.len(),
-            domain_tools::names().len() + 1 + nexus_tool_game_studio::tools().len()
+            domain_tools::names().len()
+                + semantic_tools::names().len()
+                + knowledge_tools::names().len()
+                + 1
+                + nexus_tool_game_studio::tools().len()
+                + nexus_tool_indexer::tools().len()
         );
     }
 

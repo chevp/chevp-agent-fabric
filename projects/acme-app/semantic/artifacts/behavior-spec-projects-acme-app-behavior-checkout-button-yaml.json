@@ -1,0 +1,22 @@
+{
+  "id": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml",
+  "projectId": "acme-app",
+  "kind": "behavior-spec",
+  "role": "ux",
+  "name": "checkout-button.yaml",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/behavior/checkout-button.yaml"
+  },
+  "provenance": {
+    "source": "projects/acme-app/behavior/checkout-button.yaml",
+    "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/behavior/checkout-button.yaml"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

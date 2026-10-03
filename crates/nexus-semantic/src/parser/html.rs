@@ -79,7 +79,9 @@ fn elements(html: &str) -> Vec<Element> {
     let mut pos = 0;
     while let Some(rel) = lower[pos..].find('<') {
         let start = pos + rel;
-        let Some(end_rel) = lower[start..].find('>') else { break };
+        let Some(end_rel) = lower[start..].find('>') else {
+            break;
+        };
         let end = start + end_rel;
         let inner = &html[start + 1..end];
         pos = end + 1;
@@ -120,7 +122,9 @@ impl ArtifactParser for HtmlParser {
         has_ext(artifact, &["html", "htm"])
             || artifact.media_type() == Some("text/html")
             || (artifact.kind == ArtifactKind::DesignSpec
-                && artifact.text().is_some_and(|t| t.trim_start().starts_with('<')))
+                && artifact
+                    .text()
+                    .is_some_and(|t| t.trim_start().starts_with('<')))
     }
 
     async fn inspect(&self, artifact: &NexusArtifact) -> SemanticResult<SemanticModel> {
@@ -164,7 +168,9 @@ impl ArtifactParser for HtmlParser {
             };
             let mut entity = SemanticEntity::new(&id, &label, kind, at());
             entity.role = Some(artifact.role.clone());
-            entity.attributes.insert("tag".into(), el.tag.clone().into());
+            entity
+                .attributes
+                .insert("tag".into(), el.tag.clone().into());
             m.entities.push(entity);
 
             if el.tag == "form" {
@@ -179,7 +185,11 @@ impl ArtifactParser for HtmlParser {
                 states.push(s.clone());
             }
             if let Some(s) = el.attrs.get("data-states") {
-                states.extend(s.split([' ', ',']).filter(|x| !x.is_empty()).map(str::to_string));
+                states.extend(
+                    s.split([' ', ','])
+                        .filter(|x| !x.is_empty())
+                        .map(str::to_string),
+                );
             }
             for s in &states {
                 m.states.push(State::new(&id, s, at()));
@@ -223,7 +233,9 @@ impl ArtifactParser for HtmlParser {
                 .get("data-action")
                 .or_else(|| el.attrs.get("onclick"))
                 .cloned();
-            if el.tag == "button" && (el.attrs.get("type").map(String::as_str) == Some("submit") || action.is_some()) {
+            if el.tag == "button"
+                && (el.attrs.get("type").map(String::as_str) == Some("submit") || action.is_some())
+            {
                 let effect = action.unwrap_or_else(|| "submit".to_string());
                 m.interactions
                     .push(Interaction::new("click", Some(&id), Some(&effect), at()));

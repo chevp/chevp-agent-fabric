@@ -15,9 +15,15 @@ pub struct DesignSystemParser;
 
 fn is_component_spec(v: &Value) -> bool {
     v.get("component").is_some_and(Value::is_string)
-        && ["variants", "states", "tokens", "interactions", "accessibility"]
-            .iter()
-            .any(|k| v.get(k).is_some())
+        && [
+            "variants",
+            "states",
+            "tokens",
+            "interactions",
+            "accessibility",
+        ]
+        .iter()
+        .any(|k| v.get(k).is_some())
 }
 
 fn collect_tokens(v: &Value, path: &mut Vec<String>, out: &mut Vec<(String, Map<String, Value>)>) {
@@ -78,15 +84,22 @@ impl ArtifactParser for DesignSystemParser {
             let mut entity = SemanticEntity::new(&id, name, "component", at("component:"));
             entity.role = Some(Role::Design);
             entity.artifact = Some(artifact.id.clone());
-            entity.description = v.get("description").and_then(Value::as_str).map(str::to_string);
+            entity.description = v
+                .get("description")
+                .and_then(Value::as_str)
+                .map(str::to_string);
             m.entities.push(entity);
 
             for variant in strings(v.get("variants")) {
                 let vid = format!("variant:{id}/{}", slug(&variant));
                 m.entities
                     .push(SemanticEntity::new(&vid, &variant, "variant", at(&variant)));
-                m.dependencies
-                    .push(Dependency::new(&id, RelationKind::HasVariant, &vid, at(&variant)));
+                m.dependencies.push(Dependency::new(
+                    &id,
+                    RelationKind::HasVariant,
+                    &vid,
+                    at(&variant),
+                ));
             }
             for state in strings(v.get("states")) {
                 m.states.push(State::new(&id, &slug(&state), at(&state)));
@@ -137,8 +150,12 @@ impl ArtifactParser for DesignSystemParser {
                 ));
             }
             for dep in strings(v.get("dependencies")) {
-                m.dependencies
-                    .push(Dependency::new(&id, RelationKind::DependsOn, &slug(&dep), at(&dep)));
+                m.dependencies.push(Dependency::new(
+                    &id,
+                    RelationKind::DependsOn,
+                    &slug(&dep),
+                    at(&dep),
+                ));
             }
         }
 
@@ -151,7 +168,8 @@ impl ArtifactParser for DesignSystemParser {
             for (path, attrs) in tokens {
                 let tid = format!("token:{path}");
                 let leaf = path.rsplit('.').next().unwrap_or(&path).to_string();
-                let mut token = SemanticEntity::new(&tid, &path, "token", at(&format!("\"{leaf}\"")));
+                let mut token =
+                    SemanticEntity::new(&tid, &path, "token", at(&format!("\"{leaf}\"")));
                 token.attributes = attrs.into_iter().collect();
                 m.entities.push(token);
                 m.dependencies.push(Dependency::new(

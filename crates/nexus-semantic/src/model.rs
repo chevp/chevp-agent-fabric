@@ -253,7 +253,11 @@ impl NexusArtifact {
             ArtifactContent::Inline { .. } => self.provenance.source.as_str(),
         };
         let file = candidate.rsplit('/').next().unwrap_or(candidate);
-        let file = if file.contains('.') { file } else { self.name.as_str() };
+        let file = if file.contains('.') {
+            file
+        } else {
+            self.name.as_str()
+        };
         file.rsplit_once('.').map(|(_, ext)| ext.to_lowercase())
     }
 
@@ -600,7 +604,12 @@ impl Intent {
 }
 
 impl Requirement {
-    pub fn new(subject: Option<&str>, statement: &str, kind: RequirementKind, basis: Basis) -> Self {
+    pub fn new(
+        subject: Option<&str>,
+        statement: &str,
+        kind: RequirementKind,
+        basis: Basis,
+    ) -> Self {
         Self {
             id: format!("requirement:{}:{}", subject.unwrap_or("-"), key(statement)),
             statement: statement.trim().to_string(),
@@ -694,8 +703,16 @@ impl Assumption {
 pub fn modal_kind(statement: &str) -> Option<ConstraintKind> {
     let s = format!(" {} ", statement.to_lowercase());
     const MUST_NOT: &[&str] = &[
-        " must not ", " must never ", " never ", " do not ", " don't ", " cannot ", " can't ",
-        " shall not ", " may not ", " should not ",
+        " must not ",
+        " must never ",
+        " never ",
+        " do not ",
+        " don't ",
+        " cannot ",
+        " can't ",
+        " shall not ",
+        " may not ",
+        " should not ",
     ];
     const MUST: &[&str] = &[" must ", " always ", " shall ", " required ", " requires "];
     if MUST_NOT.iter().any(|k| s.contains(k)) {

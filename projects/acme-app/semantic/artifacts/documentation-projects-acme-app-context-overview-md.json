@@ -1,0 +1,22 @@
+{
+  "id": "documentation-projects-acme-app-context-overview-md",
+  "projectId": "acme-app",
+  "kind": "documentation",
+  "role": "product",
+  "name": "overview.md",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/context/overview.md"
+  },
+  "provenance": {
+    "source": "projects/acme-app/context/overview.md",
+    "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/context/overview.md"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

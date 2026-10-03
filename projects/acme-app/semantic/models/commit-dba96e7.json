@@ -1,0 +1,166 @@
+{
+  "artifacts": [
+    "commit-dba96e7"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "commit:dba96e7",
+      "name": "Implement Agent Nexus V1: MCP control plane over a Git-backed context layer",
+      "kind": "commit",
+      "artifact": "commit-dba96e7",
+      "attributes": {
+        "author": "Claude",
+        "date": "2026-09-26T12:27:21Z",
+        "sha": "dba96e76eae309d855c7e1aafa0cf0666051be71"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:dba96e7",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "CommitParser",
+          "artifact": "commit-dba96e7"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "file:projects/acme-app/behavior/checkout-button.yaml|changed-by|commit:dba96e7",
+      "from": "file:projects/acme-app/behavior/checkout-button.yaml",
+      "relation": "changed-by",
+      "to": "commit:dba96e7",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:dba96e7",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "CommitParser",
+          "artifact": "commit-dba96e7"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/context/overview.md|changed-by|commit:dba96e7",
+      "from": "file:projects/acme-app/context/overview.md",
+      "relation": "changed-by",
+      "to": "commit:dba96e7",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:dba96e7",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "CommitParser",
+          "artifact": "commit-dba96e7"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/policies/copilot.yaml|changed-by|commit:dba96e7",
+      "from": "file:projects/acme-app/policies/copilot.yaml",
+      "relation": "changed-by",
+      "to": "commit:dba96e7",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:dba96e7",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "CommitParser",
+          "artifact": "commit-dba96e7"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/policies/figma-make.yaml|changed-by|commit:dba96e7",
+      "from": "file:projects/acme-app/policies/figma-make.yaml",
+      "relation": "changed-by",
+      "to": "commit:dba96e7",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:dba96e7",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "CommitParser",
+          "artifact": "commit-dba96e7"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/project.yaml|changed-by|commit:dba96e7",
+      "from": "file:projects/acme-app/project.yaml",
+      "relation": "changed-by",
+      "to": "commit:dba96e7",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:dba96e7",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "CommitParser",
+          "artifact": "commit-dba96e7"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/skills/checkout-ux/skill.md|changed-by|commit:dba96e7",
+      "from": "file:projects/acme-app/skills/checkout-ux/skill.md",
+      "relation": "changed-by",
+      "to": "commit:dba96e7",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "git:dba96e7",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "CommitParser",
+          "artifact": "commit-dba96e7"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 7 statements: 7 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "git:dba96e7",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "CommitParser",
+      "artifact": "commit-dba96e7"
+    }
+  ],
+  "assumptions": []
+}

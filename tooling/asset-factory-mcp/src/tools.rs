@@ -39,14 +39,25 @@ fn load_valid(store: &Store, args: &Value) -> Result<DesignSpec, String> {
     let spec = load(store, args)?;
     let report = spec::validate(&spec, &store.library()?);
     if !report.ok {
-        return Err(format!("spec {} is invalid: {}", spec.id, report.errors.join("; ")));
+        return Err(format!(
+            "spec {} is invalid: {}",
+            spec.id,
+            report.errors.join("; ")
+        ));
     }
     Ok(spec)
 }
 
 fn level(args: &Value) -> Result<String, String> {
-    let l = args.get("level").and_then(Value::as_str).unwrap_or("exploration");
-    if LEVELS.contains(&l) { Ok(l.into()) } else { Err(format!("level must be one of {LEVELS:?}")) }
+    let l = args
+        .get("level")
+        .and_then(Value::as_str)
+        .unwrap_or("exploration");
+    if LEVELS.contains(&l) {
+        Ok(l.into())
+    } else {
+        Err(format!("level must be one of {LEVELS:?}"))
+    }
 }
 
 pub fn all() -> Vec<ToolDef> {

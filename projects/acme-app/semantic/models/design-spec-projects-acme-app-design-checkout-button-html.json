@@ -1,0 +1,397 @@
+{
+  "artifacts": [
+    "design-spec-projects-acme-app-design-checkout-button-html"
+  ],
+  "intent": [
+    {
+      "id": "intent:place-order",
+      "statement": "place order",
+      "evidence": "candidate",
+      "confidence": {
+        "value": 0.3,
+        "reason": "intent guessed from a button label"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    }
+  ],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "card-number",
+      "name": "card-number",
+      "kind": "field",
+      "role": "design",
+      "attributes": {
+        "tag": "input"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button",
+      "name": "checkout-button",
+      "kind": "component",
+      "role": "design",
+      "attributes": {
+        "tag": "button"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "checkout-form",
+      "name": "checkout",
+      "kind": "form",
+      "role": "design",
+      "attributes": {
+        "tag": "form"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/design/checkout-button.html",
+      "name": "checkout-button.html",
+      "kind": "file",
+      "role": "design",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html",
+      "attributes": {
+        "artifactKind": "design-spec"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "checkout-button/error",
+      "name": "error",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button/idle",
+      "name": "idle",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button/loading",
+      "name": "loading",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button/success",
+      "name": "success",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint:card-number:card-number-has-aria-describedby-card-hint",
+      "statement": "card-number has aria-describedby=\"card-hint\"",
+      "kind": "accessibility",
+      "subject": "card-number",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "constraint:card-number:card-number-is-required",
+      "statement": "card-number is required",
+      "kind": "must",
+      "subject": "card-number",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "constraint:checkout-button:checkout-button-has-aria-busy-true-while-loading",
+      "statement": "checkout-button has aria-busy=\"true\" while loading",
+      "kind": "accessibility",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "constraint:checkout-button:checkout-button-is-disabled-while-loading",
+      "statement": "checkout-button is disabled while loading",
+      "kind": "must",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "interaction:checkout-button:click:submit",
+      "trigger": "click",
+      "target": "checkout-button",
+      "effect": "submit",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "checkout-form|contains|card-number",
+      "from": "checkout-form",
+      "relation": "contains",
+      "to": "card-number",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 3,
+          "lineEnd": 3,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    },
+    {
+      "id": "checkout-form|contains|checkout-button",
+      "from": "checkout-form",
+      "relation": "contains",
+      "to": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/checkout-button.html",
+          "lineStart": 4,
+          "lineEnd": 4,
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "HtmlParser",
+          "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 0.956,
+    "reason": "mean of 16 statements: 15 explicit, 0 inferred, 1 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/design/checkout-button.html",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+    },
+    {
+      "source": "projects/acme-app/design/checkout-button.html",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "HtmlParser",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+    },
+    {
+      "source": "projects/acme-app/design/checkout-button.html",
+      "lineStart": 3,
+      "lineEnd": 3,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "HtmlParser",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+    },
+    {
+      "source": "projects/acme-app/design/checkout-button.html",
+      "lineStart": 4,
+      "lineEnd": 4,
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "HtmlParser",
+      "artifact": "design-spec-projects-acme-app-design-checkout-button-html"
+    }
+  ],
+  "assumptions": []
+}

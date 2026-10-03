@@ -217,7 +217,10 @@ pub fn split_frontmatter(raw: &str) -> (Option<&str>, &str, u32) {
     let Some(rest) = raw.strip_prefix("---") else {
         return (None, raw, 0);
     };
-    let rest = rest.strip_prefix("\r\n").or_else(|| rest.strip_prefix('\n')).unwrap_or(rest);
+    let rest = rest
+        .strip_prefix("\r\n")
+        .or_else(|| rest.strip_prefix('\n'))
+        .unwrap_or(rest);
     let Some(end) = rest.find("\n---") else {
         return (None, raw, 0);
     };
@@ -333,7 +336,10 @@ mod tests {
         let p = &ctx.constraints[0].basis.provenance[0];
         assert_eq!((p.line_start, p.line_end), (Some(22), Some(23)));
         assert_eq!(ctx.conventions[0].text, "Use the existing design system.");
-        assert_eq!(ctx.forbidden[0].text, "Do not introduce new component libraries.");
+        assert_eq!(
+            ctx.forbidden[0].text,
+            "Do not introduce new component libraries."
+        );
         assert!(ctx.examples[0].text.contains("useQuery"));
         assert_eq!(ctx.other["Notes"][0].text, "Something else.");
         assert!(ctx.inputs.is_empty() && ctx.outputs.is_empty());

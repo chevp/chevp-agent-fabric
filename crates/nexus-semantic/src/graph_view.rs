@@ -120,6 +120,8 @@ fn kind_from_id(id: &str) -> &'static str {
 }
 
 pub struct GraphInput<'a> {
+    /// Provenance paths are made relative to this.
+    pub repo_root: &'a std::path::Path,
     pub project_id: &'a str,
     pub project_name: &'a str,
     pub canonical_entities: &'a [GraphEntity],
@@ -133,41 +135,62 @@ pub struct GraphInput<'a> {
 
 pub fn build(input: GraphInput<'_>) -> SemanticGraph {
     let root = format!("project:{}", input.project_id);
-    let entity_ids: BTreeSet<String> = input.canonical_entities.iter().map(|e| e.id.clone()).collect();
+    let entity_ids: BTreeSet<String> = input
+        .canonical_entities
+        .iter()
+        .map(|e| e.id.clone())
+        .collect();
     let sources: BTreeSet<String> = input
         .model
         .entities
         .iter()
         .map(|e| e.id.clone())
-        .filter(|id| crate::validate::SOURCE_PREFIXES.iter().any(|p| id.starts_with(p)))
+        .filter(|id| {
+            crate::validate::SOURCE_PREFIXES
+                .iter()
+                .any(|p| id.starts_with(p))
+        })
         .collect();
     let norm = |id: &str| normalize_ref(id, &entity_ids, &sources);
     let structural = |id: &str| id.starts_with("file:") || id.starts_with("dir:");
     let keep = |id: &str| input.include_structure || !structural(id);
 
     let mut nodes: BTreeMap<String, GraphNode> = BTreeMap::new();
-    let node = |id: &str, label: &str, kind: &str, status: Evidence, canonical: bool, confidence: f32| GraphNode {
-        id: id.to_string(),
-        label: label.to_string(),
-        kind: kind.to_string(),
-        role: None,
-        description: None,
-        cluster: cluster_of(kind).to_string(),
-        status,
-        canonical,
-        confidence,
-        provenance: Vec::new(),
-        artifact: None,
-        depth: 0,
-        distance: 0,
-        parent: None,
-        children: Vec::new(),
-        centrality: 0.0,
-        pending_proposals: Vec::new(),
-        facets: BTreeMap::new(),
-    };
+    let node =
+        |id: &str, label: &str, kind: &str, status: Evidence, canonical: bool, confidence: f32| {
+            GraphNode {
+                id: id.to_string(),
+                label: label.to_string(),
+                kind: kind.to_string(),
+                role: None,
+                description: None,
+                cluster: cluster_of(kind).to_string(),
+                status,
+                canonical,
+                confidence,
+                provenance: Vec::new(),
+                artifact: None,
+                depth: 0,
+                distance: 0,
+                parent: None,
+                children: Vec::new(),
+                centrality: 0.0,
+                pending_proposals: Vec::new(),
+                facets: BTreeMap::new(),
+            }
+        };
 
-    nodes.insert(root.clone(), node(&root, input.project_name, "project", Evidence::Explicit, true, 1.0));
+    nodes.insert(
+        root.clone(),
+        node(
+            &root,
+            input.project_name,
+            "project",
+            Evidence::Explicit,
+            true,
+            1.0,
+        ),
+    );
 
     for e in input.canonical_entities {
         let mut n = node(
@@ -178,10 +201,14 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
             true,
             e.confidence.as_ref().map(|c| c.value).unwrap_or(1.0),
         );
-        n.description = e.attributes.get("description").and_then(|v| v.as_str()).map(str::to_string);
+        n.description = e
+            .attributes
+            .get("description")
+            .and_then(|v| v.as_str())
+            .map(str::to_string);
         n.provenance = if e.provenance.is_empty() {
             vec![Provenance {
-                source: e.source_path.to_string_lossy().replace('\\', "/"),
+                source: crate::text::rel_path(input.repo_root, &e.source_path),
                 line_start: None,
                 line_end: None,
                 commit: None,
@@ -208,7 +235,14 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
         }
         let canonical = e.basis.evidence == Evidence::Explicit;
         let n = nodes.entry(e.id.clone()).or_insert_with(|| {
-            node(&e.id, &e.name, &e.kind, e.basis.evidence, canonical, e.basis.confidence.value)
+            node(
+                &e.id,
+                &e.name,
+                &e.kind,
+                e.basis.evidence,
+                canonical,
+                e.basis.confidence.value,
+            )
         });
         n.role = n.role.clone().or(e.role.clone());
         n.description = n.description.clone().or(e.description.clone());
@@ -231,11 +265,19 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
         facet(&s.subject, "states", s.name.clone());
     }
     for b in &input.model.behaviors {
-        facet(&b.subject, "transitions", format!("{} --{}--> {}", b.from, b.event, b.to));
+        facet(
+            &b.subject,
+            "transitions",
+            format!("{} --{}--> {}", b.from, b.event, b.to),
+        );
     }
     for c in &input.model.constraints {
         if let Some(s) = &c.subject {
-            facet(s, "constraints", format!("[{:?}] {}", c.basis.evidence, c.statement).to_lowercase());
+            facet(
+                s,
+                "constraints",
+                format!("[{:?}] {}", c.basis.evidence, c.statement).to_lowercase(),
+            );
         }
     }
     for r in &input.model.requirements {
@@ -245,7 +287,15 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
     }
 
     let mut edges: BTreeMap<String, GraphEdge> = BTreeMap::new();
-    let add_edge = |edges: &mut BTreeMap<String, GraphEdge>, from: String, relation: &str, to: String, status: Evidence, canonical: bool, confidence: f32, provenance: Vec<Provenance>, proposal: Option<String>| {
+    let add_edge = |edges: &mut BTreeMap<String, GraphEdge>,
+                    from: String,
+                    relation: &str,
+                    to: String,
+                    status: Evidence,
+                    canonical: bool,
+                    confidence: f32,
+                    provenance: Vec<Provenance>,
+                    proposal: Option<String>| {
         let id = format!("{from}|{relation}|{to}");
         let e = edges.entry(id.clone()).or_insert(GraphEdge {
             id,
@@ -271,7 +321,7 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
     for r in input.canonical_relations {
         let prov = if r.provenance.is_empty() {
             vec![Provenance {
-                source: r.source_path.to_string_lossy().replace('\\', "/"),
+                source: crate::text::rel_path(input.repo_root, &r.source_path),
                 line_start: None,
                 line_end: None,
                 commit: None,
@@ -281,19 +331,42 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
         } else {
             r.provenance.clone()
         };
-        add_edge(&mut edges, norm(&r.from), r.relation.as_str(), norm(&r.to), r.evidence, true, r.confidence.as_ref().map(|c| c.value).unwrap_or(1.0), prov, r.proposal.clone());
+        add_edge(
+            &mut edges,
+            norm(&r.from),
+            r.relation.as_str(),
+            norm(&r.to),
+            r.evidence,
+            true,
+            r.confidence.as_ref().map(|c| c.value).unwrap_or(1.0),
+            prov,
+            r.proposal.clone(),
+        );
     }
     for d in &input.model.dependencies {
         let (from, to) = (norm(&d.from), norm(&d.to));
         if !keep(&from) || !keep(&to) {
             continue;
         }
-        add_edge(&mut edges, from, d.relation.as_str(), to, d.basis.evidence, d.basis.evidence == Evidence::Explicit, d.basis.confidence.value, d.basis.provenance.clone(), None);
+        add_edge(
+            &mut edges,
+            from,
+            d.relation.as_str(),
+            to,
+            d.basis.evidence,
+            d.basis.evidence == Evidence::Explicit,
+            d.basis.confidence.value,
+            d.basis.provenance.clone(),
+            None,
+        );
     }
 
     // Placeholder nodes for edge endpoints nothing else describes.
     for e in edges.values() {
-        for (id, status, conf) in [(&e.from, e.status, e.confidence), (&e.to, e.status, e.confidence)] {
+        for (id, status, conf) in [
+            (&e.from, e.status, e.confidence),
+            (&e.to, e.status, e.confidence),
+        ] {
             if !nodes.contains_key(id) {
                 let kind = kind_from_id(id);
                 let label = id.split_once(':').map(|(_, l)| l).unwrap_or(id);
@@ -303,7 +376,11 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
     }
 
     // Pending proposals.
-    for p in input.proposals.iter().filter(|p| p.status == ProposalStatus::Pending) {
+    for p in input
+        .proposals
+        .iter()
+        .filter(|p| p.status == ProposalStatus::Pending)
+    {
         for c in &p.changes {
             match c {
                 ProposedChange::AddEntity { id, .. } => {
@@ -311,11 +388,15 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
                         n.pending_proposals.push(p.id.clone());
                     }
                 }
-                ProposedChange::AddRelation { from, relation, to, .. } => {
+                ProposedChange::AddRelation {
+                    from, relation, to, ..
+                } => {
                     if let Some(e) = edges.get_mut(&format!("{from}|{}|{to}", relation.as_str())) {
                         e.proposal = Some(p.id.clone());
                     }
                 }
+                // Contracts live in `contracts/`, not the graph; nothing to annotate here.
+                ProposedChange::AddContract { .. } => {}
             }
         }
     }
@@ -328,7 +409,10 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
     }
     let seeds: Vec<String> = nodes
         .values()
-        .filter(|n| n.id != root && (entity_ids.contains(&n.id) || sources.contains(&n.id) || n.id == "dir:."))
+        .filter(|n| {
+            n.id != root
+                && (entity_ids.contains(&n.id) || sources.contains(&n.id) || n.id == "dir:.")
+        })
         .map(|n| n.id.clone())
         .collect();
     let mut dist: BTreeMap<String, (usize, Option<String>)> = BTreeMap::new();
@@ -353,7 +437,11 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
     }
     let max = dist.values().map(|(d, _)| *d).max().unwrap_or(0);
     // Unreachable nodes: attach to the root one ring outside everything else.
-    let unreachable: Vec<String> = nodes.keys().filter(|k| !dist.contains_key(*k)).cloned().collect();
+    let unreachable: Vec<String> = nodes
+        .keys()
+        .filter(|k| !dist.contains_key(*k))
+        .cloned()
+        .collect();
     for id in unreachable {
         dist.insert(id, (max + 1, Some(root.clone())));
     }
@@ -388,7 +476,10 @@ pub fn build(input: GraphInput<'_>) -> SemanticGraph {
         generated_at: crate::text::now(),
         nodes: nodes.into_values().collect(),
         edges: edges.into_values().collect(),
-        clusters: clusters.into_iter().map(|(id, count)| ClusterInfo { id, count }).collect(),
+        clusters: clusters
+            .into_iter()
+            .map(|(id, count)| ClusterInfo { id, count })
+            .collect(),
         diff: input.diff,
         model_confidence: input.model.confidence.clone(),
     }

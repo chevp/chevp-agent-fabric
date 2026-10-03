@@ -104,7 +104,12 @@ impl ArtifactParser for BehaviorSpecParser {
             }
         }
 
-        for rule in doc.get("rules").and_then(Value::as_array).into_iter().flatten() {
+        for rule in doc
+            .get("rules")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+        {
             let Some(description) = rule.get("description").and_then(Value::as_str) else {
                 continue;
             };

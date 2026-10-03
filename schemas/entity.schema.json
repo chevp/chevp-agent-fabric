@@ -3,11 +3,87 @@
   "$id": "https://agent-nexus/schemas/entity.schema.json",
   "title": "GraphEntity",
   "type": "object",
-  "required": ["id", "type", "name"],
+  "required": [
+    "id",
+    "type",
+    "name"
+  ],
   "additionalProperties": true,
   "properties": {
-    "id": { "type": "string", "minLength": 1 },
-    "type": { "type": "string", "minLength": 1 },
-    "name": { "type": "string", "minLength": 1 }
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "string",
+      "enum": [
+        "explicit",
+        "inferred",
+        "candidate",
+        "unknown"
+      ],
+      "default": "explicit"
+    },
+    "confidence": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "extraction"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "lineStart": {
+            "type": "integer"
+          },
+          "lineEnd": {
+            "type": "integer"
+          },
+          "commit": {
+            "type": "string"
+          },
+          "extraction": {
+            "type": "string"
+          },
+          "artifact": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artifact": {
+      "type": "string",
+      "description": "Registered artifact this entity represents."
+    },
+    "proposal": {
+      "type": "string"
+    }
   }
 }

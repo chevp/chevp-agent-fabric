@@ -67,9 +67,11 @@ pub struct MaterialGroup {
 
 /// Groups components by (material id, overrides). Mirrored components join
 /// the group of their source automatically since they carry the same IDs.
+/// Surface details (`texture_detail`) have no geometry of their own: they are
+/// painted inside the group of the component they sit on, not as a group.
 pub fn material_groups(spec: &DesignSpec, lib: &MaterialLibrary) -> Vec<MaterialGroup> {
     let mut groups: BTreeMap<String, MaterialGroup> = BTreeMap::new();
-    for c in &spec.components {
+    for c in spec.components.iter().filter(|c| c.source != "texture_detail") {
         let Some(material) = lib.get(&c.material) else {
             continue;
         };

@@ -3,10 +3,17 @@
   "$id": "https://agent-nexus/schemas/relation.schema.json",
   "title": "GraphRelation",
   "type": "object",
-  "required": ["from", "relation", "to"],
+  "required": [
+    "from",
+    "relation",
+    "to"
+  ],
   "additionalProperties": false,
   "properties": {
-    "from": { "type": "string", "minLength": 1 },
+    "from": {
+      "type": "string",
+      "minLength": 1
+    },
     "relation": {
       "type": "string",
       "enum": [
@@ -18,9 +25,77 @@
         "represented-by",
         "implemented-by",
         "validated-by",
-        "related-to"
+        "related-to",
+        "tested-by",
+        "changed-by",
+        "contains",
+        "has-variant",
+        "documents"
       ]
     },
-    "to": { "type": "string", "minLength": 1 }
+    "to": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "string",
+      "enum": [
+        "explicit",
+        "inferred",
+        "candidate",
+        "unknown"
+      ],
+      "default": "explicit"
+    },
+    "confidence": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "extraction"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "lineStart": {
+            "type": "integer"
+          },
+          "lineEnd": {
+            "type": "integer"
+          },
+          "commit": {
+            "type": "string"
+          },
+          "extraction": {
+            "type": "string"
+          },
+          "artifact": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "proposal": {
+      "type": "string",
+      "description": "Proposal that wrote this relation."
+    }
   }
 }

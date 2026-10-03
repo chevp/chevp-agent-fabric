@@ -1,0 +1,509 @@
+{
+  "artifacts": [
+    "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [
+    {
+      "id": "checkout-button:error--submit->loading",
+      "subject": "checkout-button",
+      "from": "error",
+      "event": "submit",
+      "to": "loading",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 14,
+          "lineEnd": 14,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button:idle--submit->loading",
+      "subject": "checkout-button",
+      "from": "idle",
+      "event": "submit",
+      "to": "loading",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 14,
+          "lineEnd": 14,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button:loading--failure->error",
+      "subject": "checkout-button",
+      "from": "loading",
+      "event": "failure",
+      "to": "error",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 22,
+          "lineEnd": 22,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button:loading--success->success",
+      "subject": "checkout-button",
+      "from": "loading",
+      "event": "success",
+      "to": "success",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 18,
+          "lineEnd": 18,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button:success--reset->idle",
+      "subject": "checkout-button",
+      "from": "success",
+      "event": "reset",
+      "to": "idle",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 30,
+          "lineEnd": 30,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "behavior:checkout-button",
+      "name": "checkout-button",
+      "kind": "behavior-spec",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml",
+      "attributes": {
+        "specType": "ui-behavior"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 1,
+          "lineEnd": 1,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "file:projects/acme-app/behavior/checkout-button.yaml",
+      "name": "checkout-button.yaml",
+      "kind": "file",
+      "role": "ux",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml",
+      "attributes": {
+        "artifactKind": "behavior-spec"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "checkout-button/disabled",
+      "name": "disabled",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 8,
+          "lineEnd": 8,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button/error",
+      "name": "error",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 10,
+          "lineEnd": 10,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button/idle",
+      "name": "idle",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 6,
+          "lineEnd": 6,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button/loading",
+      "name": "loading",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 7,
+          "lineEnd": 7,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button/success",
+      "name": "success",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 9,
+          "lineEnd": 9,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint:checkout-button:preserve-input",
+      "statement": "User input must remain available after an error",
+      "kind": "must",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 38,
+          "lineEnd": 38,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "constraint:checkout-button:prevent-double-submit",
+      "statement": "User cannot submit twice while loading",
+      "kind": "must-not",
+      "subject": "checkout-button",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "lineStart": 35,
+          "lineEnd": 35,
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "id": "interaction:checkout-button:reset:reset",
+      "trigger": "reset",
+      "target": "checkout-button",
+      "effect": "reset",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.5,
+        "reason": "event name is in the user-action lexicon (1 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "interaction:checkout-button:submit:submit",
+      "trigger": "submit",
+      "target": "checkout-button",
+      "effect": "submit",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.5,
+        "reason": "event name is in the user-action lexicon (1 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "behavior:checkout-button|defined-by|file:projects/acme-app/behavior/checkout-button.yaml",
+      "from": "behavior:checkout-button",
+      "relation": "defined-by",
+      "to": "file:projects/acme-app/behavior/checkout-button.yaml",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "SemanticEngine",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    },
+    {
+      "id": "checkout-button|defined-by|behavior:checkout-button",
+      "from": "checkout-button",
+      "relation": "defined-by",
+      "to": "behavior:checkout-button",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.5,
+        "reason": "behavior spec id equals the subject entity id (Context Resolver convention) (1 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/behavior/checkout-button.yaml",
+          "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+          "extraction": "BehaviorSpecParser",
+          "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 0.917,
+    "reason": "mean of 18 statements: 15 explicit, 3 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "SemanticEngine",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 6,
+      "lineEnd": 6,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 7,
+      "lineEnd": 7,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 8,
+      "lineEnd": 8,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 9,
+      "lineEnd": 9,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 10,
+      "lineEnd": 10,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 14,
+      "lineEnd": 14,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 18,
+      "lineEnd": 18,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 22,
+      "lineEnd": 22,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 30,
+      "lineEnd": 30,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 35,
+      "lineEnd": 35,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/behavior/checkout-button.yaml",
+      "lineStart": 38,
+      "lineEnd": 38,
+      "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+      "extraction": "BehaviorSpecParser",
+      "artifact": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml"
+    }
+  ],
+  "assumptions": []
+}

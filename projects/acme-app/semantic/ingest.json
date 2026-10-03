@@ -1,0 +1,1039 @@
+{
+  "projectId": "acme-app",
+  "root": "projects/acme-app",
+  "gitAvailable": true,
+  "head": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+  "filesScanned": 11,
+  "directories": 8,
+  "artifacts": [
+    {
+      "id": "behavior-spec-projects-acme-app-behavior-checkout-button-yaml",
+      "kind": "behavior-spec",
+      "role": "ux",
+      "path": "projects/acme-app/behavior/checkout-button.yaml",
+      "parser": "BehaviorSpecParser",
+      "statements": 18
+    },
+    {
+      "id": "documentation-projects-acme-app-context-overview-md",
+      "kind": "documentation",
+      "role": "product",
+      "path": "projects/acme-app/context/overview.md",
+      "parser": "MarkdownParser",
+      "statements": 8
+    },
+    {
+      "id": "contract-projects-acme-app-contracts-checkout-submit-yaml",
+      "kind": "contract",
+      "role": "ux",
+      "path": "projects/acme-app/contracts/checkout-submit.yaml",
+      "parser": "ContractParser",
+      "statements": 12
+    },
+    {
+      "id": "design-spec-projects-acme-app-design-checkout-button-html",
+      "kind": "design-spec",
+      "role": "design",
+      "path": "projects/acme-app/design/checkout-button.html",
+      "parser": "HtmlParser",
+      "statements": 16
+    },
+    {
+      "id": "design-system-projects-acme-app-design-components-button-yaml",
+      "kind": "design-system",
+      "role": "design",
+      "path": "projects/acme-app/design/components/button.yaml",
+      "parser": "DesignSystemParser",
+      "statements": 18
+    },
+    {
+      "id": "design-system-projects-acme-app-design-tokens-json",
+      "kind": "design-system",
+      "role": "design",
+      "path": "projects/acme-app/design/tokens.json",
+      "parser": "DesignSystemParser",
+      "statements": 11
+    },
+    {
+      "id": "policy-projects-acme-app-policies-copilot-yaml",
+      "kind": "policy",
+      "role": "policy",
+      "path": "projects/acme-app/policies/copilot.yaml",
+      "parser": "YamlParser",
+      "statements": 3
+    },
+    {
+      "id": "policy-projects-acme-app-policies-figma-make-yaml",
+      "kind": "policy",
+      "role": "policy",
+      "path": "projects/acme-app/policies/figma-make.yaml",
+      "parser": "YamlParser",
+      "statements": 3
+    },
+    {
+      "id": "policy-projects-acme-app-policies-human-reviewer-yaml",
+      "kind": "policy",
+      "role": "policy",
+      "path": "projects/acme-app/policies/human-reviewer.yaml",
+      "parser": "YamlParser",
+      "statements": 3
+    },
+    {
+      "id": "project-projects-acme-app-project-yaml",
+      "kind": "project",
+      "role": "product",
+      "path": "projects/acme-app/project.yaml",
+      "parser": "YamlParser",
+      "statements": 3
+    },
+    {
+      "id": "skill-projects-acme-app-skills-checkout-ux-skill-md",
+      "kind": "skill",
+      "role": "engineering",
+      "path": "projects/acme-app/skills/checkout-ux/skill.md",
+      "parser": "SkillParser",
+      "statements": 10
+    },
+    {
+      "id": "skill-global-skills-code-style-skill-md",
+      "kind": "skill",
+      "role": "engineering",
+      "path": "global/skills/code-style/skill.md",
+      "parser": "SkillParser",
+      "statements": 6
+    },
+    {
+      "id": "skill-global-skills-agent-nexus-mcp-skill-md",
+      "kind": "skill",
+      "role": "engineering",
+      "path": "global/skills/agent-nexus-mcp/skill.md",
+      "parser": "SkillParser",
+      "statements": 5
+    },
+    {
+      "id": "skill-global-skills-accessibility-skill-md",
+      "kind": "skill",
+      "role": "engineering",
+      "path": "global/skills/accessibility/skill.md",
+      "parser": "SkillParser",
+      "statements": 8
+    }
+  ],
+  "skipped": [],
+  "commits": 2,
+  "semanticChanges": [
+    {
+      "path": "projects/acme-app/contracts/checkout-submit.yaml",
+      "base": "5534619ea9768ac67a146ce437facaf2c5f7f409^",
+      "changes": [
+        {
+          "type": "IntentAdded",
+          "category": "Intent",
+          "id": "intent:submit-checkout-order",
+          "change": {
+            "evidence": "explicit",
+            "id": "intent:submit-checkout-order",
+            "statement": "submit checkout order"
+          }
+        },
+        {
+          "type": "RequirementAdded",
+          "category": "Requirement",
+          "id": "requirement:checkout-button:error-is-recoverable",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "requirement:checkout-button:error-is-recoverable",
+            "kind": "functional",
+            "statement": "error is recoverable",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "RequirementAdded",
+          "category": "Requirement",
+          "id": "requirement:checkout-button:prevent-duplicate-submission",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "requirement:checkout-button:prevent-duplicate-submission",
+            "kind": "functional",
+            "statement": "prevent duplicate submission",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "contract:checkout-submit",
+          "entity": "contract:checkout-submit",
+          "change": {
+            "artifact": "contract-projects-acme-app-contracts-checkout-submit-yaml",
+            "evidence": "explicit",
+            "id": "contract:checkout-submit",
+            "kind": "contract",
+            "name": "Checkout submit",
+            "role": "ux"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "file:projects/acme-app/contracts/checkout-submit.yaml",
+          "entity": "file:projects/acme-app/contracts/checkout-submit.yaml",
+          "change": {
+            "artifact": "contract-projects-acme-app-contracts-checkout-submit-yaml",
+            "attributes": {
+              "artifactKind": "contract"
+            },
+            "evidence": "explicit",
+            "id": "file:projects/acme-app/contracts/checkout-submit.yaml",
+            "kind": "file",
+            "name": "checkout-submit.yaml",
+            "role": "ux"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/error",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/error",
+            "name": "error",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/idle",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/idle",
+            "name": "idle",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/loading",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/loading",
+            "name": "loading",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/success",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/success",
+            "name": "success",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "ConstraintAdded",
+          "category": "Constraint",
+          "id": "constraint:checkout-button:preserve-user-input-on-error",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "constraint:checkout-button:preserve-user-input-on-error",
+            "kind": "must",
+            "statement": "preserve user input on error",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "checkout-button|governed-by|contract:checkout-submit",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "from": "checkout-button",
+            "id": "checkout-button|governed-by|contract:checkout-submit",
+            "relation": "governed-by",
+            "to": "contract:checkout-submit"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "contract:checkout-submit|defined-by|file:projects/acme-app/contracts/checkout-submit.yaml",
+          "entity": "contract:checkout-submit",
+          "change": {
+            "evidence": "explicit",
+            "from": "contract:checkout-submit",
+            "id": "contract:checkout-submit|defined-by|file:projects/acme-app/contracts/checkout-submit.yaml",
+            "relation": "defined-by",
+            "to": "file:projects/acme-app/contracts/checkout-submit.yaml"
+          }
+        }
+      ]
+    },
+    {
+      "path": "projects/acme-app/design/checkout-button.html",
+      "base": "5534619ea9768ac67a146ce437facaf2c5f7f409^",
+      "changes": [
+        {
+          "type": "IntentAdded",
+          "category": "Intent",
+          "id": "intent:place-order",
+          "change": {
+            "evidence": "candidate",
+            "id": "intent:place-order",
+            "statement": "place order"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "card-number",
+          "entity": "card-number",
+          "change": {
+            "attributes": {
+              "tag": "input"
+            },
+            "evidence": "explicit",
+            "id": "card-number",
+            "kind": "field",
+            "name": "card-number",
+            "role": "design"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "checkout-button",
+          "entity": "checkout-button",
+          "change": {
+            "attributes": {
+              "tag": "button"
+            },
+            "evidence": "explicit",
+            "id": "checkout-button",
+            "kind": "component",
+            "name": "checkout-button",
+            "role": "design"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "checkout-form",
+          "entity": "checkout-form",
+          "change": {
+            "attributes": {
+              "tag": "form"
+            },
+            "evidence": "explicit",
+            "id": "checkout-form",
+            "kind": "form",
+            "name": "checkout",
+            "role": "design"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "file:projects/acme-app/design/checkout-button.html",
+          "entity": "file:projects/acme-app/design/checkout-button.html",
+          "change": {
+            "artifact": "design-spec-projects-acme-app-design-checkout-button-html",
+            "attributes": {
+              "artifactKind": "design-spec"
+            },
+            "evidence": "explicit",
+            "id": "file:projects/acme-app/design/checkout-button.html",
+            "kind": "file",
+            "name": "checkout-button.html",
+            "role": "design"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/error",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/error",
+            "name": "error",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/idle",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/idle",
+            "name": "idle",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/loading",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/loading",
+            "name": "loading",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "checkout-button/success",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "checkout-button/success",
+            "name": "success",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "ConstraintAdded",
+          "category": "Constraint",
+          "id": "constraint:card-number:card-number-has-aria-describedby-card-hint",
+          "entity": "card-number",
+          "change": {
+            "evidence": "explicit",
+            "id": "constraint:card-number:card-number-has-aria-describedby-card-hint",
+            "kind": "accessibility",
+            "statement": "card-number has aria-describedby=\"card-hint\"",
+            "subject": "card-number"
+          }
+        },
+        {
+          "type": "ConstraintAdded",
+          "category": "Constraint",
+          "id": "constraint:card-number:card-number-is-required",
+          "entity": "card-number",
+          "change": {
+            "evidence": "explicit",
+            "id": "constraint:card-number:card-number-is-required",
+            "kind": "must",
+            "statement": "card-number is required",
+            "subject": "card-number"
+          }
+        },
+        {
+          "type": "ConstraintAdded",
+          "category": "Constraint",
+          "id": "constraint:checkout-button:checkout-button-has-aria-busy-true-while-loading",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "constraint:checkout-button:checkout-button-has-aria-busy-true-while-loading",
+            "kind": "accessibility",
+            "statement": "checkout-button has aria-busy=\"true\" while loading",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "ConstraintAdded",
+          "category": "Constraint",
+          "id": "constraint:checkout-button:checkout-button-is-disabled-while-loading",
+          "entity": "checkout-button",
+          "change": {
+            "evidence": "explicit",
+            "id": "constraint:checkout-button:checkout-button-is-disabled-while-loading",
+            "kind": "must",
+            "statement": "checkout-button is disabled while loading",
+            "subject": "checkout-button"
+          }
+        },
+        {
+          "type": "InteractionAdded",
+          "category": "Interaction",
+          "id": "interaction:checkout-button:click:submit",
+          "entity": "checkout-button",
+          "change": {
+            "effect": "submit",
+            "evidence": "explicit",
+            "id": "interaction:checkout-button:click:submit",
+            "target": "checkout-button",
+            "trigger": "click"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "checkout-form|contains|card-number",
+          "entity": "checkout-form",
+          "change": {
+            "evidence": "explicit",
+            "from": "checkout-form",
+            "id": "checkout-form|contains|card-number",
+            "relation": "contains",
+            "to": "card-number"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "checkout-form|contains|checkout-button",
+          "entity": "checkout-form",
+          "change": {
+            "evidence": "explicit",
+            "from": "checkout-form",
+            "id": "checkout-form|contains|checkout-button",
+            "relation": "contains",
+            "to": "checkout-button"
+          }
+        }
+      ]
+    },
+    {
+      "path": "projects/acme-app/design/components/button.yaml",
+      "base": "5534619ea9768ac67a146ce437facaf2c5f7f409^",
+      "changes": [
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "button",
+          "entity": "button",
+          "change": {
+            "artifact": "design-system-projects-acme-app-design-components-button-yaml",
+            "description": "Primary action button of the Acme design system.",
+            "evidence": "explicit",
+            "id": "button",
+            "kind": "component",
+            "name": "Button",
+            "role": "design"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "file:projects/acme-app/design/components/button.yaml",
+          "entity": "file:projects/acme-app/design/components/button.yaml",
+          "change": {
+            "artifact": "design-system-projects-acme-app-design-components-button-yaml",
+            "attributes": {
+              "artifactKind": "design-system"
+            },
+            "evidence": "explicit",
+            "id": "file:projects/acme-app/design/components/button.yaml",
+            "kind": "file",
+            "name": "button.yaml",
+            "role": "design"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "variant:button/primary",
+          "entity": "variant:button/primary",
+          "change": {
+            "evidence": "explicit",
+            "id": "variant:button/primary",
+            "kind": "variant",
+            "name": "Primary"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "variant:button/secondary",
+          "entity": "variant:button/secondary",
+          "change": {
+            "evidence": "explicit",
+            "id": "variant:button/secondary",
+            "kind": "variant",
+            "name": "Secondary"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "button/default",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "id": "button/default",
+            "name": "default",
+            "subject": "button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "button/disabled",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "id": "button/disabled",
+            "name": "disabled",
+            "subject": "button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "button/hover",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "id": "button/hover",
+            "name": "hover",
+            "subject": "button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "button/loading",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "id": "button/loading",
+            "name": "loading",
+            "subject": "button"
+          }
+        },
+        {
+          "type": "StateAdded",
+          "category": "State",
+          "id": "button/pressed",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "id": "button/pressed",
+            "name": "pressed",
+            "subject": "button"
+          }
+        },
+        {
+          "type": "ConstraintAdded",
+          "category": "Constraint",
+          "id": "constraint:button:loading-state-is-announced-via-aria-busy",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "id": "constraint:button:loading-state-is-announced-via-aria-busy",
+            "kind": "accessibility",
+            "statement": "Loading state is announced via aria-busy",
+            "subject": "button"
+          }
+        },
+        {
+          "type": "ConstraintAdded",
+          "category": "Constraint",
+          "id": "constraint:button:reachable-and-operable-by-keyboard-alone",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "id": "constraint:button:reachable-and-operable-by-keyboard-alone",
+            "kind": "accessibility",
+            "statement": "Reachable and operable by keyboard alone",
+            "subject": "button"
+          }
+        },
+        {
+          "type": "InteractionAdded",
+          "category": "Interaction",
+          "id": "interaction:button:click:submit",
+          "entity": "button",
+          "change": {
+            "effect": "submit",
+            "evidence": "explicit",
+            "id": "interaction:button:click:submit",
+            "target": "button",
+            "trigger": "click"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "button|defined-by|file:projects/acme-app/design/components/button.yaml",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "from": "button",
+            "id": "button|defined-by|file:projects/acme-app/design/components/button.yaml",
+            "relation": "defined-by",
+            "to": "file:projects/acme-app/design/components/button.yaml"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "button|has-variant|variant:button/primary",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "from": "button",
+            "id": "button|has-variant|variant:button/primary",
+            "relation": "has-variant",
+            "to": "variant:button/primary"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "button|has-variant|variant:button/secondary",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "from": "button",
+            "id": "button|has-variant|variant:button/secondary",
+            "relation": "has-variant",
+            "to": "variant:button/secondary"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "button|uses|token:color.primary",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "from": "button",
+            "id": "button|uses|token:color.primary",
+            "relation": "uses",
+            "to": "token:color.primary"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "button|uses|token:spacing.medium",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "from": "button",
+            "id": "button|uses|token:spacing.medium",
+            "relation": "uses",
+            "to": "token:spacing.medium"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "button|uses|token:typography.label",
+          "entity": "button",
+          "change": {
+            "evidence": "explicit",
+            "from": "button",
+            "id": "button|uses|token:typography.label",
+            "relation": "uses",
+            "to": "token:typography.label"
+          }
+        }
+      ]
+    },
+    {
+      "path": "projects/acme-app/design/tokens.json",
+      "base": "5534619ea9768ac67a146ce437facaf2c5f7f409^",
+      "changes": [
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "design-system:tokens-json",
+          "entity": "design-system:tokens-json",
+          "change": {
+            "artifact": "design-system-projects-acme-app-design-tokens-json",
+            "evidence": "explicit",
+            "id": "design-system:tokens-json",
+            "kind": "design-system",
+            "name": "tokens.json"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "file:projects/acme-app/design/tokens.json",
+          "entity": "file:projects/acme-app/design/tokens.json",
+          "change": {
+            "artifact": "design-system-projects-acme-app-design-tokens-json",
+            "attributes": {
+              "artifactKind": "design-system"
+            },
+            "evidence": "explicit",
+            "id": "file:projects/acme-app/design/tokens.json",
+            "kind": "file",
+            "name": "tokens.json",
+            "role": "design"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "token:color.danger",
+          "entity": "token:color.danger",
+          "change": {
+            "attributes": {
+              "type": "color",
+              "value": "#cf222e"
+            },
+            "evidence": "explicit",
+            "id": "token:color.danger",
+            "kind": "token",
+            "name": "color.danger"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "token:color.primary",
+          "entity": "token:color.primary",
+          "change": {
+            "attributes": {
+              "type": "color",
+              "value": "#1f6feb"
+            },
+            "evidence": "explicit",
+            "id": "token:color.primary",
+            "kind": "token",
+            "name": "color.primary"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "token:spacing.medium",
+          "entity": "token:spacing.medium",
+          "change": {
+            "attributes": {
+              "type": "dimension",
+              "value": "12px"
+            },
+            "evidence": "explicit",
+            "id": "token:spacing.medium",
+            "kind": "token",
+            "name": "spacing.medium"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "token:typography.label",
+          "entity": "token:typography.label",
+          "change": {
+            "attributes": {
+              "type": "typography",
+              "value": "600 14px/20px Inter"
+            },
+            "evidence": "explicit",
+            "id": "token:typography.label",
+            "kind": "token",
+            "name": "typography.label"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "design-system:tokens-json|contains|token:color.danger",
+          "entity": "design-system:tokens-json",
+          "change": {
+            "evidence": "explicit",
+            "from": "design-system:tokens-json",
+            "id": "design-system:tokens-json|contains|token:color.danger",
+            "relation": "contains",
+            "to": "token:color.danger"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "design-system:tokens-json|contains|token:color.primary",
+          "entity": "design-system:tokens-json",
+          "change": {
+            "evidence": "explicit",
+            "from": "design-system:tokens-json",
+            "id": "design-system:tokens-json|contains|token:color.primary",
+            "relation": "contains",
+            "to": "token:color.primary"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "design-system:tokens-json|contains|token:spacing.medium",
+          "entity": "design-system:tokens-json",
+          "change": {
+            "evidence": "explicit",
+            "from": "design-system:tokens-json",
+            "id": "design-system:tokens-json|contains|token:spacing.medium",
+            "relation": "contains",
+            "to": "token:spacing.medium"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "design-system:tokens-json|contains|token:typography.label",
+          "entity": "design-system:tokens-json",
+          "change": {
+            "evidence": "explicit",
+            "from": "design-system:tokens-json",
+            "id": "design-system:tokens-json|contains|token:typography.label",
+            "relation": "contains",
+            "to": "token:typography.label"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "design-system:tokens-json|defined-by|file:projects/acme-app/design/tokens.json",
+          "entity": "design-system:tokens-json",
+          "change": {
+            "evidence": "explicit",
+            "from": "design-system:tokens-json",
+            "id": "design-system:tokens-json|defined-by|file:projects/acme-app/design/tokens.json",
+            "relation": "defined-by",
+            "to": "file:projects/acme-app/design/tokens.json"
+          }
+        }
+      ]
+    },
+    {
+      "path": "projects/acme-app/policies/human-reviewer.yaml",
+      "base": "5534619ea9768ac67a146ce437facaf2c5f7f409^",
+      "changes": [
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "file:projects/acme-app/policies/human-reviewer.yaml",
+          "entity": "file:projects/acme-app/policies/human-reviewer.yaml",
+          "change": {
+            "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml",
+            "attributes": {
+              "artifactKind": "policy"
+            },
+            "evidence": "explicit",
+            "id": "file:projects/acme-app/policies/human-reviewer.yaml",
+            "kind": "file",
+            "name": "human-reviewer.yaml",
+            "role": "policy"
+          }
+        },
+        {
+          "type": "EntityAdded",
+          "category": "Entity",
+          "id": "policy:human-reviewer",
+          "entity": "policy:human-reviewer",
+          "change": {
+            "artifact": "policy-projects-acme-app-policies-human-reviewer-yaml",
+            "attributes": {
+              "permissions": [
+                "read:project",
+                "read:graph",
+                "review:proposals"
+              ]
+            },
+            "evidence": "explicit",
+            "id": "policy:human-reviewer",
+            "kind": "policy",
+            "name": "human-reviewer",
+            "role": "policy"
+          }
+        },
+        {
+          "type": "DependencyAdded",
+          "category": "Dependency",
+          "id": "policy:human-reviewer|defined-by|file:projects/acme-app/policies/human-reviewer.yaml",
+          "entity": "policy:human-reviewer",
+          "change": {
+            "evidence": "explicit",
+            "from": "policy:human-reviewer",
+            "id": "policy:human-reviewer|defined-by|file:projects/acme-app/policies/human-reviewer.yaml",
+            "relation": "defined-by",
+            "to": "file:projects/acme-app/policies/human-reviewer.yaml"
+          }
+        }
+      ]
+    },
+    {
+      "path": "projects/acme-app/project.yaml",
+      "base": "5534619ea9768ac67a146ce437facaf2c5f7f409^",
+      "changes": [
+        {
+          "type": "EntityChanged",
+          "category": "Entity",
+          "id": "project:acme-app",
+          "entity": "project:acme-app",
+          "change": {
+            "attributes": {
+              "after": {
+                "roles": [
+                  "product",
+                  "ux",
+                  "design",
+                  "engineering",
+                  "qa"
+                ],
+                "version": 1
+              },
+              "before": {
+                "version": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "model": {
+    "intent": 2,
+    "requirements": 2,
+    "behaviors": 5,
+    "entities": 47,
+    "states": 10,
+    "constraints": 21,
+    "interactions": 4,
+    "dependencies": 69,
+    "assumptions": 0,
+    "explicit": 144,
+    "inferred": 6,
+    "candidate": 10,
+    "unknown": 0,
+    "confidence": 0.94
+  },
+  "validation": {
+    "valid": true,
+    "errors": 0,
+    "warnings": 0,
+    "issues": [
+      {
+        "severity": "info",
+        "code": "unknown_entity",
+        "message": "relation target \"aria-live\" is not a known entity",
+        "item": "skill:accessibility|related-to|aria-live"
+      },
+      {
+        "severity": "info",
+        "code": "unknown_entity",
+        "message": "relation target \"agent-nexus\" is not a known entity",
+        "item": "skill:agent-nexus-mcp|related-to|agent-nexus"
+      },
+      {
+        "severity": "info",
+        "code": "unknown_entity",
+        "message": "relation target \"agent-nexus-root\" is not a known entity",
+        "item": "skill:agent-nexus-mcp|related-to|agent-nexus-root"
+      }
+    ]
+  },
+  "proposal": "prop-1790505399-38f2a8dd6b",
+  "generatedAt": 1790505399
+}

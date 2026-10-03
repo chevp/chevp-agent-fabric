@@ -1,0 +1,21 @@
+{
+  "id": "skill-global-skills-code-style-skill-md",
+  "projectId": "acme-app",
+  "kind": "skill",
+  "role": "engineering",
+  "name": "skill.md",
+  "content": {
+    "type": "file",
+    "path": "global/skills/code-style/skill.md"
+  },
+  "provenance": {
+    "source": "global/skills/code-style/skill.md",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at global/skills/code-style/skill.md"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

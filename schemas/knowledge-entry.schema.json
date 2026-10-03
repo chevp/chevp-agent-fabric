@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agent-nexus/schemas/knowledge-entry.schema.json",
+  "title": "SemanticContract",
+  "description": "A Semantic Knowledge Layer for Agents entry (projects/<id>/contracts/*.yaml). Extends the pre-existing SemanticContract with term/alias identity, a kind taxonomy, a structured definition and content/dependency identity for freshness.",
+  "type": "object",
+  "required": ["id", "role"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string" },
+    "role": { "type": "string" },
+    "subject": {
+      "type": "string",
+      "description": "Graph entity (graph/entities/<id>.yaml) this entry is about. Defaults to id."
+    },
+    "term": {
+      "type": "string",
+      "description": "Canonical short identifier, e.g. \"CheckoutButton\". Defaults to id."
+    },
+    "kind": {
+      "type": "string",
+      "description": "Closed vocabulary plus any custom string.",
+      "examples": [
+        "concept", "component", "behavior", "requirement", "interaction",
+        "policy", "skill", "design-token", "api", "data-model", "workflow",
+        "actor", "domain", "feature", "artifact"
+      ]
+    },
+    "definition": {
+      "type": "object",
+      "required": ["short"],
+      "properties": {
+        "short": { "type": "string", "minLength": 1 },
+        "semantic": { "type": "string" }
+      }
+    },
+    "aliases": { "type": "array", "items": { "type": "string" } },
+    "intent": { "type": "array", "items": { "type": "string" } },
+    "requirements": { "type": "array", "items": { "type": "string" } },
+    "behaviors": {
+      "type": "object",
+      "properties": {
+        "states": { "type": "array", "items": { "type": "string" } },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "event", "to"],
+            "properties": {
+              "from": { "type": "string" },
+              "event": { "type": "string" },
+              "to": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "confidence": {
+      "type": "object",
+      "required": ["value"],
+      "description": "Entry-level confidence; defaults to explicit (1.0) when unset, since a hand-authored contract is canonical.",
+      "properties": {
+        "value": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reason": { "type": "string" }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "required": ["contentSha256", "semanticSha256", "semanticSchemaVersion"],
+      "properties": {
+        "contentSha256": { "type": "string" },
+        "semanticSha256": { "type": "string" },
+        "parserId": { "type": "string" },
+        "parserVersion": { "type": "string" },
+        "semanticSchemaVersion": { "type": "string" },
+        "dependencyFingerprint": { "type": "string" }
+      }
+    }
+  }
+}

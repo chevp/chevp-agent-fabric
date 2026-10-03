@@ -1,0 +1,22 @@
+{
+  "id": "policy-projects-acme-app-policies-figma-make-yaml",
+  "projectId": "acme-app",
+  "kind": "policy",
+  "role": "policy",
+  "name": "figma-make.yaml",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/policies/figma-make.yaml"
+  },
+  "provenance": {
+    "source": "projects/acme-app/policies/figma-make.yaml",
+    "commit": "dba96e76eae309d855c7e1aafa0cf0666051be71",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/policies/figma-make.yaml"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

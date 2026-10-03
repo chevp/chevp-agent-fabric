@@ -1,0 +1,185 @@
+{
+  "artifacts": [
+    "skill-global-skills-code-style-skill-md"
+  ],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [
+    {
+      "id": "file:global/skills/code-style/skill.md",
+      "name": "skill.md",
+      "kind": "file",
+      "role": "engineering",
+      "artifact": "skill-global-skills-code-style-skill-md",
+      "attributes": {
+        "artifactKind": "skill"
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/code-style/skill.md",
+          "extraction": "SemanticEngine",
+          "artifact": "skill-global-skills-code-style-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "skill:code-style",
+      "name": "Code Style",
+      "kind": "skill",
+      "description": "General coding-agent conventions applicable across all projects",
+      "role": "engineering",
+      "artifact": "skill-global-skills-code-style-skill-md",
+      "attributes": {
+        "tags": [
+          "code",
+          "style",
+          "engineering"
+        ]
+      },
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/code-style/skill.md",
+          "lineStart": 2,
+          "lineEnd": 2,
+          "extraction": "SkillParser",
+          "artifact": "skill-global-skills-code-style-skill-md"
+        }
+      ]
+    }
+  ],
+  "states": [],
+  "constraints": [
+    {
+      "id": "constraint:skill:code-style:do-not-introduce-a-new-dependency-for-something-the-standard-library-already-doe",
+      "statement": "Do not introduce a new dependency for something the standard library already does well.",
+      "kind": "must-not",
+      "subject": "skill:code-style",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/code-style/skill.md",
+          "lineStart": 22,
+          "lineEnd": 23,
+          "extraction": "SkillParser",
+          "artifact": "skill-global-skills-code-style-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "constraint:skill:code-style:match-the-existing-formatting-linting-configuration-of-the-project-you-are-editi",
+      "statement": "Match the existing formatting/linting configuration of the project you are editing rather than imposing a different style.",
+      "kind": "must",
+      "subject": "skill:code-style",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/code-style/skill.md",
+          "lineStart": 24,
+          "lineEnd": 25,
+          "extraction": "SkillParser",
+          "artifact": "skill-global-skills-code-style-skill-md"
+        }
+      ]
+    },
+    {
+      "id": "constraint:skill:code-style:prefer-small-composable-functions-with-explicit-types-over-large-implicit-ones",
+      "statement": "Prefer small, composable functions with explicit types over large, implicit ones.",
+      "kind": "must",
+      "subject": "skill:code-style",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/code-style/skill.md",
+          "lineStart": 20,
+          "lineEnd": 21,
+          "extraction": "SkillParser",
+          "artifact": "skill-global-skills-code-style-skill-md"
+        }
+      ]
+    }
+  ],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "skill:code-style|defined-by|file:global/skills/code-style/skill.md",
+      "from": "skill:code-style",
+      "relation": "defined-by",
+      "to": "file:global/skills/code-style/skill.md",
+      "evidence": "explicit",
+      "confidence": {
+        "value": 1.0,
+        "reason": "stated explicitly in the source"
+      },
+      "provenance": [
+        {
+          "source": "global/skills/code-style/skill.md",
+          "extraction": "SemanticEngine",
+          "artifact": "skill-global-skills-code-style-skill-md"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 1.0,
+    "reason": "mean of 6 statements: 6 explicit, 0 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "global/skills/code-style/skill.md",
+      "extraction": "SemanticEngine",
+      "artifact": "skill-global-skills-code-style-skill-md"
+    },
+    {
+      "source": "global/skills/code-style/skill.md",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "extraction": "SkillParser",
+      "artifact": "skill-global-skills-code-style-skill-md"
+    },
+    {
+      "source": "global/skills/code-style/skill.md",
+      "lineStart": 20,
+      "lineEnd": 21,
+      "extraction": "SkillParser",
+      "artifact": "skill-global-skills-code-style-skill-md"
+    },
+    {
+      "source": "global/skills/code-style/skill.md",
+      "lineStart": 22,
+      "lineEnd": 23,
+      "extraction": "SkillParser",
+      "artifact": "skill-global-skills-code-style-skill-md"
+    },
+    {
+      "source": "global/skills/code-style/skill.md",
+      "lineStart": 24,
+      "lineEnd": 25,
+      "extraction": "SkillParser",
+      "artifact": "skill-global-skills-code-style-skill-md"
+    }
+  ],
+  "assumptions": []
+}

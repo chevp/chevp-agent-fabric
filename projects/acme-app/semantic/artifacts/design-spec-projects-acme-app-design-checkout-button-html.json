@@ -1,0 +1,22 @@
+{
+  "id": "design-spec-projects-acme-app-design-checkout-button-html",
+  "projectId": "acme-app",
+  "kind": "design-spec",
+  "role": "design",
+  "name": "checkout-button.html",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/design/checkout-button.html"
+  },
+  "provenance": {
+    "source": "projects/acme-app/design/checkout-button.html",
+    "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/design/checkout-button.html"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

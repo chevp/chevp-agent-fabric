@@ -1,0 +1,22 @@
+{
+  "id": "project-projects-acme-app-project-yaml",
+  "projectId": "acme-app",
+  "kind": "project",
+  "role": "product",
+  "name": "project.yaml",
+  "content": {
+    "type": "file",
+    "path": "projects/acme-app/project.yaml"
+  },
+  "provenance": {
+    "source": "projects/acme-app/project.yaml",
+    "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+    "extraction": "register_artifact"
+  },
+  "confidence": {
+    "value": 1.0,
+    "reason": "artifact exists at projects/acme-app/project.yaml"
+  },
+  "metadata": {},
+  "registeredAt": 1790505399
+}

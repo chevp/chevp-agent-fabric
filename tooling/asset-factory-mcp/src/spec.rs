@@ -120,8 +120,7 @@ pub struct Report {
 
 fn is_slug(s: &str) -> bool {
     !s.is_empty()
-        && s
-            .chars()
+        && s.chars()
             .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_' || c == '-')
 }
 
@@ -137,7 +136,10 @@ pub fn validate(spec: &DesignSpec, lib: &MaterialLibrary) -> Report {
         err("dimensions must all be > 0".into());
     }
     if !["none", "mirror_x"].contains(&spec.symmetry.as_str()) {
-        err(format!("symmetry \"{}\" must be none or mirror_x", spec.symmetry));
+        err(format!(
+            "symmetry \"{}\" must be none or mirror_x",
+            spec.symmetry
+        ));
     }
     if spec.components.is_empty() {
         err("spec has no components".into());
@@ -146,7 +148,10 @@ pub fn validate(spec: &DesignSpec, lib: &MaterialLibrary) -> Report {
     let mut ids = BTreeSet::new();
     for c in &spec.components {
         if !is_slug(&c.id) {
-            err(format!("component id \"{}\" must be a lowercase slug", c.id));
+            err(format!(
+                "component id \"{}\" must be a lowercase slug",
+                c.id
+            ));
         }
         if !ids.insert(c.id.as_str()) {
             err(format!("duplicate component id \"{}\"", c.id));
@@ -155,13 +160,22 @@ pub fn validate(spec: &DesignSpec, lib: &MaterialLibrary) -> Report {
     for c in &spec.components {
         let at = format!("component {}", c.id);
         if !GROUPS.contains(&c.group.as_str()) {
-            err(format!("{at}: unknown group \"{}\" (one of {GROUPS:?})", c.group));
+            err(format!(
+                "{at}: unknown group \"{}\" (one of {GROUPS:?})",
+                c.group
+            ));
         }
         if !SOURCES.contains(&c.source.as_str()) {
-            err(format!("{at}: unknown source \"{}\" (one of {SOURCES:?})", c.source));
+            err(format!(
+                "{at}: unknown source \"{}\" (one of {SOURCES:?})",
+                c.source
+            ));
         }
         if lib.get(&c.material).is_none() {
-            err(format!("{at}: material \"{}\" is not in the library", c.material));
+            err(format!(
+                "{at}: material \"{}\" is not in the library",
+                c.material
+            ));
         }
         if c.size.iter().any(|v| *v <= 0.0) {
             err(format!("{at}: size must be > 0 on every axis"));
@@ -182,9 +196,9 @@ pub fn validate(spec: &DesignSpec, lib: &MaterialLibrary) -> Report {
         if let Some(m) = &c.mirror_of {
             match spec.component(m) {
                 None => err(format!("{at}: mirrorOf \"{m}\" does not exist")),
-                Some(src) if src.mirror_of.is_some() || src.id == c.id => {
-                    err(format!("{at}: mirrorOf \"{m}\" must be a non-mirrored component"))
-                }
+                Some(src) if src.mirror_of.is_some() || src.id == c.id => err(format!(
+                    "{at}: mirrorOf \"{m}\" must be a non-mirrored component"
+                )),
                 Some(src) if src.material != c.material => err(format!(
                     "{at}: mirror must share material with \"{m}\" ({} vs {})",
                     c.material, src.material
@@ -193,7 +207,11 @@ pub fn validate(spec: &DesignSpec, lib: &MaterialLibrary) -> Report {
             }
         }
     }
-    if !spec.components.iter().any(|c| c.group == "primary_structure") {
+    if !spec
+        .components
+        .iter()
+        .any(|c| c.group == "primary_structure")
+    {
         err("spec needs at least one primary_structure component".into());
     }
 
@@ -211,17 +229,26 @@ pub fn validate(spec: &DesignSpec, lib: &MaterialLibrary) -> Report {
             ));
         }
     }
-    let distinct: BTreeSet<&str> = spec.components.iter().map(|c| c.material.as_str()).collect();
-    if distinct.len() > 6 {
+    // Paint groups, not detail materials, decide how many seams an asset has.
+    let distinct: BTreeSet<&str> = spec
+        .components
+        .iter()
+        .filter(|c| c.source != "texture_detail")
+        .map(|c| c.material.as_str())
+        .collect();
+    if distinct.len() > 8 {
         r.warnings.push(format!(
-            "{} distinct materials; a coherent asset rarely needs more than 6",
+            "{} distinct geometry materials; a coherent asset rarely needs more than 8",
             distinct.len()
         ));
     }
     if spec.symmetry == "mirror_x" {
         for c in &spec.components {
             if c.mirror_of.is_none() && c.anchor[0].abs() > 1e-6 {
-                let mirrored = spec.components.iter().any(|o| o.mirror_of.as_deref() == Some(&c.id));
+                let mirrored = spec
+                    .components
+                    .iter()
+                    .any(|o| o.mirror_of.as_deref() == Some(&c.id));
                 if !mirrored {
                     r.warnings.push(format!(
                         "component {} sits off-centre (x={}) but has no mirror partner",

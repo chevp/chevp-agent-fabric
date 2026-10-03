@@ -1,0 +1,84 @@
+{
+  "artifacts": [],
+  "intent": [],
+  "requirements": [],
+  "behaviors": [],
+  "entities": [],
+  "states": [],
+  "constraints": [],
+  "interactions": [],
+  "dependencies": [
+    {
+      "id": "button|changed-by|commit:5534619",
+      "from": "button",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.5,
+        "reason": "entity is defined in a file this commit touched (1 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/components/button.yaml",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+        },
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "GitIngestion"
+        }
+      ]
+    },
+    {
+      "id": "design-system:tokens-json|changed-by|commit:5534619",
+      "from": "design-system:tokens-json",
+      "relation": "changed-by",
+      "to": "commit:5534619",
+      "evidence": "inferred",
+      "confidence": {
+        "value": 0.5,
+        "reason": "entity is defined in a file this commit touched (1 source(s))"
+      },
+      "provenance": [
+        {
+          "source": "projects/acme-app/design/tokens.json",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "SemanticEngine",
+          "artifact": "design-system-projects-acme-app-design-tokens-json"
+        },
+        {
+          "source": "git:5534619",
+          "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+          "extraction": "GitIngestion"
+        }
+      ]
+    }
+  ],
+  "confidence": {
+    "value": 0.5,
+    "reason": "mean of 2 statements: 0 explicit, 2 inferred, 0 candidate, 0 unknown"
+  },
+  "provenance": [
+    {
+      "source": "git:5534619",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "GitIngestion"
+    },
+    {
+      "source": "projects/acme-app/design/components/button.yaml",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "design-system-projects-acme-app-design-components-button-yaml"
+    },
+    {
+      "source": "projects/acme-app/design/tokens.json",
+      "commit": "5534619ea9768ac67a146ce437facaf2c5f7f409",
+      "extraction": "SemanticEngine",
+      "artifact": "design-system-projects-acme-app-design-tokens-json"
+    }
+  ],
+  "assumptions": []
+}
